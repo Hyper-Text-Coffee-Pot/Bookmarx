@@ -28,6 +28,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Important Additional Package Information
 ### Firebase
+- https://firebase.google.com/
 - https://github.com/angular/angularfire
 - https://firebaseopensource.com/projects/angular/angularfire2/
 
