@@ -5,12 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './views/not-found/not-found.component';
 import { HomeComponent } from './views/home/home.component';
+import { BasePageDirective } from './views/shared/base-page.directive';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		NotFoundComponent,
-		HomeComponent
+		HomeComponent,
+		BasePageDirective
 	],
 	imports: [
 		BrowserModule,

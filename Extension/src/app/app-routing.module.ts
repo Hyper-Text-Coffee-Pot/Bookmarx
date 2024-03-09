@@ -6,7 +6,7 @@ import { HomeComponent } from './views/home/home.component';
 const routes: Routes = [
 	{ path: '', redirectTo: 'home', pathMatch: 'full' },
 	{ path: 'home', component: HomeComponent, data: { title: 'Home' } },
-	{ path: '**', component: NotFoundComponent }
+	{ path: '**', component: NotFoundComponent, data: { title: 'Not Found' }}
 ];
 
 @NgModule({
