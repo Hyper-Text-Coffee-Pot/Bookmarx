@@ -16,7 +16,9 @@ import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot
 import { ActionComponent } from './views/identity/action/action.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BlockUIModule } from 'ng-block-ui';
-import { RecaptchaV3Module } from 'ng-recaptcha';
+import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
+import { AuthService } from './services/auth/services/auth.service';
+import { AuthInterceptor } from './services/auth/interceptors/auth.interceptor';
 
 @NgModule({
 	declarations: [
@@ -39,7 +41,18 @@ import { RecaptchaV3Module } from 'ng-recaptcha';
 		ReactiveFormsModule,
 		BlockUIModule.forRoot()
 	],
-	providers: [],
+	providers: [
+		AuthService,
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: AuthInterceptor,
+			multi: true
+		},
+		{
+			provide: RECAPTCHA_V3_SITE_KEY,
+			useValue: environment.reCAPTCHASiteKey
+		}
+	],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }

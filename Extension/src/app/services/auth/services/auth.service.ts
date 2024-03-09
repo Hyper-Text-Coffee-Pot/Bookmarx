@@ -16,8 +16,9 @@ import
 	updateProfile
 } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
-import { LocalStorageService } from '../web-api/local-storage.service';
-import { BookmarxUser } from './models/bookmarx-user';
+import { LocalStorageService } from '../../web-api/local-storage.service';
+import { BookmarxUser } from '../models/bookmarx-user';
+import { BookmarxAPIRequestHeader } from '../models/bookmarx-api-request-header';
 
 @Injectable({
 	providedIn: 'root'
@@ -118,32 +119,32 @@ export class AuthService
 		});
 	}
 
-	// public GetAuthHeaders(): Promise<BookmarxAPIRequestHeader>
-	// {
-	// 	return new Promise((resolve, reject) =>
-	// 	{
-	// 		this.GetFirebaseUser()
-	// 			.then((user: User) =>
-	// 			{
-	// 				if (user != null)
-	// 				{
-	// 					let pictyrsAPIRequestHeader = new BookmarxAPIRequestHeader();
-	// 					pictyrsAPIRequestHeader.APIKey = user.uid;
+	public GetAuthHeaders(): Promise<BookmarxAPIRequestHeader>
+	{
+		return new Promise((resolve, reject) =>
+		{
+			this.GetFirebaseUser()
+				.then((user: User) =>
+				{
+					if (user != null)
+					{
+						let pictyrsAPIRequestHeader = new BookmarxAPIRequestHeader();
+						pictyrsAPIRequestHeader.APIKey = user.uid;
 
-	// 					user.getIdToken().then((token: string) =>
-	// 					{
-	// 						pictyrsAPIRequestHeader.Token = token;
-	// 						resolve(pictyrsAPIRequestHeader);
-	// 					});
-	// 				}
-	// 				else
-	// 				{
-	// 					// No user to return just send back nothing so the next request can process.
-	// 					resolve(null);
-	// 				}
-	// 			});
-	// 	});
-	// }
+						user.getIdToken().then((token: string) =>
+						{
+							pictyrsAPIRequestHeader.Token = token;
+							resolve(pictyrsAPIRequestHeader);
+						});
+					}
+					else
+					{
+						// No user to return just send back nothing so the next request can process.
+						resolve(null);
+					}
+				});
+		});
+	}
 
 	public UpdateDisplayName(user: BookmarxUser, displayName: string): Promise<void>
 	{

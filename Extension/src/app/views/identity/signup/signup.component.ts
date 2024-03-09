@@ -7,8 +7,9 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { Subscription } from 'rxjs';
 import { BookmarxUser } from 'src/app/services/auth/models/bookmarx-user';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { AuthService } from 'src/app/services/auth/services/auth.service';
 import { GoogleAuthService } from 'src/app/services/auth/services/google-auth.service';
+import { UserCredential, sendEmailVerification } from '@angular/fire/auth';
 
 @Component({
 	selector: 'app-signup',
@@ -65,36 +66,42 @@ export class SignupComponent extends BasePageDirective
 
 	//#endregion Properties
 
+	//#region OnInit
+
 	public override	ngOnInit(): void
 	{
 		this._ig = this._route.snapshot.paramMap.get('ig');
 
-		// If this request comes in from a google login then handle the final processing
-		this._googleAuthService.ProcessRedirectResultFromGoogle(this._recaptchaSubscription, this._ig)
-			.then((pictyrsUser: PictyrsUser) =>
-			{
-				if (pictyrsUser)
-				{
-					this.SetUserDataAndRedirect(pictyrsUser);
-				}
-			}).catch((err: any) =>
-			{
-				// Handle all form errors here
-				// https://firebase.google.com/docs/reference/js/firebase.auth.Auth?authuser=1#error-codes_12
-				// auth/invalid-email
-				// auth/user-disabled
-				// auth/user-not-found
-				// auth/wrong-password
-				let errorCode = err.code; // A code
-				let errorMessage = err.message; // And a message for the code
-				this.FormError = err.message;
-			});
+		// // If this request comes in from a google login then handle the final processing
+		// this._googleAuthService.ProcessRedirectResultFromGoogle(this._recaptchaSubscription, this._ig)
+		// 	.then((pictyrsUser: PictyrsUser) =>
+		// 	{
+		// 		if (pictyrsUser)
+		// 		{
+		// 			this.SetUserDataAndRedirect(pictyrsUser);
+		// 		}
+		// 	}).catch((err: any) =>
+		// 	{
+		// 		// Handle all form errors here
+		// 		// https://firebase.google.com/docs/reference/js/firebase.auth.Auth?authuser=1#error-codes_12
+		// 		// auth/invalid-email
+		// 		// auth/user-disabled
+		// 		// auth/user-not-found
+		// 		// auth/wrong-password
+		// 		let errorCode = err.code; // A code
+		// 		let errorMessage = err.message; // And a message for the code
+		// 		this.FormError = err.message;
+		// 	});
 	}
 
 	public ngOnDestroy()
 	{
 		this._recaptchaSubscription != undefined ?? this._recaptchaSubscription.unsubscribe();
 	}
+
+	//#endregion OnInit
+
+	//#region Singups
 
 	/**
 	 * Process the sign up and update some basic user info.
@@ -130,35 +137,36 @@ export class SignupComponent extends BasePageDirective
 								.subscribe({
 									next: (reCAPTCHAToken: string) =>
 									{
-										// After signup we don't care that they verify their email, next time they 
-										// log in they'll be asked to verify it. Just make it easy right now.
-										// Need to manually set the data so the auth guard works
-										// Immediately update the users first and last name
-										let memberAccountCreateRequest = new MemberAccountCreateRequest();
-										memberAccountCreateRequest.AccessToken = token;
-										memberAccountCreateRequest.APID = res.user.uid;
-										memberAccountCreateRequest.EmailAddress = signupEmail;
-										memberAccountCreateRequest.FirstName = firstName;
-										memberAccountCreateRequest.LastName = lastName;
-										memberAccountCreateRequest.ReCAPTCHAToken = reCAPTCHAToken;
-										memberAccountCreateRequest.IG = this._ig ?? "";
+										// TODO: Stub this in
+										// // After signup we don't care that they verify their email, next time they 
+										// // log in they'll be asked to verify it. Just make it easy right now.
+										// // Need to manually set the data so the auth guard works
+										// // Immediately update the users first and last name
+										// let memberAccountCreateRequest = new MemberAccountCreateRequest();
+										// memberAccountCreateRequest.AccessToken = token;
+										// memberAccountCreateRequest.APID = res.user.uid;
+										// memberAccountCreateRequest.EmailAddress = signupEmail;
+										// memberAccountCreateRequest.FirstName = firstName;
+										// memberAccountCreateRequest.LastName = lastName;
+										// memberAccountCreateRequest.ReCAPTCHAToken = reCAPTCHAToken;
+										// memberAccountCreateRequest.IG = this._ig ?? "";
 
-										this._membershipAuthService.CreateNewMemberAccount(memberAccountCreateRequest)
-											.subscribe((response: IdentityActionResponseDto) =>
-											{
-												const fullName = `${ firstName } ${ lastName }`;
+										// this._membershipAuthService.CreateNewMemberAccount(memberAccountCreateRequest)
+										// 	.subscribe((response: IdentityActionResponseDto) =>
+										// 	{
+										// 		const fullName = `${ firstName } ${ lastName }`;
 
-												let pictyrsUser: PictyrsUser = new PictyrsUser();
-												pictyrsUser.User = res.user;
-												pictyrsUser.OGID = response.OGID;
-												pictyrsUser.IsSubscriptionValid = response.IsSubscriptionValid;
+										// 		let pictyrsUser: PictyrsUser = new PictyrsUser();
+										// 		pictyrsUser.User = res.user;
+										// 		pictyrsUser.OGID = response.OGID;
+										// 		pictyrsUser.IsSubscriptionValid = response.IsSubscriptionValid;
 
-												this._authService.UpdateDisplayName(pictyrsUser, fullName)
-													.then(() =>
-													{
-														this.SetUserDataAndRedirect(pictyrsUser);
-													});
-											});
+										// 		this._authService.UpdateDisplayName(pictyrsUser, fullName)
+										// 			.then(() =>
+										// 			{
+										// 				this.SetUserDataAndRedirect(pictyrsUser);
+										// 			});
+										// 	});
 									},
 									complete: () =>
 									{
@@ -203,10 +211,16 @@ export class SignupComponent extends BasePageDirective
 		this._authService.InitiateSignInWithGoogle();
 	}
 
+	//#endregion Singups
+
+	//#region Private Methods
+
 	private SetUserDataAndRedirect(pictyrsUser: BookmarxUser): void
 	{
 		// Need to manually set the data so the auth guard works
 		this._authService.SetUserData(pictyrsUser);
 		this._router.navigate(['/']);
 	}
+
+	//#endregion Private Methods
 }

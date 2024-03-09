@@ -19,9 +19,9 @@ export const environment = {
 		appId: "YourAppIdHere",
 		measurementId: "YourMeasurementIdHere"
 	},
+	reCAPTCHASiteKey: "YourRecaptchaSiteKeyHere",
 	memStorageKey: "__bookmarxapp_storage__"
 };
-
 
 /*
  * For easier debugging in development mode, you can import the following file
