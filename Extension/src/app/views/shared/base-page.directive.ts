@@ -12,6 +12,7 @@ export class BasePageDirective implements OnInit
 	{
 		route.data.subscribe((data: any): void =>
 		{
+			console.log(data);
 			// Access the data property from the route configuration.
 			const myData = (data as DataAttribute).title ?? "Bookmarx";
 

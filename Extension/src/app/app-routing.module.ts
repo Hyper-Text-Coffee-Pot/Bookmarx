@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './views/not-found/not-found.component';
 import { HomeComponent } from './views/home/home.component';
 import { AuthGuardService } from './views/shared/guards/auth-guard.service';
-import { LoginComponent } from './views/login/login.component';
+import { LoginComponent } from './views/identity/login/login.component';
 import { ActiveAuthGuardService } from './views/shared/guards/active-auth-guard.service';
 import { SignupComponent } from './views/identity/signup/signup.component';
 import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot-password.component';

@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './views/not-found/not-found.component';
 import { HomeComponent } from './views/home/home.component';
 import { BasePageDirective } from './views/shared/base-page.directive';
-import { LoginComponent } from './views/login/login.component';
+import { LoginComponent } from './views/identity/login/login.component';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
@@ -40,7 +40,7 @@ import { AuthInterceptor } from './services/auth/interceptors/auth.interceptor';
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
 		RecaptchaV3Module,
-		BlockUIModule.forRoot()
+		//BlockUIModule.forRoot()
 	],
 	providers: [
 		AuthService,

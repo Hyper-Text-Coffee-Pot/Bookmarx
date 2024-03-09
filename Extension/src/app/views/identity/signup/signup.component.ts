@@ -18,8 +18,8 @@ import { UserCredential, sendEmailVerification } from '@angular/fire/auth';
 })
 export class SignupComponent extends BasePageDirective
 {
-	@BlockUI()
-	private _blockUI: NgBlockUI;
+	// @BlockUI()
+	// private _blockUI: NgBlockUI;
 	private _recaptchaSubscription: Subscription;
 	private _ig: string;
 
@@ -111,7 +111,7 @@ export class SignupComponent extends BasePageDirective
 	 */
 	public ProcessSignUpWithEmailAndPassword(): void
 	{
-		this._blockUI.start();
+		//this._blockUI.start();
 
 		// Reset any error messages
 		this.FormError = "";
@@ -172,7 +172,7 @@ export class SignupComponent extends BasePageDirective
 									},
 									complete: () =>
 									{
-										this._blockUI.stop();
+										//this._blockUI.stop();
 									}
 								});
 						}
