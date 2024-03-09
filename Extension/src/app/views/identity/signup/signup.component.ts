@@ -70,6 +70,8 @@ export class SignupComponent extends BasePageDirective
 
 	public override	ngOnInit(): void
 	{
+		let currentDate = new Date();
+		this.CurrentYear = currentDate.getFullYear().toString();
 		this._ig = this._route.snapshot.paramMap.get('ig');
 
 		// // If this request comes in from a google login then handle the final processing

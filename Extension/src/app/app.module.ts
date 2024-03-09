@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,7 +15,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SignupComponent } from './views/identity/signup/signup.component';
 import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot-password.component';
 import { ActionComponent } from './views/identity/action/action.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { BlockUIModule } from 'ng-block-ui';
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { AuthService } from './services/auth/services/auth.service';
@@ -34,11 +34,12 @@ import { AuthInterceptor } from './services/auth/interceptors/auth.interceptor';
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
+		FormsModule,
+		ReactiveFormsModule,
 		HttpClientModule,
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
 		RecaptchaV3Module,
-		ReactiveFormsModule,
 		BlockUIModule.forRoot()
 	],
 	providers: [
