@@ -11,6 +11,12 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { SignupComponent } from './views/identity/signup/signup.component';
+import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot-password.component';
+import { ActionComponent } from './views/identity/action/action.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BlockUIModule } from 'ng-block-ui';
+import { RecaptchaV3Module } from 'ng-recaptcha';
 
 @NgModule({
 	declarations: [
@@ -18,14 +24,20 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 		NotFoundComponent,
 		HomeComponent,
 		BasePageDirective,
-		LoginComponent
+		LoginComponent,
+		SignupComponent,
+		ForgotPasswordComponent,
+		ActionComponent
 	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
 		HttpClientModule,
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-		provideAuth(() => getAuth())
+		provideAuth(() => getAuth()),
+		RecaptchaV3Module,
+		ReactiveFormsModule,
+		BlockUIModule.forRoot()
 	],
 	providers: [],
 	bootstrap: [AppComponent]

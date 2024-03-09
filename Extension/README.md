@@ -30,3 +30,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ### Firebase
 - https://github.com/angular/angularfire
 - https://firebaseopensource.com/projects/angular/angularfire2/
+
+### Ng Block UI
+- https://www.npmjs.com/package/ng-block-ui
+
+### Ng Recaptcha
+- https://www.npmjs.com/package/ng-recaptcha

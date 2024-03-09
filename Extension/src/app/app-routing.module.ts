@@ -5,11 +5,18 @@ import { HomeComponent } from './views/home/home.component';
 import { AuthGuardService } from './views/shared/guards/auth-guard.service';
 import { LoginComponent } from './views/login/login.component';
 import { ActiveAuthGuardService } from './views/shared/guards/active-auth-guard.service';
+import { SignupComponent } from './views/identity/signup/signup.component';
+import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot-password.component';
+import { ActionComponent } from './views/identity/action/action.component';
 
 const routes: Routes = [
 	{ path: '', redirectTo: 'home', pathMatch: 'full' },
 	{ path: 'home', component: HomeComponent, canActivate: [AuthGuardService], data: { title: 'Home' } },
-	{ path: 'login', component: LoginComponent, canActivate: [ActiveAuthGuardService], data: { title: 'Log In' } },
+	{ path: 'identity/signup', component: SignupComponent, pathMatch: 'full', canActivate: [ActiveAuthGuardService], data: { title: 'Signup' } },
+	{ path: 'identity/signup/:ig', component: SignupComponent, pathMatch: 'full', canActivate: [ActiveAuthGuardService], data: { title: 'Signup' } },
+	{ path: 'identity/login', component: LoginComponent, pathMatch: 'full', canActivate: [ActiveAuthGuardService], data: { title: 'Login' } },
+	{ path: 'identity/forgot-password', component: ForgotPasswordComponent, pathMatch: 'full', canActivate: [ActiveAuthGuardService], data: { title: 'Forgot Password' } },
+	{ path: 'identity/action', component: ActionComponent, pathMatch: 'full', data: { title: 'Action' } },
 	{ path: '**', component: NotFoundComponent, data: { title: 'Not Found' } }
 ];
 
