@@ -9,6 +9,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { GoogleAuthService } from 'src/app/domain/auth/services/google-auth.service';
+import { BookmarxUser } from 'src/app/domain/auth/models/bookmarx-user';
+import { IdentityActionResponseDto } from 'src/app/domain/membership/models/identity-action-response-dto';
+import { MembershipAuthService } from 'src/app/domain/membership/services/membership-auth.service';
 
 @Component({
 	selector: 'app-login',
@@ -27,15 +30,11 @@ export class LoginComponent extends BasePageDirective
 		private _authService: AuthService,
 		private _router: Router,
 		private _metaService: Meta,
-		//private _membershipAuthService: MembershipAuthService,
+		private _membershipAuthService: MembershipAuthService,
 		private _googleAuthService: GoogleAuthService,
 		private _recaptchaV3Service: ReCaptchaV3Service)
 	{
 		super(_route, _titleService);
-	}
-
-	public override ngOnInit(): void
-	{
 	}
 
 	public FormError: string = "";
@@ -56,7 +55,7 @@ export class LoginComponent extends BasePageDirective
 	get SignInEmail() { return this.SignInForm.get('signInEmail'); }
 	get SignInPassword() { return this.SignInForm.get('signInPassword'); }
 
-	public ngOnInit(): void
+	public override ngOnInit(): void
 	{
 		this._titleService.setTitle("Pictyrs | Log In");
 		this._metaService.addTags([
@@ -68,11 +67,11 @@ export class LoginComponent extends BasePageDirective
 
 		// If this request comes in from a google login then handle the final processing
 		this._googleAuthService.ProcessRedirectResultFromGoogle(this._recaptchaSubscription)
-			.then((pictyrsUser: PictyrsUser) =>
+			.then((bookmarxUser: BookmarxUser) =>
 			{
-				if (pictyrsUser)
+				if (bookmarxUser)
 				{
-					this.SetUserDataAndRedirect(pictyrsUser);
+					this.SetUserDataAndRedirect(bookmarxUser);
 				}
 			}).catch((err: any) =>
 			{
@@ -119,11 +118,11 @@ export class LoginComponent extends BasePageDirective
 									this._membershipAuthService.SignInWithEmailAndPassword(authToken, res.user.uid, reCAPTCHAToken)
 										.subscribe((response: IdentityActionResponseDto) =>
 										{
-											let pictyrsUser: PictyrsUser = new PictyrsUser();
-											pictyrsUser.User = res.user;
-											pictyrsUser.OGID = response.OGID;
-											pictyrsUser.IsSubscriptionValid = response.IsSubscriptionValid;
-											this.SetUserDataAndRedirect(pictyrsUser);
+											let bookmarxUser: BookmarxUser = new BookmarxUser();
+											bookmarxUser.User = res.user;
+											bookmarxUser.OGID = response.OGID;
+											bookmarxUser.IsSubscriptionValid = response.IsSubscriptionValid;
+											this.SetUserDataAndRedirect(bookmarxUser);
 											this._blockUI.stop();
 										});
 								});
@@ -174,11 +173,10 @@ export class LoginComponent extends BasePageDirective
 		this._recaptchaSubscription != undefined ?? this._recaptchaSubscription.unsubscribe();
 	}
 
-	private SetUserDataAndRedirect(pictyrsUser: PictyrsUser): void
+	private SetUserDataAndRedirect(bookmarxUser: BookmarxUser): void
 	{
 		// Need to manually set the data so the auth guard works
-		this._authService.SetUserData(pictyrsUser);
-		this._oneSignalIntegrationService.UpdateExternalUserID(pictyrsUser.OGID);
+		this._authService.SetUserData(bookmarxUser);
 		this._router.navigate(['/']);
 	}
 }
