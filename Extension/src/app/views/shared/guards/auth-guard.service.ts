@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/services/auth.service';
+import { AuthService } from 'src/app/domain/auth/services/auth.service';
 
 /**
  * Guards against viewing pages when someone is not logged in.

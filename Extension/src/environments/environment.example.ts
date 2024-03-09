@@ -10,6 +10,8 @@
 
 export const environment = {
 	production: false,
+	environment: "development",
+	apiUrl: "YourApiUrlHere",
 	firebaseConfig: {
 		apiKey: "YourApiKeyHere",
 		authDomain: "YourAuthDomainHere",

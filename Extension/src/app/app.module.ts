@@ -17,8 +17,8 @@ import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot
 import { ActionComponent } from './views/identity/action/action.component';
 import { BlockUIModule } from 'ng-block-ui';
 import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
-import { AuthService } from './services/auth/services/auth.service';
-import { AuthInterceptor } from './services/auth/interceptors/auth.interceptor';
+import { AuthService } from './domain/auth/services/auth.service';
+import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 
 @NgModule({
 	declarations: [

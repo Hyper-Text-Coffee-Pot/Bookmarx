@@ -6,9 +6,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { Subscription } from 'rxjs';
-import { BookmarxUser } from 'src/app/services/auth/models/bookmarx-user';
-import { AuthService } from 'src/app/services/auth/services/auth.service';
-import { GoogleAuthService } from 'src/app/services/auth/services/google-auth.service';
+import { BookmarxUser } from 'src/app/domain/auth/models/bookmarx-user';
+import { AuthService } from 'src/app/domain/auth/services/auth.service';
+import { GoogleAuthService } from 'src/app/domain/auth/services/google-auth.service';
 import { UserCredential, sendEmailVerification } from '@angular/fire/auth';
 
 @Component({

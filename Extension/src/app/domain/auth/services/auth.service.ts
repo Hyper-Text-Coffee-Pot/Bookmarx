@@ -16,7 +16,7 @@ import
 	updateProfile
 } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
-import { LocalStorageService } from '../../web-api/local-storage.service';
+import { LocalStorageService } from '../../web-api/services/local-storage.service';
 import { BookmarxUser } from '../models/bookmarx-user';
 import { BookmarxAPIRequestHeader } from '../models/bookmarx-api-request-header';
 
