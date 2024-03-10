@@ -1,6 +1,6 @@
 using Asp.Versioning;
 using Asp.Versioning.Conventions;
-using Bookmarx.API.v1.Models.Configuration;
+using Bookmarx.Shared.v1.Configuration.Models;
 
 internal class Program
 {

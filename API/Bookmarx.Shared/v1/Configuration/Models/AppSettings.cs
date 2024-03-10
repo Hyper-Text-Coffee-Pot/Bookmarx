@@ -1,4 +1,4 @@
-﻿namespace Bookmarx.API.v1.Models.Configuration;
+﻿namespace Bookmarx.Shared.v1.Configuration.Models;
 
 public class AppSettings
 {
