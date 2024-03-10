@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/domain/auth/services/auth.service';
 @Injectable({
 	providedIn: 'root'
 })
-export class AuthGuardService implements CanActivate
+export class InactiveAuthGuardService implements CanActivate
 {
 	/**
 	 * Guards against viewing pages that require being logged in.
