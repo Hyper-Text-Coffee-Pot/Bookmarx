@@ -31,15 +31,15 @@ export class AuthInterceptor implements HttpInterceptor
 	{
 		return from(this._authService.GetAuthHeaders())
 			.pipe(
-				switchMap((pictyrsAPIRequestHeader: ApiRequestHeader) =>
+				switchMap((apiRequestHeader: ApiRequestHeader) =>
 				{
-					const bearerToken = `Bearer ${ pictyrsAPIRequestHeader?.Token }`;
+					const bearerToken = `Bearer ${ apiRequestHeader?.Token }`;
 
 					// Clone the request and replace the original headers with
 					// cloned headers, updated with the authorization
 					const headers = new HttpHeaders({
 						'Authorization': bearerToken,
-						'X-Api-Key': pictyrsAPIRequestHeader?.APIKey ?? ""
+						'X-Api-Key': apiRequestHeader?.APIKey ?? ""
 					});
 
 					const authReq = req.clone({ headers });

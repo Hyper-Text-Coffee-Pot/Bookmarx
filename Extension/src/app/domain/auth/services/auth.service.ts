@@ -128,13 +128,13 @@ export class AuthService
 				{
 					if (user != null)
 					{
-						let pictyrsAPIRequestHeader = new ApiRequestHeader();
-						pictyrsAPIRequestHeader.APIKey = user.uid;
+						let apiRequestHeader = new ApiRequestHeader();
+						apiRequestHeader.APIKey = user.uid;
 
 						user.getIdToken().then((token: string) =>
 						{
-							pictyrsAPIRequestHeader.Token = token;
-							resolve(pictyrsAPIRequestHeader);
+							apiRequestHeader.Token = token;
+							resolve(apiRequestHeader);
 						});
 					}
 					else

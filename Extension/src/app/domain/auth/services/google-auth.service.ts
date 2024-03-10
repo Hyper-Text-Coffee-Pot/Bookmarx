@@ -63,12 +63,12 @@ export class GoogleAuthService
 												this._membershipAuthService.SignInWithGoogle(memberAccountCreateRequest)
 													.subscribe((response: IdentityActionResponseDto) =>
 													{
-														let bookmarxUser = new ActiveUserDetail();
-														bookmarxUser.User = userCredential.user;
-														bookmarxUser.OGID = response.OGID;
-														bookmarxUser.IsSubscriptionValid = response.IsSubscriptionValid;
+														let activeUserDetail = new ActiveUserDetail();
+														activeUserDetail.User = userCredential.user;
+														activeUserDetail.OGID = response.OGID;
+														activeUserDetail.IsSubscriptionValid = response.IsSubscriptionValid;
 
-														resolve(bookmarxUser);
+														resolve(activeUserDetail);
 													});
 											}
 										});
