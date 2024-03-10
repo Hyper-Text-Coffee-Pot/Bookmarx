@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Asp.Versioning.Conventions;
+using Bookmarx.API.v1.Models.Configuration;
 
 internal class Program
 {
@@ -7,27 +8,36 @@ internal class Program
 	{
 		var builder = WebApplication.CreateBuilder(args);
 
+		// Mask the server header.
+		builder.WebHost.UseKestrel(options =>
+		{
+			options.AddServerHeader = false;
+		});
+
 		// Add services to the container.
 		builder.Services.AddControllers();
 
-		// Add versioning configuration
+		// Add versioning configuration.
 		builder.Services.AddApiVersioning(options =>
 		{
-			// reporting api versions will return the headers
-			// "api-supported-versions" and "api-deprecated-versions"
+			// Reporting api versions will return the headers
+			// "api-supported-versions" and "api-deprecated-versions."
 			options.ReportApiVersions = true;
 			options.AssumeDefaultVersionWhenUnspecified = true;
 			options.DefaultApiVersion = new ApiVersion(1, 0);
 		}).AddMvc(options =>
 		{
-			// automatically applies an api version based on the name of
-			// the defining controller's namespace
+			// Automatically applies an api version based on the name of
+			// the defining controller's namespace.
 			options.Conventions.Add(new VersionByNamespaceConvention());
 		});
 
 		// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 		builder.Services.AddEndpointsApiExplorer();
 		builder.Services.AddSwaggerGen();
+
+		// Map the appsettings.json file to the AppSettings class.
+		builder.Services.Configure<AppSettings>(builder.Configuration);
 
 		var app = builder.Build();
 

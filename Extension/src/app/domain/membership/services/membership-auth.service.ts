@@ -14,7 +14,7 @@ export class MembershipAuthService
 	public CreateNewMemberAccount(memberAccountCreateRequest: MemberAccountCreateRequest): Observable<any>
 	{
 		return this._httpClient
-			.post(`${ environment.apiUrl }/membership-auth/signup-with-email-and-password`, memberAccountCreateRequest)
+			.post(`${ environment.apiUrlV1 }/membership-auth/signup-with-email-and-password`, memberAccountCreateRequest)
 			.pipe(
 				retry(3)
 			);
@@ -23,7 +23,7 @@ export class MembershipAuthService
 	public SignInWithGoogle(memberAccountCreateRequest: MemberAccountCreateRequest): Observable<any>
 	{
 		return this._httpClient
-			.post(`${ environment.apiUrl }/membership-auth/sign-in-with-google`, memberAccountCreateRequest)
+			.post(`${ environment.apiUrlV1 }/membership-auth/sign-in-with-google`, memberAccountCreateRequest)
 			.pipe(
 				retry(3)
 			);
@@ -36,7 +36,7 @@ export class MembershipAuthService
 	 */
 	public SignInWithEmailAndPassword(authToken: string, authProviderUID: string, reCAPTCHAToken: string): Observable<any>
 	{
-		return this._httpClient.post(`${ environment.apiUrl }/membership-auth/sign-in-with-email-and-password?authToken=${ authToken }&authProviderUID=${ authProviderUID }&reCAPTCHAToken=${ reCAPTCHAToken }`, null,)
+		return this._httpClient.post(`${ environment.apiUrlV1 }/membership-auth/sign-in-with-email-and-password?authToken=${ authToken }&authProviderUID=${ authProviderUID }&reCAPTCHAToken=${ reCAPTCHAToken }`, null,)
 			.pipe(
 				retry(3)
 			);

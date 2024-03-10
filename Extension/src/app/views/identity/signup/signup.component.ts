@@ -125,12 +125,14 @@ export class SignupComponent extends BasePageDirective
 		let lastName = this.SignUpLastName?.value.trim();
 		let signupPassword = this.SignUpPassword?.value.trim();
 
+		// Creates a user with Google Firebase
 		this._authService.SignUpWithEmailAndPassword(
 			signupEmail,
 			signupPassword
 		)
 			.then((res: UserCredential) =>
 			{
+				// If no user exists and signup was successful.
 				// Send a confirmation email right away.
 				sendEmailVerification(res.user);
 
@@ -139,6 +141,7 @@ export class SignupComponent extends BasePageDirective
 					{
 						if (token != "")
 						{
+							// Execute the reCAPTCHA v3
 							this._recaptchaSubscription = this._recaptchaV3Service.execute("signup_action")
 								.subscribe({
 									next: (reCAPTCHAToken: string) =>
