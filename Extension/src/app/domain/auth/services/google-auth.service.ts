@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { MemberAccountCreateRequest } from '../../membership/models/member-account-create-request';
 import { MembershipAuthService } from '../../membership/services/membership-auth.service';
 import { AuthService } from './auth.service';
-import { BookmarxUser } from '../models/bookmarx-user';
+import { ActiveUserDetail } from '../models/active-user-detail';
 import { IdentityActionResponseDto } from '../../membership/models/identity-action-response-dto';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class GoogleAuthService
 		private _recaptchaV3Service: ReCaptchaV3Service
 	) { }
 
-	public ProcessRedirectResultFromGoogle(recaptchaSubscription: Subscription, ig?: string): Promise<BookmarxUser>
+	public ProcessRedirectResultFromGoogle(recaptchaSubscription: Subscription, ig?: string): Promise<ActiveUserDetail>
 	{
 		return new Promise((resolve, reject) =>
 		{
@@ -63,7 +63,7 @@ export class GoogleAuthService
 												this._membershipAuthService.SignInWithGoogle(memberAccountCreateRequest)
 													.subscribe((response: IdentityActionResponseDto) =>
 													{
-														let bookmarxUser: BookmarxUser = new BookmarxUser();
+														let bookmarxUser = new ActiveUserDetail();
 														bookmarxUser.User = userCredential.user;
 														bookmarxUser.OGID = response.OGID;
 														bookmarxUser.IsSubscriptionValid = response.IsSubscriptionValid;

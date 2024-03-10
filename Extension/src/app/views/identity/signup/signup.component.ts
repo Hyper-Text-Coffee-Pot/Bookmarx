@@ -6,7 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { Subscription } from 'rxjs';
-import { BookmarxUser } from 'src/app/domain/auth/models/bookmarx-user';
+import { ActiveUserDetail } from 'src/app/domain/auth/models/active-user-detail';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { GoogleAuthService } from 'src/app/domain/auth/services/google-auth.service';
 import { UserCredential, sendEmailVerification } from '@angular/fire/auth';
@@ -76,11 +76,11 @@ export class SignupComponent extends BasePageDirective
 
 		// // If this request comes in from a google login then handle the final processing
 		// this._googleAuthService.ProcessRedirectResultFromGoogle(this._recaptchaSubscription, this._ig)
-		// 	.then((pictyrsUser: PictyrsUser) =>
+		// 	.then((activeUserDetail: activeUserDetail) =>
 		// 	{
-		// 		if (pictyrsUser)
+		// 		if (activeUserDetail)
 		// 		{
-		// 			this.SetUserDataAndRedirect(pictyrsUser);
+		// 			this.SetUserDataAndRedirect(activeUserDetail);
 		// 		}
 		// 	}).catch((err: any) =>
 		// 	{
@@ -158,15 +158,15 @@ export class SignupComponent extends BasePageDirective
 										// 	{
 										// 		const fullName = `${ firstName } ${ lastName }`;
 
-										// 		let pictyrsUser: PictyrsUser = new PictyrsUser();
-										// 		pictyrsUser.User = res.user;
-										// 		pictyrsUser.OGID = response.OGID;
-										// 		pictyrsUser.IsSubscriptionValid = response.IsSubscriptionValid;
+										// 		let activeUserDetail: activeUserDetail = new activeUserDetail();
+										// 		activeUserDetail.User = res.user;
+										// 		activeUserDetail.OGID = response.OGID;
+										// 		activeUserDetail.IsSubscriptionValid = response.IsSubscriptionValid;
 
-										// 		this._authService.UpdateDisplayName(pictyrsUser, fullName)
+										// 		this._authService.UpdateDisplayName(activeUserDetail, fullName)
 										// 			.then(() =>
 										// 			{
-										// 				this.SetUserDataAndRedirect(pictyrsUser);
+										// 				this.SetUserDataAndRedirect(activeUserDetail);
 										// 			});
 										// 	});
 									},
@@ -217,10 +217,10 @@ export class SignupComponent extends BasePageDirective
 
 	//#region Private Methods
 
-	private SetUserDataAndRedirect(pictyrsUser: BookmarxUser): void
+	private SetUserDataAndRedirect(activeUserDetail: ActiveUserDetail): void
 	{
 		// Need to manually set the data so the auth guard works
-		this._authService.SetUserData(pictyrsUser);
+		this._authService.SetUserData(activeUserDetail);
 		this._router.navigate(['/']);
 	}
 

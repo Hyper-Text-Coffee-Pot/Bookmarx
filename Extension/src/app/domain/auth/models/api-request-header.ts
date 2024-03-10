@@ -1,5 +1,6 @@
-export class BookmarxAPIRequestHeader
+export class ApiRequestHeader
 {
 	public APIKey: string;
+	
 	public Token: string;
 }

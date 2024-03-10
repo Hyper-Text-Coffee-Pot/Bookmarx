@@ -17,8 +17,8 @@ import
 } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { LocalStorageService } from '../../web-api/services/local-storage.service';
-import { BookmarxUser } from '../models/bookmarx-user';
-import { BookmarxAPIRequestHeader } from '../models/bookmarx-api-request-header';
+import { ActiveUserDetail } from '../models/active-user-detail';
+import { ApiRequestHeader } from '../models/api-request-header';
 
 @Injectable({
 	providedIn: 'root'
@@ -40,7 +40,7 @@ export class AuthService
 		{
 			if (user)
 			{
-				var signedInUser = this._localStorageService.GetDeserializedItem<BookmarxUser>(this.localUserStore);
+				var signedInUser = this._localStorageService.GetDeserializedItem<ActiveUserDetail>(this.localUserStore);
 
 				if (signedInUser != null && signedInUser != undefined)
 				{
@@ -67,7 +67,7 @@ export class AuthService
 	{
 		let isLoggedIn = false;
 
-		const userStore = this._localStorageService.GetDeserializedItem<BookmarxUser>(this.localUserStore);
+		const userStore = this._localStorageService.GetDeserializedItem<ActiveUserDetail>(this.localUserStore);
 
 		if (userStore != undefined
 			&& userStore != null)
@@ -79,9 +79,9 @@ export class AuthService
 		return isLoggedIn;
 	}
 
-	public GetCurrentUser(): BookmarxUser
+	public GetCurrentUser(): ActiveUserDetail
 	{
-		const userStore = this._localStorageService.GetDeserializedItem<BookmarxUser>(this.localUserStore);
+		const userStore = this._localStorageService.GetDeserializedItem<ActiveUserDetail>(this.localUserStore);
 
 		return userStore;
 	}
@@ -90,9 +90,9 @@ export class AuthService
 	 * Manual option to set user data
 	 * @param user 
 	 */
-	public SetUserData(user: BookmarxUser): void
+	public SetUserData(user: ActiveUserDetail): void
 	{
-		this._localStorageService.SetItem<string, BookmarxUser>(this.localUserStore, user);
+		this._localStorageService.SetItem<string, ActiveUserDetail>(this.localUserStore, user);
 	}
 
 	/**
@@ -119,7 +119,7 @@ export class AuthService
 		});
 	}
 
-	public GetAuthHeaders(): Promise<BookmarxAPIRequestHeader>
+	public GetAuthHeaders(): Promise<ApiRequestHeader>
 	{
 		return new Promise((resolve, reject) =>
 		{
@@ -128,7 +128,7 @@ export class AuthService
 				{
 					if (user != null)
 					{
-						let pictyrsAPIRequestHeader = new BookmarxAPIRequestHeader();
+						let pictyrsAPIRequestHeader = new ApiRequestHeader();
 						pictyrsAPIRequestHeader.APIKey = user.uid;
 
 						user.getIdToken().then((token: string) =>
@@ -146,7 +146,7 @@ export class AuthService
 		});
 	}
 
-	public UpdateDisplayName(user: BookmarxUser, displayName: string): Promise<void>
+	public UpdateDisplayName(user: ActiveUserDetail, displayName: string): Promise<void>
 	{
 		return updateProfile(user.User, {
 			displayName: displayName
@@ -160,7 +160,7 @@ export class AuthService
 	{
 		let isSubscriptionValid = false;
 
-		const userStore = this._localStorageService.GetDeserializedItem<BookmarxUser>(this.localUserStore);
+		const userStore = this._localStorageService.GetDeserializedItem<ActiveUserDetail>(this.localUserStore);
 
 		if (userStore != undefined
 			&& userStore != null)

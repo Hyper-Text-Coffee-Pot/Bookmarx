@@ -9,7 +9,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { GoogleAuthService } from 'src/app/domain/auth/services/google-auth.service';
-import { BookmarxUser } from 'src/app/domain/auth/models/bookmarx-user';
+import { ActiveUserDetail } from 'src/app/domain/auth/models/active-user-detail';
 import { IdentityActionResponseDto } from 'src/app/domain/membership/models/identity-action-response-dto';
 import { MembershipAuthService } from 'src/app/domain/membership/services/membership-auth.service';
 
@@ -67,11 +67,11 @@ export class LoginComponent extends BasePageDirective
 
 		// If this request comes in from a google login then handle the final processing
 		this._googleAuthService.ProcessRedirectResultFromGoogle(this._recaptchaSubscription)
-			.then((bookmarxUser: BookmarxUser) =>
+			.then((activeUserDetail: ActiveUserDetail) =>
 			{
-				if (bookmarxUser)
+				if (activeUserDetail)
 				{
-					this.SetUserDataAndRedirect(bookmarxUser);
+					this.SetUserDataAndRedirect(activeUserDetail);
 				}
 			}).catch((err: any) =>
 			{
@@ -118,11 +118,11 @@ export class LoginComponent extends BasePageDirective
 									this._membershipAuthService.SignInWithEmailAndPassword(authToken, res.user.uid, reCAPTCHAToken)
 										.subscribe((response: IdentityActionResponseDto) =>
 										{
-											let bookmarxUser: BookmarxUser = new BookmarxUser();
-											bookmarxUser.User = res.user;
-											bookmarxUser.OGID = response.OGID;
-											bookmarxUser.IsSubscriptionValid = response.IsSubscriptionValid;
-											this.SetUserDataAndRedirect(bookmarxUser);
+											let activeUserDetail = new ActiveUserDetail();
+											activeUserDetail.User = res.user;
+											activeUserDetail.OGID = response.OGID;
+											activeUserDetail.IsSubscriptionValid = response.IsSubscriptionValid;
+											this.SetUserDataAndRedirect(activeUserDetail);
 											this._blockUI.stop();
 										});
 								});
@@ -173,10 +173,10 @@ export class LoginComponent extends BasePageDirective
 		this._recaptchaSubscription != undefined ?? this._recaptchaSubscription.unsubscribe();
 	}
 
-	private SetUserDataAndRedirect(bookmarxUser: BookmarxUser): void
+	private SetUserDataAndRedirect(activeUserDetail: ActiveUserDetail): void
 	{
 		// Need to manually set the data so the auth guard works
-		this._authService.SetUserData(bookmarxUser);
+		this._authService.SetUserData(activeUserDetail);
 		this._router.navigate(['/']);
 	}
 }

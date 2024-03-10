@@ -9,7 +9,7 @@ import
 } from '@angular/common/http';
 import { Observable, from, switchMap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { BookmarxAPIRequestHeader } from '../models/bookmarx-api-request-header';
+import { ApiRequestHeader } from '../models/api-request-header';
 
 /**
  * Angular Interceptors
@@ -31,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor
 	{
 		return from(this._authService.GetAuthHeaders())
 			.pipe(
-				switchMap((pictyrsAPIRequestHeader: BookmarxAPIRequestHeader) =>
+				switchMap((pictyrsAPIRequestHeader: ApiRequestHeader) =>
 				{
 					const bearerToken = `Bearer ${ pictyrsAPIRequestHeader?.Token }`;
 
