@@ -10,9 +10,18 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## Build & Deploy
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build dev` while testing to run the dev server.
+See the `package.json` file for all possible build options.
+
+This app uses [cheeriojs](https://cheerio.js.org/) to run a post-build step that overwrites the default
+behavior of Angular for the compiled css. The default `media` attribute is `print` and for the extension
+to render correctly and apply our custom css file we need it to be set to `all` right away. This behavior
+is not a feature in Angular so we've added a cheeriojs post-build script that simply overwrites this
+setting to be `all` instead. Pretty simple, but important to call out that this modification to the
+compiled project has been automated.
 
 ## Running unit tests
 
@@ -44,3 +53,8 @@ Go to this Google link and then visit the v3 Admin Console to add projects. Copy
 reCAPTCHASiteKey value in the environment config file.
 - https://www.google.com/recaptcha
 - https://www.npmjs.com/package/ng-recaptcha
+
+### Cheerio JS
+Read above about Build & Deploy steps for information on how this is used. There is a `postbuild.js` file at the
+root of the `Extension` project that contains more information and the configuration for this process.
+- https://cheerio.js.org/

@@ -20,7 +20,7 @@
 				</div>
 				<div class="d-flex">
 					<label for="signUpFirstName"
-						   class="sr-only">First name</label>
+						   class="visually-hidden">First name</label>
 					<input type="text"
 						   class="form-control mr-1"
 						   name="signUpFirstName"
@@ -31,7 +31,7 @@
 						   formControlName="signUpFirstName"
 						   required>
 					<label for="signUpLastName"
-						   class="sr-only">Last name</label>
+						   class="visually-hidden">Last name</label>
 					<input type="text"
 						   class="form-control ml-1"
 						   name="signUpLastName"
@@ -61,7 +61,7 @@
 					</div>
 				</div>
 				<label for="signUpEmail"
-					   class="sr-only">Email address</label>
+					   class="visually-hidden">Email address</label>
 				<input type="email"
 					   class="form-control"
 					   name="signUpEmail"
@@ -81,7 +81,7 @@
 					</div>
 				</div>
 				<label for="signUpPassword"
-					   class="sr-only">Password</label>
+					   class="visually-hidden">Password</label>
 				<input type="password"
 					   class="form-control"
 					   name="signUpPassword"
@@ -100,14 +100,14 @@
 						Password must be at least 8 characters.
 					</div>
 				</div>
-				<button class="btn btn-lg btn-primary btn-block"
+				<button class="btn btn-lg btn-primary w-100"
 						type="submit"
 						[disabled]="!SignUpForm.valid">
 					Sign up
 				</button>
 				<p class="text-muted social-login-break">OR</p>
 				<div>
-					<button class="btn btn-light btn-block d-flex align-items-center justify-content-center login-btn__google"
+					<button class="btn btn-light w-100 d-flex align-items-center justify-content-center login-btn__google"
 							type="button"
 							(click)="ProcessSignUpWithGoogle()">
 						<img src="/assets/images/social/google.svg"

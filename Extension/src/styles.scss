@@ -1,7 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Bootstrap theme overrides */
-$theme-colors: ("primary": #6667ab);
+$theme-colors: (
+	"primary": #6667ab
+);
 
 /* https://loiane.com/2017/08/how-to-add-bootstrap-to-an-angular-cli-project/ */
 @import '~bootstrap/scss/bootstrap';
@@ -13,40 +15,49 @@ $theme-colors: ("primary": #6667ab);
 //@import '~ngx-toastr/toastr-bs4-alert';
 
 html,
-body {
-  height: 100%;
+body
+{
+	height: 100%;
+	width: 500px;
+	height: 600px;
 }
 
-.lock-scroll {
-  overflow-y: hidden !important;
+.lock-scroll
+{
+	overflow-y: hidden !important;
 }
 
-.header-footer-spacer {
-  margin: 0;
-  padding: 55px 0 72px 0;
+.header-footer-spacer
+{
+	margin: 0;
+	padding: 55px 0 72px 0;
 }
 
 // Custom global scrollbar settings
 /* width */
-::-webkit-scrollbar {
-  width: 8px;
+::-webkit-scrollbar
+{
+	width: 8px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+::-webkit-scrollbar-track
+{
+	background: #f1f1f1;
+	border-radius: 10px;
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
+::-webkit-scrollbar-thumb
+{
+	background: #888;
+	border-radius: 10px;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+::-webkit-scrollbar-thumb:hover
+{
+	background: #555;
 }
 
 // /* Shimmer Effect */
@@ -75,6 +86,5 @@ body {
 // }
 
 // Dark-mode global styles.
-@media (prefers-color-scheme: dark) {
-  
-}
+@media (prefers-color-scheme: dark)
+{}
