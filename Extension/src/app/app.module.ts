@@ -40,7 +40,7 @@ import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
 		RecaptchaV3Module,
-		//BlockUIModule.forRoot()
+		BlockUIModule.forRoot()
 	],
 	providers: [
 		AuthService,

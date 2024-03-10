@@ -57,11 +57,6 @@ export class LoginComponent extends BasePageDirective
 
 	public override ngOnInit(): void
 	{
-		this._titleService.setTitle("Pictyrs | Log In");
-		this._metaService.addTags([
-			{ name: "description", content: "Log in to your Pictyrs account and start sharing photos, today." },
-		]);
-
 		let currentDate = new Date();
 		this.CurrentYear = currentDate.getFullYear().toString();
 
