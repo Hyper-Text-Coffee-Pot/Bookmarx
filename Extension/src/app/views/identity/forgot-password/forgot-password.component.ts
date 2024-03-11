@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BasePageDirective } from '../../shared/base-page.directive';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
