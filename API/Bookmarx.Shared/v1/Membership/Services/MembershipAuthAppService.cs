@@ -77,73 +77,79 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 		return newMemberAccount;
 	}
 
-	// TODO: Finish this when needed
-	//public List<MemberAccount> GetMembers()
-	//{
-	//	return this._pictyrsDbContext.MemberAccounts.ToList();
-	//}
+	public List<MemberAccount> GetMembers()
+	{
+		// TODO: Wire this up
+		//return this._pictyrsDbContext.MemberAccounts.ToList();
+		return new List<MemberAccount>();
+	}
 
-	//public MemberAccount SignInWithEmailAndPassword(string authProviderUID)
-	//{
-	//	MemberAccount memberAccount = new MemberAccount();
+	public MemberAccount SignInWithEmailAndPassword(string authProviderUID)
+	{
+		MemberAccount memberAccount = new MemberAccount();
 
-	//	var currentMember = this._pictyrsDbContext.MemberAccounts
-	//		.Include(ma => ma.Subscriptions)
-	//		.SingleOrDefault(ma => ma.AuthProviderUID == authProviderUID);
+		MemberAccount currentMember = null;
 
-	//	if (currentMember?.MemberAccountID > 0)
-	//	{
-	//		currentMember.LastLoginDateTimeUTC = DateTime.UtcNow;
-	//		this._pictyrsDbContext.SaveChanges();
-	//		memberAccount = currentMember;
-	//	}
+		//var currentMember = this._pictyrsDbContext.MemberAccounts
+		//	.Include(ma => ma.Subscriptions)
+		//	.SingleOrDefault(ma => ma.AuthProviderUID == authProviderUID);
 
-	//	return memberAccount;
-	//}
+		if (currentMember?.MemberAccountID > 0)
+		{
+			currentMember.LastLoginDateTimeUTC = DateTime.UtcNow;
 
-	//public async Task<MemberAccount> SignInWithGoogle(MemberAccountDto memberAccountDto)
-	//{
-	//	var memberAccount = this._mapper.Map<MemberAccount>(memberAccountDto);
+			//this._pictyrsDbContext.SaveChanges();
+			memberAccount = currentMember;
+		}
 
-	//	try
-	//	{
-	//		var existingMember = this._pictyrsDbContext.MemberAccounts
-	//			.Include(ma => ma.Subscriptions)
-	//			.SingleOrDefault(member => member.AuthProviderUID == memberAccount.AuthProviderUID);
+		return memberAccount;
+	}
 
-	//		if (existingMember?.MemberAccountID > 0)
-	//		{
-	//			// If an account exists then just update the login details
-	//			existingMember.LastLoginDateTimeUTC = DateTime.UtcNow;
+	public async Task<MemberAccount> SignInWithGoogle(MemberAccountDto memberAccountDto)
+	{
+		var memberAccount = this._mapper.Map<MemberAccount>(memberAccountDto);
 
-	//			await this._pictyrsDbContext.SaveChangesAsync();
+		try
+		{
+			MemberAccount existingMember = null;
 
-	//			memberAccount = existingMember;
-	//		}
-	//		else
-	//		{
-	//			// If no account exists then make one
-	//			// Upon creation setup the date time here cuz db is goofy
-	//			var dateTimeUTCNow = DateTime.UtcNow;
-	//			memberAccount.CreatedDateTimeUTC = dateTimeUTCNow;
-	//			memberAccount.LastLoginDateTimeUTC = dateTimeUTCNow;
-	//			memberAccount.AccountGuid = Guid.NewGuid(); // Set a new account guid
+			//var existingMember = this._pictyrsDbContext.MemberAccounts
+			//	.Include(ma => ma.Subscriptions)
+			//	.SingleOrDefault(member => member.AuthProviderUID == memberAccount.AuthProviderUID);
 
-	//			this._pictyrsDbContext.MemberAccounts.Add(memberAccount);
+			if (existingMember?.MemberAccountID > 0)
+			{
+				// If an account exists then just update the login details
+				existingMember.LastLoginDateTimeUTC = DateTime.UtcNow;
 
-	//			await this._pictyrsDbContext.SaveChangesAsync();
+				//await this._pictyrsDbContext.SaveChangesAsync();
 
-	//			// Finally, create a new order and subscription for the new member!
-	//			Order newMemberOrder = await this._orderService.SaveNewAccountFreeTrialOrder(memberAccount.MemberAccountID);
-	//			await this._subscriptionService.SaveAccountFreeTrialSubscription(memberAccount.MemberAccountID);
-	//		}
-	//	}
-	//	catch (Exception ex)
-	//	{
-	//		this._logger.LogError(ex, "Failed to sign in with Google.");
-	//	}
+				memberAccount = existingMember;
+			}
+			else
+			{
+				// If no account exists then make one
+				// Upon creation setup the date time here cuz db is goofy
+				var dateTimeUTCNow = DateTime.UtcNow;
+				memberAccount.CreatedDateTimeUTC = dateTimeUTCNow;
+				memberAccount.LastLoginDateTimeUTC = dateTimeUTCNow;
+				memberAccount.AccountGuid = Guid.NewGuid(); // Set a new account guid
 
-	//	// Send back the AccountGuid because we'll validate that the save worked
-	//	return memberAccount;
-	//}
+				//this._pictyrsDbContext.MemberAccounts.Add(memberAccount);
+
+				//await this._pictyrsDbContext.SaveChangesAsync();
+
+				// Finally, create a new order and subscription for the new member!
+				Order newMemberOrder = await this._orderService.SaveNewAccountFreeTrialOrder(memberAccount.MemberAccountID);
+				await this._subscriptionService.SaveAccountFreeTrialSubscription(memberAccount.MemberAccountID);
+			}
+		}
+		catch (Exception ex)
+		{
+			this._logger.LogError(ex, "Failed to sign in with Google.");
+		}
+
+		// Send back the AccountGuid because we'll validate that the save worked
+		return memberAccount;
+	}
 }
