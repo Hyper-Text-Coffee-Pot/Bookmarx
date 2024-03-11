@@ -1,13 +1,4 @@
-﻿using Bookmarx.Shared.v1.Identity.Interfaces;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Bookmarx.Shared.v1.Identity.Services;
+﻿namespace Bookmarx.Shared.v1.Identity.Services;
 
 public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 {
@@ -15,18 +6,20 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 
 	private readonly IHttpContextAccessor _httpContextAccessor;
 
-	private readonly PictyrsDbContext _pictyrsDbContext;
+	//private readonly PictyrsDbContext _pictyrsDbContext;
 
 	private readonly ISubscriptionValidationService _subscriptionValidationService;
 
 	public GoogleFirebaseTokenValidatorService(
 		IOptions<AppSettings> appSettings,
-		PictyrsDbContext pictyrsDbContext,
+
+		//PictyrsDbContext pictyrsDbContext,
 		IHttpContextAccessor httpContextAccessor,
 		ISubscriptionValidationService subscriptionValidationService)
 	{
 		this._appSettings = appSettings.Value;
-		this._pictyrsDbContext = pictyrsDbContext;
+
+		//this._pictyrsDbContext = pictyrsDbContext;
 		this._httpContextAccessor = httpContextAccessor;
 		this._subscriptionValidationService = subscriptionValidationService;
 	}
@@ -49,7 +42,9 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 					// If the AuthProviderUID doesn't match then there's no sense running the second check, so it's nested
 					if (decodedToken?.Uid != null && decodedToken?.Uid == authProviderUID)
 					{
-						var memberExists = this._pictyrsDbContext.MemberAccounts.Any(m => m.AuthProviderUID == authProviderUID && m.AccountGuid == accountGuid);
+						// TODO: Wire this up
+						//var memberExists = this._pictyrsDbContext.MemberAccounts.Any(m => m.AuthProviderUID == authProviderUID && m.AccountGuid == accountGuid);
+						var memberExists = false;
 
 						if (memberExists)
 						{
@@ -87,9 +82,12 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 					// Then use these values later on to check against, like in the Tus API endpoints.
 					string uid = decodedToken.Uid;
 
-					var member = this._pictyrsDbContext.MemberAccounts
-						.AsNoTracking()
-						.FirstOrDefault(m => m.AuthProviderUID == authProviderUID);
+					MemberAccount? member = null;
+
+					// TODO: Wire this up
+					//var member = this._pictyrsDbContext.MemberAccounts
+					//	.AsNoTracking()
+					//	.FirstOrDefault(m => m.AuthProviderUID == authProviderUID);
 
 					if (member != null)
 					{
@@ -141,7 +139,7 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 
 							// Set up the newly minted identity for the HttpContext identity user.
 							// https://learn.microsoft.com/en-us/dotnet/api/system.security.claims.claimsidentity?view=net-6.0
-							var identity = new ClaimsIdentity(claims, PictyrsPolicy.ActiveSessionAuthorization);
+							var identity = new ClaimsIdentity(claims, ApiAuthPolicy.ActiveSessionAuthorization);
 
 							// Set the HttpContext User to our new Principal claim. Whew.
 							// https://learn.microsoft.com/en-us/dotnet/api/system.security.claims.claimsprincipal?view=net-6.0
