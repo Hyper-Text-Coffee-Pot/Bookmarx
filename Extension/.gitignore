@@ -41,6 +41,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Angular files
+.angular
+
 # Custom files
 **/environment.prod.ts
 **/environment.ts
