@@ -1,5 +1,9 @@
 ﻿global using Bookmarx.Shared.v1.Configuration.Models;
+global using Bookmarx.Shared.v1.Identity.Interfaces;
+global using Bookmarx.Shared.v1.Identity.Requirements;
 global using Bookmarx.Shared.v1.ThirdParty.Google.Interfaces;
 global using Bookmarx.Shared.v1.ThirdParty.Google.Models;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Http;
 global using Microsoft.Extensions.Options;
 global using Newtonsoft.Json;
