@@ -412,3 +412,4 @@ Thumbs.db
 **/appsettings.json
 **/appsettings.Staging.json
 **/appsettings.Production.json
+**/launchSettings.json

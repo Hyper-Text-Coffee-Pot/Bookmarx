@@ -124,25 +124,25 @@ internal class Program
 		// https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-6.0#servicefilterattribute
 		builder.Services.AddScoped<SubscriptionHeaderFilterService>();
 
-		//// Authorization settings
-		//// https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies?view=aspnetcore-6.0
-		//// [Authorize(Policy = PictyrsPolicy.ActiveSessionAuthorization)] - Add to any controller that should be protected by this policy
-		//builder.Services.AddAuthorization(options =>
-		//{
-		//	options.AddPolicy(PictyrsPolicy.ActiveSessionAuthorization, policy =>
-		//	{
-		//		policy.Requirements.Add(new AccessTokenRequirement());
-		//	});
-		//});
+		// Authorization settings
+		// https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies?view=aspnetcore-8.0
+		// [Authorize(Policy = ApiAuthPolicy.ActiveSessionAuthorization)] - Add to any controller that should be protected by this policy
+		builder.Services.AddAuthorization(options =>
+		{
+			options.AddPolicy(ApiAuthPolicy.ActiveSessionAuthorization, policy =>
+			{
+				policy.Requirements.Add(new AccessTokenRequirement());
+			});
+		});
 
-		//// Custom Claims with 3rd party auth providers (e.g. Google)
-		//// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/social/additional-claims?view=aspnetcore-6.0
-		//// Using Firebase Auth for authentication provider.
-		//// https://firebase.google.com/docs/admin/setup
-		//FirebaseApp.Create(new AppOptions()
-		//{
-		//	Credential = GoogleCredential.GetApplicationDefault(),
-		//});
+		// Custom Claims with 3rd party auth providers (e.g. Google)
+		// https://learn.microsoft.com/en-us/aspnet/core/security/authentication/social/additional-claims?view=aspnetcore-6.0
+		// Using Firebase Auth for authentication provider.
+		// https://firebase.google.com/docs/admin/setup
+		FirebaseApp.Create(new AppOptions()
+		{
+			Credential = GoogleCredential.GetApplicationDefault(),
+		});
 	}
 
 	private static void RegisterCorsSettings(string MyAllowSpecificOrigins, WebApplicationBuilder builder)
