@@ -18,4 +18,6 @@ public class AppSettings
 	public Payments Payments { get; set; }
 
 	public PostMarkApp PostmarkApp { get; set; }
+
+	public Products Products { get; set; }
 }

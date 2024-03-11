@@ -1,13 +1,3 @@
-using Asp.Versioning;
-using Asp.Versioning.Conventions;
-using Bookmarx.API.v1.Extensions;
-using Bookmarx.Shared.v1.Configuration.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Net.Http.Headers;
-using Serilog;
-using Serilog.Events;
-using Stripe;
-
 internal class Program
 {
 	private static void Main(string[] args)
@@ -130,9 +120,9 @@ internal class Program
 		// https://stackoverflow.com/questions/59328439/error-while-validating-the-service-descriptor-servicetype-inewsrepository-life
 		builder.Services.AddTransient<IAuthorizationHandler, AuthHandler>();
 
-		//// Custom filter injection.
-		//// https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-6.0#servicefilterattribute
-		//builder.Services.AddScoped<SubscriptionHeaderFilterService>();
+		// Custom filter injection.
+		// https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-6.0#servicefilterattribute
+		builder.Services.AddScoped<SubscriptionHeaderFilterService>();
 
 		//// Authorization settings
 		//// https://docs.microsoft.com/en-us/aspnet/core/security/authorization/policies?view=aspnetcore-6.0

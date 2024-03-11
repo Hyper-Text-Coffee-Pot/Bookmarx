@@ -1,9 +1,4 @@
-﻿using Bookmarx.Shared.v1.Identity.Interfaces;
-using Bookmarx.Shared.v1.Identity.Services;
-using Bookmarx.Shared.v1.ThirdParty.Google.Interfaces;
-using Bookmarx.Shared.v1.ThirdParty.Google.Services;
-
-namespace Bookmarx.API.v1.Extensions;
+﻿namespace Bookmarx.API.v1.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -18,6 +13,8 @@ public static class ServiceCollectionExtensions
 	{
 		services.AddScoped<ITokenValidatorService, GoogleFirebaseTokenValidatorService>();
 		services.AddScoped<IReCAPTCHAService, ReCAPTCHAService>();
+		services.AddScoped<ICurrentMemberService, CurrentMemberService>();
+		services.AddScoped<ISubscriptionValidationService, SubscriptionValidationService>();
 
 		return services;
 	}
