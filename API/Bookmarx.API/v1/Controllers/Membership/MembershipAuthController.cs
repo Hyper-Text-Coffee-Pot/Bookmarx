@@ -1,35 +1,29 @@
-﻿using Bookmarx.API.v1.Controllers.Membership.Models;
-using Bookmarx.Shared.v1.Identity.Models;
-using Bookmarx.Shared.v1.ThirdParty.Google.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Bookmarx.API.v1.Controllers.Membership;
+﻿namespace Bookmarx.API.v1.Controllers.Membership;
 
 [ApiController]
 [Route("v{version:apiVersion}/membership-auth")]
 public class MembershipAuthController : ControllerBase
 {
+	private readonly IMembershipAuthAppService _authAppService;
+
+	private readonly IMapper _mapper;
+
 	private readonly IReCAPTCHAService _reCAPTCHAService;
+
+	private readonly ITokenValidatorService _tokenValidatorService;
 
 	// TODO: Pickup here
 	public MembershipAuthController(
-
-	//IMembershipAuthAppService authAppService,
-	//IMapper mapper,
-	//ITokenValidatorService tokenValidatorService,
-	//IContactInvitationAppService contactInvitationAppService,
+	IMembershipAuthAppService authAppService,
+	IMapper mapper,
+	ITokenValidatorService tokenValidatorService,
 	IReCAPTCHAService reCAPTCHAService
-
-	//ISubscriptionValidationService subscriptionValidationService
 	)
 	{
-		//	this._authAppService = authAppService;
-		//	this._mapper = mapper;
-		//	this._tokenValidatorService = tokenValidatorService;
-		//	this._contactInvitationAppService = contactInvitationAppService;
+		this._authAppService = authAppService;
+		this._mapper = mapper;
+		this._tokenValidatorService = tokenValidatorService;
 		this._reCAPTCHAService = reCAPTCHAService;
-
-		//	this._subscriptionValidationService = subscriptionValidationService;
 	}
 
 	[HttpPost]
@@ -55,17 +49,17 @@ public class MembershipAuthController : ControllerBase
 			// Sanitize some stuff
 			memberAccountCreateRequest.EmailAddress = memberAccountCreateRequest.EmailAddress.Trim();
 
-			//		var newMember = this._mapper.Map<MemberAccountDto>(memberAccountCreateRequest);
+			var newMember = this._mapper.Map<MemberAccountDto>(memberAccountCreateRequest);
 
-			//		if (await this._tokenValidatorService.CheckTokenIsValidAndSetIdentityUser(memberAccountCreateRequest.AccessToken, memberAccountCreateRequest.APID))
-			//		{
-			//			// Finally, create the account
-			//			var newMemberAccount = await this._authAppService.CreateNewMemberAccountMember(newMember, memberAccountCreateRequest.IG);
-			//			response.OGID = newMemberAccount.AccountGuid.ToString();
+			if (await this._tokenValidatorService.CheckTokenIsValidAndSetIdentityUser(memberAccountCreateRequest.AccessToken, memberAccountCreateRequest.APID))
+			{
+				// Finally, create the account
+				var newMemberAccount = await this._authAppService.CreateNewMemberAccountMember(newMember, memberAccountCreateRequest.IG);
+				response.OGID = newMemberAccount.AccountGuid.ToString();
 
-			//			// To start every user will have 30 days before they will be asked to select a subscription.
-			//			response.IsSubscriptionValid = true;
-			//		}
+				// To start every user will have 30 days before they will be asked to select a subscription.
+				response.IsSubscriptionValid = true;
+			}
 		}
 
 		return response;

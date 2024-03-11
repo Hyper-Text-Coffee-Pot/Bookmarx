@@ -24,12 +24,6 @@ internal class Program
 				.ReadFrom.Configuration(context.Configuration)
 				.ReadFrom.Services(services));
 
-			// Mask the server header.
-			builder.WebHost.UseKestrel(options =>
-			{
-				options.AddServerHeader = false;
-			});
-
 			// Default ASP.NET DI - Register all custom dependencies in a single location.
 			builder.Services.RegisterCustomDependencies(builder.Configuration);
 

@@ -15,6 +15,9 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<IReCAPTCHAService, ReCAPTCHAService>();
 		services.AddScoped<ICurrentMemberService, CurrentMemberService>();
 		services.AddScoped<ISubscriptionValidationService, SubscriptionValidationService>();
+		services.AddScoped<IMembershipAuthAppService, MembershipAuthAppService>();
+		services.AddScoped<IOrderService, OrderService>();
+		services.AddScoped<ISubscriptionService, Shared.v1.Sales.Services.SubscriptionService>();
 
 		return services;
 	}
