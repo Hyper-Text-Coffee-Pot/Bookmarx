@@ -14,7 +14,6 @@ public class MembershipAuthController : ControllerBase
 
 	private readonly ITokenValidatorService _tokenValidatorService;
 
-	// TODO: Pickup here
 	public MembershipAuthController(
 	IMembershipAuthAppService authAppService,
 	IMapper mapper,
