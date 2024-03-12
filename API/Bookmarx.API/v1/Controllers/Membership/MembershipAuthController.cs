@@ -57,7 +57,7 @@ public class MembershipAuthController : ControllerBase
 			if (await this._tokenValidatorService.CheckTokenIsValidAndSetIdentityUser(memberAccountCreateRequest.AccessToken, memberAccountCreateRequest.APID))
 			{
 				// Finally, create the account
-				var newMemberAccount = await this._authAppService.CreateNewMemberAccountMember(newMember, memberAccountCreateRequest.IG);
+				var newMemberAccount = await this._authAppService.CreateNewMemberAccountMember(newMember);
 				response.MemberAccountID = newMemberAccount.MemberAccountID.ToString();
 
 				// To start every user will have 30 days before they will be asked to select a subscription.

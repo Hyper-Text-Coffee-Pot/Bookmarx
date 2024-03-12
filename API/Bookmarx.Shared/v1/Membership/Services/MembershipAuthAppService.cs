@@ -12,30 +12,23 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 
 	private readonly IOrderService _orderService;
 
-	//private readonly PictyrsDbContext _pictyrsDbContext;
-
 	private readonly ISubscriptionService _subscriptionService;
 
 	public MembershipAuthAppService(
-
-		//PictyrsDbContext pictyrsDbContext,
 		IMapper _mapper,
 		IOrderService orderService,
-
 		ISubscriptionService subscriptionService,
 		ILogger<MembershipAuthAppService> logger,
 		FirestoreProvider firestoreProvider)
 	{
-		//this._pictyrsDbContext = pictyrsDbContext;
 		this._mapper = _mapper;
 		this._orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-
 		this._subscriptionService = subscriptionService ?? throw new ArgumentNullException(nameof(subscriptionService));
 		this._logger = logger;
 		this._firestoreProvider = firestoreProvider;
 	}
 
-	public async Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto memberAccount, string? invitationGuid)
+	public async Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto memberAccount, int retryCount = 0)
 	{
 		// Being very thorough about sanitizing
 		memberAccount.EmailAddress = memberAccount.EmailAddress.Trim();
@@ -47,27 +40,34 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 			DateTime.UtcNow,
 			memberAccount.LastName);
 
-		// TODO: Wire this up
-		//using var dbTransaction = await this._pictyrsDbContext.Database.BeginTransactionAsync();
-
 		try
 		{
-			// Do a check for any potential existing member with this email
-			MemberAccount existingMemberAccount = await this._firestoreProvider.Get<MemberAccount>(newMemberAccount.Id, CancellationToken.None);
+			// Do a check for any potential existing member with this id.
+			MemberAccount existingMemberAccountById = await this._firestoreProvider.Get<MemberAccount>(newMemberAccount.Id, CancellationToken.None);
+			var existingMemberAccountByEmail = await this._firestoreProvider.WhereEqualTo<MemberAccount>(nameof(MemberAccount.EmailAddress), newMemberAccount.EmailAddress, CancellationToken.None);
 
 			// TODO: Need to handle the scenario where a member account already exists.
-			if (existingMemberAccount == null)
+			if (existingMemberAccountById != null)
 			{
-				await this._firestoreProvider.Create(newMemberAccount, CancellationToken.None);
-
+				throw new Exception($"Member account with id {newMemberAccount.Id} already exists.");
+			}
+			else if (existingMemberAccountByEmail.Any())
+			{
+				throw new Exception($"Member account already exists with email addres: {newMemberAccount.EmailAddress}");
+			}
+			else
+			{
+				// TODO: Create order and subscriptions here.
 				// Finally, create a new order and subscription for the new member!
 				//Order newMemberOrder = await this._orderService.SaveNewAccountFreeTrialOrder(newMemberAccount.MemberAccountID);
 				//await this._subscriptionService.SaveAccountFreeTrialSubscription(newMemberAccount.MemberAccountID);
+
+				await this._firestoreProvider.Create(newMemberAccount, CancellationToken.None);
 			}
 		}
 		catch (Exception ex)
 		{
-			// TODO: Add logging here.
+			this._logger.LogError(ex, "Failed to create new member account.");
 		}
 
 		// Send back the AccountGuid because we'll validate that the save worked

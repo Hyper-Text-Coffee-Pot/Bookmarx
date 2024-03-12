@@ -7,7 +7,7 @@ public interface IMembershipAuthAppService
 	/// </summary>
 	/// <param name="member"></param>
 	/// <returns>The MemberAccount of the new account member to verify that it worked.</returns>
-	Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto member, string? invitationGuid);
+	Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto member, int retryCount = 0);
 
 	List<MemberAccount> GetMembers();
 
