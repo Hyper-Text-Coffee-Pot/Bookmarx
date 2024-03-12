@@ -14,7 +14,7 @@ public class SubscriptionValidationService : ISubscriptionValidationService
 		bool subscriptionIsValid = false;
 
 		// Giving a trial window (see appsettings) after initial signup before we ask a user to select a subscription plan.
-		if ((DateTime.UtcNow - memberAccount.CreatedDateTimeUTC).TotalDays <= Convert.ToInt32(this._appSettings.Products.SubscriptionFreeTrialDays))
+		if ((DateTime.UtcNow - Convert.ToDateTime(memberAccount.CreatedDateTimeUTC)).TotalDays <= Convert.ToInt32(this._appSettings.Products.SubscriptionFreeTrialDays))
 		{
 			subscriptionIsValid = true;
 		}

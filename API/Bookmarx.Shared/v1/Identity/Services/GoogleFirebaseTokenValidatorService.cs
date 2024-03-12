@@ -131,7 +131,7 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 							}
 
 							// Pictyrs AccountGuid
-							claims.Add(new Claim("AccountGuid", member.AccountGuid.ToString(), ClaimValueTypes.String, "https://pictyrs.app"));
+							claims.Add(new Claim("AccountGuid", member.MemberAccountID.ToString(), ClaimValueTypes.String, "https://pictyrs.app"));
 
 							// Pictyrs Has Valid Subscription
 							var hasActiveSubscription = this._subscriptionValidationService.ValidateSubscription(member);

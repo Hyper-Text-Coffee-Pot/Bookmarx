@@ -58,7 +58,7 @@ public class MembershipAuthController : ControllerBase
 			{
 				// Finally, create the account
 				var newMemberAccount = await this._authAppService.CreateNewMemberAccountMember(newMember, memberAccountCreateRequest.IG);
-				response.OGID = newMemberAccount.AccountGuid.ToString();
+				response.MemberAccountID = newMemberAccount.MemberAccountID.ToString();
 
 				// To start every user will have 30 days before they will be asked to select a subscription.
 				response.IsSubscriptionValid = true;
@@ -92,10 +92,9 @@ public class MembershipAuthController : ControllerBase
 			{
 				var signedInMemberAccount = this._authAppService.SignInWithEmailAndPassword(authProviderUID);
 
-				if (signedInMemberAccount != null
-					&& signedInMemberAccount?.MemberAccountID > 0)
+				if (signedInMemberAccount != null)
 				{
-					identityActionResponseDto.OGID = signedInMemberAccount.AccountGuid.ToString();
+					identityActionResponseDto.MemberAccountID = signedInMemberAccount.MemberAccountID;
 
 					// TODO: Swap this out for the new identity user values.
 					identityActionResponseDto.IsSubscriptionValid = this._subscriptionValidationService.ValidateSubscription(signedInMemberAccount);
@@ -132,10 +131,9 @@ public class MembershipAuthController : ControllerBase
 			{
 				// Finally, create the account or just update some information if it already exists.
 				var signedInMemberAccount = await this._authAppService.SignInWithGoogle(newMember);
-				if (signedInMemberAccount != null
-					&& signedInMemberAccount?.MemberAccountID > 0)
+				if (signedInMemberAccount != null)
 				{
-					identityActionResponseDto.OGID = signedInMemberAccount.AccountGuid.ToString();
+					identityActionResponseDto.MemberAccountID = signedInMemberAccount.MemberAccountID;
 					identityActionResponseDto.IsSubscriptionValid = this._subscriptionValidationService.ValidateSubscription(signedInMemberAccount);
 				}
 			}

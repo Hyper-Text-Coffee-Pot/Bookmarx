@@ -1,3 +1,6 @@
+using Bookmarx.Data.v1.Providers;
+using Google.Cloud.Firestore;
+
 internal class Program
 {
 	private static void Main(string[] args)
@@ -29,6 +32,15 @@ internal class Program
 
 			// Register automapper.
 			builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+			// Register the FirestoreProvider as a singleton.
+			string firebaseProjectId = builder.Configuration.GetValue<string>("GoogleAPIs:FirebaseProjectId");
+			builder.Services.AddSingleton(_ => new FirestoreProvider(
+				new FirestoreDbBuilder
+				{
+					ProjectId = firebaseProjectId,
+				}.Build()
+			));
 
 			// Set the global Stripe payments Standard Secret API Key (from appsettings).
 			StripeConfiguration.ApiKey = builder.Configuration.GetValue<string>("Payments:StripeAPIKeys:StandardSecretKey");
