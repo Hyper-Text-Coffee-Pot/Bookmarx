@@ -42,16 +42,10 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 
 		try
 		{
-			// Do a check for any potential existing member with this id.
-			MemberAccount existingMemberAccountById = await this._firestoreProvider.Get<MemberAccount>(newMemberAccount.Id, CancellationToken.None);
+			// Do a check for any potential existing member with this email.
 			var existingMemberAccountByEmail = await this._firestoreProvider.WhereEqualTo<MemberAccount>(nameof(MemberAccount.EmailAddress), newMemberAccount.EmailAddress, CancellationToken.None);
 
-			// TODO: Need to handle the scenario where a member account already exists.
-			if (existingMemberAccountById != null)
-			{
-				throw new Exception($"Member account with id {newMemberAccount.Id} already exists.");
-			}
-			else if (existingMemberAccountByEmail.Any())
+			if (existingMemberAccountByEmail.Any())
 			{
 				throw new Exception($"Member account already exists with email addres: {newMemberAccount.EmailAddress}");
 			}
@@ -59,8 +53,11 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 			{
 				// TODO: Create order and subscriptions here.
 				// Finally, create a new order and subscription for the new member!
-				//Order newMemberOrder = await this._orderService.SaveNewAccountFreeTrialOrder(newMemberAccount.MemberAccountID);
-				//await this._subscriptionService.SaveAccountFreeTrialSubscription(newMemberAccount.MemberAccountID);
+				Order newMemberOrder = await this._orderService.SaveNewAccountFreeTrialOrder(newMemberAccount.MemberAccountID);
+				newMemberAccount.Orders.Add(newMemberOrder);
+
+				Subscription subscription = await this._subscriptionService.CreateAccountFreeTrialSubscription();
+				newMemberAccount.Subscriptions.Add(subscription);
 
 				await this._firestoreProvider.Create(newMemberAccount, CancellationToken.None);
 			}
@@ -93,7 +90,7 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 
 		if (!string.IsNullOrEmpty(currentMember?.MemberAccountID))
 		{
-			currentMember.LastLoginDateTimeUTC = DateTime.UtcNow.ToString("O");
+			currentMember.LastLoginDateTimeUTC = DateTime.UtcNow;
 
 			//this._pictyrsDbContext.SaveChanges();
 			memberAccount = currentMember;

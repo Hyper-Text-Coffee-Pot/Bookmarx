@@ -23,6 +23,13 @@ public class FirestoreProvider
 		await document.SetAsync(entity, cancellationToken: ct);
 	}
 
+	/// <summary>
+	/// The Create method will throw an exception if the document already exists.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="entity"></param>
+	/// <param name="ct"></param>
+	/// <returns></returns>
 	public async Task Create<T>(T entity, CancellationToken ct) where T : IFirebaseEntity
 	{
 		var document = _fireStoreDb.Collection(typeof(T).Name).Document(entity.Id);

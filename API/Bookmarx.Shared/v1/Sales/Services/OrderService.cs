@@ -4,29 +4,21 @@ public class OrderService : IOrderService
 {
 	private readonly ILogger<OrderService> _logger;
 
-	//private readonly PictyrsDbContext _pictyrsDbContext;
-
 	public OrderService(
-		//PictyrsDbContext pictyrsDbContext, 
 		ILogger<OrderService> logger)
 	{
-		//this._pictyrsDbContext = pictyrsDbContext ?? throw new ArgumentNullException(nameof(pictyrsDbContext));
 		this._logger = logger;
 	}
 
-	public async Task<Order> SaveNewAccountFreeTrialOrder(int newMemberAccountID)
+	public async Task<Order> SaveNewAccountFreeTrialOrder(string newMemberAccountID)
 	{
-		Guid orderGuid = Guid.NewGuid();
-		Order freeTrialOrder = new Order(true, newMemberAccountID, DateTime.UtcNow, orderGuid);
+		string orderGuid = Guid.NewGuid().ToString();
+		Order freeTrialOrder = new Order(true, DateTime.UtcNow, orderGuid);
 
 		try
 		{
 			OrderProduct freeTrialOrderProduct = new OrderProduct("FREETRIAL", 1);
 			freeTrialOrder.AddOrderProduct(freeTrialOrderProduct);
-
-			// TODO: Wire this up
-			//await this._pictyrsDbContext.Orders.AddAsync(freeTrialOrder);
-			//await this._pictyrsDbContext.SaveChangesAsync();
 		}
 		catch (Exception ex)
 		{
@@ -34,17 +26,5 @@ public class OrderService : IOrderService
 		}
 
 		return freeTrialOrder;
-	}
-
-	public async Task<Order> SaveOrder(Order order)
-	{
-		if (order != null)
-		{
-			// TODO: Wire this up
-			//await this._pictyrsDbContext.Orders.AddAsync(order);
-			//await this._pictyrsDbContext.SaveChangesAsync();
-		}
-
-		return order;
 	}
 }

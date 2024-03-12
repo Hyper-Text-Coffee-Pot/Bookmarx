@@ -1,33 +1,33 @@
-﻿namespace Bookmarx.Shared.v1.Sales.Entities;
+﻿using Google.Cloud.Firestore;
 
+namespace Bookmarx.Shared.v1.Sales.Entities;
+
+[FirestoreData]
 public class Order
 {
 	public Order(
 		bool emailConfirmationSent,
-		int memberAccountID,
 		DateTime orderDateTime,
-		Guid orderGuid)
+		string orderGuid)
 	{
 		this.EmailConfirmationSent = emailConfirmationSent;
-		this.MemberAccountID = memberAccountID;
 		this.OrderDateTimeUTC = orderDateTime;
 		this.OrderGuid = orderGuid;
 	}
 
 	private Order()
 	{
-		// Needed for EF
+		// Needed for Firebase
 	}
 
+	[FirestoreProperty]
 	public bool EmailConfirmationSent { get; private set; }
 
-	public int MemberAccountID { get; private set; }
-
+	[FirestoreProperty]
 	public DateTime OrderDateTimeUTC { get; private set; }
 
-	public Guid OrderGuid { get; private set; }
-
-	public int OrderID { get; private set; }
+	[FirestoreProperty]
+	public string OrderGuid { get; private set; }
 
 	public List<OrderProduct> OrderProducts { get; private set; } = new List<OrderProduct>();
 

@@ -21,10 +21,10 @@ public class MemberAccount : IFirebaseEntity
 	{
 		this.Id = Guid.NewGuid().ToString("N");
 		this.AuthProviderUID = authProviderUID;
-		this.CreatedDateTimeUTC = createdDateTimeUTC.ToString("O");
+		this.CreatedDateTimeUTC = createdDateTimeUTC;
 		this.EmailAddress = emailAddress;
 		this.FirstName = firstName;
-		this.LastLoginDateTimeUTC = lastLoginDateTimeUTC.ToString("O");
+		this.LastLoginDateTimeUTC = lastLoginDateTimeUTC;
 		this.LastName = lastName;
 	}
 
@@ -35,7 +35,7 @@ public class MemberAccount : IFirebaseEntity
 	/// Convert using the {DateTime:O} when setting to append timezone info for UTC and ISO-8601.
 	/// </summary>
 	[FirestoreProperty]
-	public string CreatedDateTimeUTC { get; set; }
+	public DateTime CreatedDateTimeUTC { get; set; }
 
 	[FirestoreProperty]
 	public string EmailAddress { get; set; }
@@ -59,7 +59,7 @@ public class MemberAccount : IFirebaseEntity
 	/// Convert using the {DateTime:O} when setting to append timezone info for UTC and ISO-8601.
 	/// </summary>
 	[FirestoreProperty]
-	public string? LastLoginDateTimeUTC { get; set; }
+	public DateTime? LastLoginDateTimeUTC { get; set; }
 
 	[FirestoreProperty]
 	public string? LastName { get; set; }
@@ -73,7 +73,22 @@ public class MemberAccount : IFirebaseEntity
 		}
 	}
 
-	public List<MemberThirdPartyProviderAccount> MemberThirdPartyProviders { get; set; } = new List<MemberThirdPartyProviderAccount>();
+	[FirestoreProperty]
+	public List<MemberThirdPartyProviderAccount> MemberThirdPartyProviders { get; private set; } = new List<MemberThirdPartyProviderAccount>();
 
-	public List<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+	[FirestoreProperty]
+	public List<Order> Orders { get; private set; } = new List<Order>();
+
+	[FirestoreProperty]
+	public List<Subscription> Subscriptions { get; private set; } = new List<Subscription>();
+
+	public void AddOrder(Order order)
+	{
+		this.Orders.Add(order);
+	}
+
+	public void AddSubscription(Subscription subscription)
+	{
+		this.Subscriptions.Add(subscription);
+	}
 }

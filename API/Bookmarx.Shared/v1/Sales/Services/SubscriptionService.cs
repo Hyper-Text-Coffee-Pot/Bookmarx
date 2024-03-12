@@ -4,46 +4,19 @@ public class SubscriptionService : ISubscriptionService
 {
 	private readonly ILogger<SubscriptionService> _logger;
 
-	//private readonly PictyrsDbContext _pictyrsDbContext;
-
 	public SubscriptionService(
-
-		//PictyrsDbContext pictyrsDbContext,
 		ILogger<SubscriptionService> logger)
 	{
-		//this._pictyrsDbContext = pictyrsDbContext ?? throw new ArgumentNullException(nameof(pictyrsDbContext));
 		this._logger = logger;
 	}
 
-	public async Task<Subscription> SaveAccountFreeTrialSubscription(int memberAccountID)
+	public async Task<Subscription> CreateAccountFreeTrialSubscription()
 	{
 		var dummyProviderSubscriptionID = this.GenerateFreeProviderSubscriptionID();
-		Subscription freeTrialSubscription = new Subscription(memberAccountID, DateTime.UtcNow, "FREETRIAL", dummyProviderSubscriptionID);
 
-		try
-		{
-			// TODO: Wire this up
-			//await this._pictyrsDbContext.Subscriptions.AddAsync(freeTrialSubscription);
-			//await this._pictyrsDbContext.SaveChangesAsync();
-		}
-		catch (Exception ex)
-		{
-			this._logger.LogError(ex, "Failed to save new account free trial subscription.");
-		}
+		Subscription freeTrialSubscription = new Subscription(DateTime.UtcNow, "FREETRIAL", dummyProviderSubscriptionID);
 
 		return freeTrialSubscription;
-	}
-
-	public async Task<Subscription> SaveSubscription(Subscription subscription)
-	{
-		if (subscription != null)
-		{
-			// TODO: Wire this up
-			//this._pictyrsDbContext.Subscriptions.Add(subscription);
-			//await this._pictyrsDbContext.SaveChangesAsync();
-		}
-
-		return subscription;
 	}
 
 	/// <summary>

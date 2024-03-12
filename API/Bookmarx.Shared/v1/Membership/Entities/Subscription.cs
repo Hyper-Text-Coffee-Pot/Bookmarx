@@ -1,14 +1,15 @@
-﻿namespace Bookmarx.Shared.v1.Membership.Entities;
+﻿using Google.Cloud.Firestore;
 
+namespace Bookmarx.Shared.v1.Membership.Entities;
+
+[FirestoreData]
 public class Subscription
 {
 	public Subscription(
-		int memberAccountID,
 		DateTime createdDateTime,
 		string subscriptionName,
 		string providerSubscriptionID)
 	{
-		this.MemberAccountID = memberAccountID;
 		this.SetStartAndEndDate(createdDateTime);
 		this.SubscriptionTypeID = this.ConvertSubscriptionNameToType(subscriptionName);
 		this.ProviderSubscriptionID = providerSubscriptionID;
@@ -19,19 +20,21 @@ public class Subscription
 		// Needed for EF
 	}
 
+	[FirestoreProperty]
 	public DateTime ActivatedDateTimeUTC { get; private set; }
 
+	[FirestoreProperty]
 	public DateTime? CanceledDateTimeUTC { get; private set; }
 
+	[FirestoreProperty]
 	public DateTime ExpirationDateTimeUTC { get; private set; }
-
-	public int MemberAccountID { get; private set; }
 
 	/// <summary>
 	/// The subscription ID associated with this checkout.session.completed event.
 	/// Looks like sub_lkl2j34lk23j43lj and helps to associate internal subscription
 	/// records with Stripes records.
 	/// </summary>
+	[FirestoreProperty]
 	public string ProviderSubscriptionID { get; private set; }
 
 	public int SubscriptionDaysRemaining
@@ -45,8 +48,7 @@ public class Subscription
 		}
 	}
 
-	public int SubscriptionID { get; private set; }
-
+	[FirestoreProperty]
 	public SubscriptionType SubscriptionTypeID { get; private set; }
 
 	/// <summary>
