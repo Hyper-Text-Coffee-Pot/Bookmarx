@@ -5,6 +5,7 @@ import { BasePageDirective } from '../shared/base-page.directive';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
+import { IBookmarks } from 'src/app/domain/web-api/chrome/models/bookmarks';
 
 @Component({
 	selector: 'app-home',
@@ -46,7 +47,7 @@ export class HomeComponent extends BasePageDirective
 		this._authService.SignOut();
 	}
 
-	private TraverseBookmarks(primaryBookmarkFolders: any, syncedBookmarks: BookmarkCollection): void
+	private TraverseBookmarks(primaryBookmarkFolders: IBookmarks, syncedBookmarks: BookmarkCollection): void
 	{
 		for (let i = 0; i < primaryBookmarkFolders.length; i++)
 		{
@@ -62,7 +63,7 @@ export class HomeComponent extends BasePageDirective
 				// It's a folder, need to go deeper
 				let bookmarkCollection = new BookmarkCollection(i, primaryBookmarkFolders[i].title);
 				syncedBookmarks.AddBookmarkCollection(bookmarkCollection);
-				this.TraverseBookmarks(primaryBookmarkFolders[i].children, bookmarkCollection);
+				this.TraverseBookmarks(primaryBookmarkFolders[i].children as IBookmarks, bookmarkCollection);
 			}
 		}
 	}
