@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, retry } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { MemberAccountCreateRequest } from '../models/member-account-create-request';
+import { SignInRequestDto } from '../models/sign-in-request-dto';
 
 @Injectable({
 	providedIn: 'root'
@@ -36,7 +37,12 @@ export class MembershipAuthService
 	 */
 	public SignInWithEmailAndPassword(authToken: string, authProviderUID: string, reCAPTCHAToken: string): Observable<any>
 	{
-		return this._httpClient.post(`${ environment.apiUrlV1 }/membership-auth/sign-in-with-email-and-password?authToken=${ authToken }&authProviderUID=${ authProviderUID }&reCAPTCHAToken=${ reCAPTCHAToken }`, null,)
+		let signInRequestDto = new SignInRequestDto();
+		signInRequestDto.AuthToken = authToken;
+		signInRequestDto.AuthProviderUID = authProviderUID;
+		signInRequestDto.ReCAPTCHAToken = reCAPTCHAToken;
+
+		return this._httpClient.post(`${ environment.apiUrlV1 }/membership-auth/sign-in-with-email-and-password`, signInRequestDto)
 			.pipe(
 				retry(3)
 			);

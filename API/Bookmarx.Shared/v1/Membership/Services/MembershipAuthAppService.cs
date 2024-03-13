@@ -28,22 +28,23 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 		this._firestoreProvider = firestoreProvider;
 	}
 
-	public async Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto memberAccount, int retryCount = 0)
+	public async Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto memberAccountDto)
 	{
 		// Being very thorough about sanitizing
-		memberAccount.EmailAddress = memberAccount.EmailAddress.Trim();
+		memberAccountDto.EmailAddress = memberAccountDto.EmailAddress.Trim();
 		MemberAccount newMemberAccount = new MemberAccount(
-			memberAccount.AuthProviderUID,
+			memberAccountDto.AuthProviderUID,
 			DateTime.UtcNow,
-			memberAccount.EmailAddress,
-			memberAccount.FirstName,
+			memberAccountDto.EmailAddress,
+			memberAccountDto.FirstName,
 			DateTime.UtcNow,
-			memberAccount.LastName);
+			memberAccountDto.LastName);
 
 		try
 		{
 			// Do a check for any potential existing member with this email.
-			var existingMemberAccountByEmail = await this._firestoreProvider.WhereEqualTo<MemberAccount>(nameof(MemberAccount.EmailAddress), newMemberAccount.EmailAddress, CancellationToken.None);
+			var existingMemberAccountByEmail = await this._firestoreProvider
+				.WhereEqualTo<MemberAccount>(nameof(MemberAccount.EmailAddress), newMemberAccount.EmailAddress, CancellationToken.None);
 
 			if (existingMemberAccountByEmail.Any())
 			{
@@ -71,29 +72,22 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 		return newMemberAccount;
 	}
 
-	public List<MemberAccount> GetMembers()
+	public async Task<MemberAccount?> SignInWithEmailAndPassword(string authProviderUID)
 	{
-		// TODO: Wire this up
-		//return this._pictyrsDbContext.MemberAccounts.ToList();
-		return new List<MemberAccount>();
-	}
+		MemberAccount? memberAccount = new MemberAccount();
 
-	public MemberAccount SignInWithEmailAndPassword(string authProviderUID)
-	{
-		MemberAccount memberAccount = new MemberAccount();
+		var currentMember = await this._firestoreProvider
+			.WhereEqualTo<MemberAccount>(nameof(MemberAccount.AuthProviderUID), authProviderUID, CancellationToken.None);
 
-		MemberAccount currentMember = null;
-
-		//var currentMember = this._pictyrsDbContext.MemberAccounts
-		//	.Include(ma => ma.Subscriptions)
-		//	.SingleOrDefault(ma => ma.AuthProviderUID == authProviderUID);
-
-		if (!string.IsNullOrEmpty(currentMember?.MemberAccountID))
+		if (currentMember.Any())
 		{
-			currentMember.LastLoginDateTimeUTC = DateTime.UtcNow;
+			memberAccount = currentMember.FirstOrDefault();
 
-			//this._pictyrsDbContext.SaveChanges();
-			memberAccount = currentMember;
+			if (memberAccount != null)
+			{
+				memberAccount.UpdateLastLoginDateTime();
+				await this._firestoreProvider.AddOrUpdateById(memberAccount, CancellationToken.None);
+			}
 		}
 
 		return memberAccount;
@@ -101,41 +95,28 @@ public class MembershipAuthAppService : IMembershipAuthAppService
 
 	public async Task<MemberAccount> SignInWithGoogle(MemberAccountDto memberAccountDto)
 	{
-		var memberAccount = this._mapper.Map<MemberAccount>(memberAccountDto);
+		var memberAccount = new MemberAccount();
 
 		try
 		{
-			MemberAccount existingMember = null;
+			var existingMember = await this._firestoreProvider
+				.WhereEqualTo<MemberAccount>(nameof(MemberAccount.AuthProviderUID), memberAccountDto.AuthProviderUID, CancellationToken.None);
 
-			//var existingMember = this._pictyrsDbContext.MemberAccounts
-			//	.Include(ma => ma.Subscriptions)
-			//	.SingleOrDefault(member => member.AuthProviderUID == memberAccount.AuthProviderUID);
+			if (existingMember.Any())
+			{
+				memberAccount = existingMember.FirstOrDefault();
 
-			//if (existingMember?.MemberAccountID > 0)
-			//{
-			//	// If an account exists then just update the login details
-			//	existingMember.LastLoginDateTimeUTC = DateTime.UtcNow;
+				// If an account exists then just update the login details
+				memberAccount.UpdateLastLoginDateTime();
 
-			//	//await this._pictyrsDbContext.SaveChangesAsync();
-
-			//	memberAccount = existingMember;
-			//}
-			//else
-			//{
-			//	// If no account exists then make one
-			//	// Upon creation setup the date time here cuz db is goofy
-			//	var dateTimeUTCNow = DateTime.UtcNow;
-			//	memberAccount.CreatedDateTimeUTC = dateTimeUTCNow;
-			//	memberAccount.LastLoginDateTimeUTC = dateTimeUTCNow;
-
-			//	//this._pictyrsDbContext.MemberAccounts.Add(memberAccount);
-
-			//	//await this._pictyrsDbContext.SaveChangesAsync();
-
-			//	// Finally, create a new order and subscription for the new member!
-			//	Order newMemberOrder = await this._orderService.SaveNewAccountFreeTrialOrder(memberAccount.MemberAccountID);
-			//	await this._subscriptionService.SaveAccountFreeTrialSubscription(memberAccount.MemberAccountID);
-			//}
+				//await this._pictyrsDbContext.SaveChangesAsync();
+				await this._firestoreProvider.AddOrUpdateById(memberAccount, CancellationToken.None);
+			}
+			else
+			{
+				// If no account exists then make one
+				memberAccount = await this.CreateNewMemberAccountMember(memberAccountDto);
+			}
 		}
 		catch (Exception ex)
 		{

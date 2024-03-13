@@ -70,7 +70,7 @@ public class MembershipAuthController : ControllerBase
 
 	[HttpPost]
 	[Route("sign-in-with-email-and-password")]
-	public async Task<IdentityActionResponseDto> SignInWithEmailAndPassword(string authToken, string authProviderUID, string reCAPTCHAToken)
+	public async Task<IdentityActionResponseDto> SignInWithEmailAndPassword([FromBody] SignInRequestDto signInRequestDto)
 	{
 		IdentityActionResponseDto identityActionResponseDto = new IdentityActionResponseDto();
 
@@ -78,23 +78,23 @@ public class MembershipAuthController : ControllerBase
 		{
 			// Do something with this at a later point
 			// Wrapping it in a try catch cuz I don't want the rest to fail
-			var siteVerifyResponse = await this._reCAPTCHAService.VerifyReCAPTCHAToken(reCAPTCHAToken);
+			var siteVerifyResponse = await this._reCAPTCHAService.VerifyReCAPTCHAToken(signInRequestDto.ReCAPTCHAToken);
 		}
 		catch (Exception ex)
 		{
 			// Do nothing for now
 		}
 
-		if (!string.IsNullOrEmpty(authToken) && !string.IsNullOrEmpty(authProviderUID))
+		if (!string.IsNullOrEmpty(signInRequestDto.AuthToken) && !string.IsNullOrEmpty(signInRequestDto.AuthProviderUID))
 		{
 			// Validate the token before updating the last login details
-			if (await this._tokenValidatorService.CheckTokenIsValidAndSetIdentityUser(authToken, authProviderUID))
+			if (await this._tokenValidatorService.CheckTokenIsValidAndSetIdentityUser(signInRequestDto.AuthToken, signInRequestDto.AuthProviderUID))
 			{
-				var signedInMemberAccount = this._authAppService.SignInWithEmailAndPassword(authProviderUID);
+				var signedInMemberAccount = await this._authAppService.SignInWithEmailAndPassword(signInRequestDto.AuthProviderUID);
 
 				if (signedInMemberAccount != null)
 				{
-					identityActionResponseDto.MemberAccountID = signedInMemberAccount.MemberAccountID;
+					identityActionResponseDto.MemberAccountID = signedInMemberAccount?.MemberAccountID;
 
 					// TODO: Swap this out for the new identity user values.
 					identityActionResponseDto.IsSubscriptionValid = this._subscriptionValidationService.ValidateSubscription(signedInMemberAccount);

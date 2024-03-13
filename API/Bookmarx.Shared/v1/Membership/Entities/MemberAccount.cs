@@ -53,6 +53,7 @@ public class MemberAccount : IFirebaseEntity
 		private set { }
 	}
 
+	[FirestoreProperty]
 	public string Id { get; set; }
 
 	/// <summary>
@@ -90,5 +91,10 @@ public class MemberAccount : IFirebaseEntity
 	public void AddSubscription(Subscription subscription)
 	{
 		this.Subscriptions.Add(subscription);
+	}
+
+	public void UpdateLastLoginDateTime()
+	{
+		this.LastLoginDateTimeUTC = DateTime.UtcNow;
 	}
 }

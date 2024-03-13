@@ -17,7 +17,7 @@ public class FirestoreProvider
 		_fireStoreDb = fireStoreDb;
 	}
 
-	public async Task AddOrUpdate<T>(T entity, CancellationToken ct) where T : IFirebaseEntity
+	public async Task AddOrUpdateById<T>(T entity, CancellationToken ct) where T : IFirebaseEntity
 	{
 		var document = _fireStoreDb.Collection(typeof(T).Name).Document(entity.Id);
 		await document.SetAsync(entity, cancellationToken: ct);
