@@ -35,12 +35,13 @@ export class MembershipAuthService
 	 * @param memberGuid 
 	 * @returns a string
 	 */
-	public SignInWithEmailAndPassword(authToken: string, authProviderUID: string, reCAPTCHAToken: string): Observable<any>
+	// public SignInWithEmailAndPassword(authToken: string, authProviderUID: string, reCAPTCHAToken: string): Observable<any>
+	public SignInWithEmailAndPassword(authToken: string, authProviderUID: string): Observable<any>
 	{
 		let signInRequestDto = new SignInRequestDto();
 		signInRequestDto.AuthToken = authToken;
 		signInRequestDto.AuthProviderUID = authProviderUID;
-		signInRequestDto.ReCAPTCHAToken = reCAPTCHAToken;
+		// signInRequestDto.ReCAPTCHAToken = reCAPTCHAToken;
 
 		return this._httpClient.post(`${ environment.apiUrlV1 }/membership-auth/sign-in-with-email-and-password`, signInRequestDto)
 			.pipe(

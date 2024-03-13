@@ -6,5 +6,5 @@ public class SignInRequestDto
 
 	public string AuthToken { get; set; }
 
-	public string ReCAPTCHAToken { get; set; }
+	//public string ReCAPTCHAToken { get; set; }
 }

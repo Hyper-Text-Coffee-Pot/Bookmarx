@@ -1,5 +1,6 @@
 using Bookmarx.Data.v1.Providers;
 using Google.Cloud.Firestore;
+using Google.Protobuf;
 
 internal class Program
 {
@@ -161,6 +162,7 @@ internal class Program
 			{
 				options.WithOrigins("http://localhost:4200",
 									"https://localhost:4200",
+									"chrome-extension://kgcnaeaihpjkongkfpfmegagdfplklhe",
 									"https://a.stripecdn.com", // All potential stripe FQDNs
 									"https://api.stripe.com",
 									"https://atlas.stripe.com",

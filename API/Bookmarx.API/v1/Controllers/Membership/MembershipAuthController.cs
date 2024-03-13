@@ -74,16 +74,16 @@ public class MembershipAuthController : ControllerBase
 	{
 		IdentityActionResponseDto identityActionResponseDto = new IdentityActionResponseDto();
 
-		try
-		{
-			// Do something with this at a later point
-			// Wrapping it in a try catch cuz I don't want the rest to fail
-			var siteVerifyResponse = await this._reCAPTCHAService.VerifyReCAPTCHAToken(signInRequestDto.ReCAPTCHAToken);
-		}
-		catch (Exception ex)
-		{
-			// Do nothing for now
-		}
+		//try
+		//{
+		//	// Do something with this at a later point
+		//	// Wrapping it in a try catch cuz I don't want the rest to fail
+		//	var siteVerifyResponse = await this._reCAPTCHAService.VerifyReCAPTCHAToken(signInRequestDto.ReCAPTCHAToken);
+		//}
+		//catch (Exception ex)
+		//{
+		//	// Do nothing for now
+		//}
 
 		if (!string.IsNullOrEmpty(signInRequestDto.AuthToken) && !string.IsNullOrEmpty(signInRequestDto.AuthProviderUID))
 		{

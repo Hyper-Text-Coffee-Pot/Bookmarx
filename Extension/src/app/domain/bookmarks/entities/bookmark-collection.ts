@@ -2,8 +2,9 @@ import { Bookmark } from "./bookmark";
 
 export class BookmarkCollection
 {
-	constructor(name: string)
+	constructor(id: number, name: string)
 	{
+		this.Id = id;
 		this.Name = name;
 	}
 
@@ -16,7 +17,7 @@ export class BookmarkCollection
 	 */
 	public Icon: string = "&#x1F4C1;";
 
-	public Id: string;
+	public Id: number;
 
 	public Name: string;
 

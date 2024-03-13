@@ -16,7 +16,7 @@ import { SignupComponent } from './views/identity/signup/signup.component';
 import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot-password.component';
 import { ActionComponent } from './views/identity/action/action.component';
 import { BlockUIModule } from 'ng-block-ui';
-import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
+// import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { AuthService } from './domain/auth/services/auth.service';
 import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 
@@ -39,7 +39,7 @@ import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 		HttpClientModule,
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
-		RecaptchaV3Module,
+		// RecaptchaV3Module,
 		BlockUIModule.forRoot()
 	],
 	providers: [
@@ -49,10 +49,10 @@ import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 			useClass: AuthInterceptor,
 			multi: true
 		},
-		{
-			provide: RECAPTCHA_V3_SITE_KEY,
-			useValue: environment.reCAPTCHASiteKey
-		}
+		// {
+		// 	provide: RECAPTCHA_V3_SITE_KEY,
+		// 	useValue: environment.reCAPTCHASiteKey
+		// }
 	],
 	bootstrap: [AppComponent]
 })

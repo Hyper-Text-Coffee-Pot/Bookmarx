@@ -1,8 +1,9 @@
 export class Bookmark
 {
-	constructor()
+	constructor(title: string, url: string)
 	{
-		// Needed for firebase
+		this.Title = title;
+		this.URL = url;
 	}
 
 	public DateTimeAddedUTC: string;
