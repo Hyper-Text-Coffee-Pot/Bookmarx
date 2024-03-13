@@ -12,7 +12,6 @@ public static class ServiceCollectionExtensions
 	public static IServiceCollection RegisterCustomDependencies(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.AddScoped<ITokenValidatorService, GoogleFirebaseTokenValidatorService>();
-		services.AddScoped<IReCAPTCHAService, ReCAPTCHAService>();
 		services.AddScoped<ICurrentMemberService, CurrentMemberService>();
 		services.AddScoped<ISubscriptionValidationService, SubscriptionValidationService>();
 		services.AddScoped<IMembershipAuthAppService, MembershipAuthAppService>();

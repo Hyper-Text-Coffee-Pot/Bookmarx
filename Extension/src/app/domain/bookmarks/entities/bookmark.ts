@@ -4,6 +4,7 @@ export class Bookmark
 	{
 		this.Title = title;
 		this.URL = url;
+		this.DateTimeAddedUTC = new Date().toISOString();
 	}
 
 	public DateTimeAddedUTC: string;

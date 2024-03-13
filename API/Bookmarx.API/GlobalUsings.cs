@@ -16,8 +16,6 @@ global using Bookmarx.Shared.v1.Membership.Models;
 global using Bookmarx.Shared.v1.Membership.Services;
 global using Bookmarx.Shared.v1.Sales.Interfaces;
 global using Bookmarx.Shared.v1.Sales.Services;
-global using Bookmarx.Shared.v1.ThirdParty.Google.Interfaces;
-global using Bookmarx.Shared.v1.ThirdParty.Google.Services;
 global using FirebaseAdmin;
 global using Google.Apis.Auth.OAuth2;
 global using Microsoft.AspNetCore.Authorization;

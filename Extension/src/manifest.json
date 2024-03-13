@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Bookmarx",
+  "name": "Bookmarx - Encrypted Bookmark Manager",
   "description": "The encrypted bookmark manager.",
   "version": "1.0",
   "content_security_policy": {

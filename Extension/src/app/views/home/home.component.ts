@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
 import { IBookmarks } from 'src/app/domain/web-api/chrome/models/bookmarks';
+import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.service';
 
 @Component({
 	selector: 'app-home',
@@ -17,7 +18,8 @@ export class HomeComponent extends BasePageDirective
 	constructor(
 		private _route: ActivatedRoute,
 		private _titleService: Title,
-		private _authService: AuthService)
+		private _authService: AuthService,
+		private _bookmarksService: BookmarksService)
 	{
 		super(_route, _titleService);
 	}
@@ -39,6 +41,14 @@ export class HomeComponent extends BasePageDirective
 			this.TraverseBookmarks(primaryBookmarkFolders, bookmarkCollection);
 
 			console.log(bookmarkCollection);
+			
+			this._bookmarksService.SyncBookmarks(bookmarkCollection)
+				.subscribe({
+					next: (result: BookmarkCollection) =>
+					{
+						console.log(result);
+					}
+				});
 		});
 	}
 

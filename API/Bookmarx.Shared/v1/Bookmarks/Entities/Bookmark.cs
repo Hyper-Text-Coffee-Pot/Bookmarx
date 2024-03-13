@@ -14,10 +14,10 @@ public class Bookmark
 	public DateTime DateTimeAddedUTC { get; set; }
 
 	[FirestoreProperty]
-	public string Description { get; set; }
+	public string Description { get; set; } = string.Empty;
 
 	[FirestoreProperty]
-	public string Note { get; set; }
+	public string Note { get; set; } = string.Empty;
 
 	[FirestoreProperty]
 	public string Title { get; set; }
