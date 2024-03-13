@@ -24,6 +24,14 @@ export class HomeComponent extends BasePageDirective
 		// Add your code here
 	}
 
+	public GetAllBookmarks(): void
+	{
+		//@ts-expect-error - This is a chrome extension property.
+		chrome.bookmarks.getTree((bookmarks) => {
+			console.log(bookmarks);
+		});
+	}
+
 	public SignOut(): void
 	{
 		this._authService.SignOut();

@@ -1,4 +1,5 @@
 ﻿using Bookmarx.Data.v1.Interfaces;
+using Bookmarx.Shared.v1.Bookmarks.Entities;
 using Google.Cloud.Firestore;
 
 namespace Bookmarx.Shared.v1.Membership.Entities;
@@ -30,6 +31,9 @@ public class MemberAccount : IFirebaseEntity
 
 	[FirestoreProperty]
 	public string AuthProviderUID { get; set; }
+
+	[FirestoreProperty]
+	public List<BookmarkCollection> BookmarkCollections { get; set; } = new List<BookmarkCollection>();
 
 	/// <summary>
 	/// Convert using the {DateTime:O} when setting to append timezone info for UTC and ISO-8601.
