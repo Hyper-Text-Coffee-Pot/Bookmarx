@@ -24,6 +24,8 @@ export class HomeComponent extends BasePageDirective
 		super(_route, _titleService);
 	}
 
+	public BookmarkCollection: BookmarkCollection = null;
+
 	public override ngOnInit(): void
 	{
 		// Add your code here
@@ -36,13 +38,13 @@ export class HomeComponent extends BasePageDirective
 		{
 			let primaryBookmarkFolders = bookmarks[0].children[0].children;
 
-			let bookmarkCollection = new BookmarkCollection(0, "Synced Bookmarks");
+			this.BookmarkCollection = new BookmarkCollection(0, "Synced Bookmarks");
 
-			this.TraverseBookmarks(primaryBookmarkFolders, bookmarkCollection);
+			this.TraverseBookmarks(primaryBookmarkFolders, this.BookmarkCollection);
 
-			console.log(bookmarkCollection);
-			
-			this._bookmarksService.SyncBookmarks(bookmarkCollection)
+			console.log(this.BookmarkCollection);
+
+			this._bookmarksService.SyncBookmarks(this.BookmarkCollection)
 				.subscribe({
 					next: (result: BookmarkCollection) =>
 					{
