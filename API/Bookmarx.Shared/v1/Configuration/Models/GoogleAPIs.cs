@@ -2,7 +2,5 @@
 
 public class GoogleAPIs
 {
-	public string ReCAPTCHASecretKey { get; set; }
-
-	public string ReCAPTCHAVerificationURL { get; set; }
+	public string FirebaseProjectId { get; set; }
 }

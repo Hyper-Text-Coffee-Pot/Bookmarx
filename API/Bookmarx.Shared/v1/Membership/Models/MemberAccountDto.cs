@@ -2,8 +2,6 @@
 
 public class MemberAccountDto
 {
-	public Guid? AccountGuid { get; set; }
-
 	public string AuthProviderUID { get; set; }
 
 	public string EmailAddress { get; set; }

@@ -7,16 +7,14 @@ public interface IMembershipAuthAppService
 	/// </summary>
 	/// <param name="member"></param>
 	/// <returns>The MemberAccount of the new account member to verify that it worked.</returns>
-	Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto member, string? invitationGuid);
-
-	List<MemberAccount> GetMembers();
+	Task<MemberAccount> CreateNewMemberAccountMember(MemberAccountDto member);
 
 	/// <summary>
 	/// Signs a user in and performs some basic actions like updating the last login datetime.
 	/// </summary>
 	/// <param name="authProviderUID">The User ID given by the auth provider.</param>
 	/// <returns>The logged in user.</returns>
-	MemberAccount SignInWithEmailAndPassword(string authProviderUID);
+	Task<MemberAccount?> SignInWithEmailAndPassword(string authProviderUID);
 
 	/// <summary>
 	/// Sign in or create account if none exists.

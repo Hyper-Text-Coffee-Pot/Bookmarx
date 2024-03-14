@@ -16,5 +16,5 @@ public class IdentityBaseResponseDto
     /// Obfuscating this a bit, but this actually returns the
     /// new Account Guid of the created or updated record.
     /// </summary>
-    public string OGID { get; set; } = string.Empty;
+    public string MemberAccountID { get; set; } = string.Empty;
 }

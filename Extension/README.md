@@ -37,6 +37,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Important Additional Package Information
 ### Working with Browser Extensions
+- https://developer.chrome.com/docs/extensions/get-started
 - https://developer.chrome.com/docs/extensions
 
 ### Firebase
@@ -47,14 +48,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ### Ng Block UI
 - https://www.npmjs.com/package/ng-block-ui
 
-### Ng Recaptcha
-Get an account key from google, then add the package. You should set up a new reCAPTHCHA key for each environment.
-Go to this Google link and then visit the v3 Admin Console to add projects. Copy your public site key in to the
-reCAPTCHASiteKey value in the environment config file.
-- https://www.google.com/recaptcha
-- https://www.npmjs.com/package/ng-recaptcha
-
 ### Cheerio JS
 Read above about Build & Deploy steps for information on how this is used. There is a `postbuild.js` file at the
 root of the `Extension` project that contains more information and the configuration for this process.
 - https://cheerio.js.org/
+
+### SortableJS
+- https://github.com/SortableJS/Sortable

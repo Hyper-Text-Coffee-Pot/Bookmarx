@@ -2,7 +2,5 @@
 
 public interface ISubscriptionService
 {
-	Task<Subscription> SaveAccountFreeTrialSubscription(int memberAccountID);
-
-	Task<Subscription> SaveSubscription(Subscription subscription);
+	Task<Subscription> CreateAccountFreeTrialSubscription();
 }

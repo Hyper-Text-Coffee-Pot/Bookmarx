@@ -1,5 +1,8 @@
-﻿namespace Bookmarx.Shared.v1.Membership.Entities;
+﻿using Google.Cloud.Firestore;
 
+namespace Bookmarx.Shared.v1.Membership.Entities;
+
+[FirestoreData]
 public class MemberThirdPartyProviderAccount
 {
 	public MemberThirdPartyProviderAccount(
@@ -17,13 +20,18 @@ public class MemberThirdPartyProviderAccount
 		// Needed for EF
 	}
 
+	[FirestoreProperty]
 	public MemberAccount MemberAccount { get; private set; }
 
+	[FirestoreProperty]
 	public int MemberAccountID { get; private set; }
 
+	[FirestoreProperty]
 	public int MemberThirdPartyProviderAccountID { get; private set; }
 
+	[FirestoreProperty]
 	public string ThirdPartyProviderCustomerID { get; private set; }
 
+	[FirestoreProperty]
 	public int ThirdPartyProviderTypeID { get; private set; }
 }

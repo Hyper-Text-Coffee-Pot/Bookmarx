@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { ReCaptchaV3Service } from 'ng-recaptcha';
+// import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { Subscription } from 'rxjs';
 import { ActiveUserDetail } from 'src/app/domain/auth/models/active-user-detail';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
@@ -29,7 +29,7 @@ export class SignupComponent extends BasePageDirective
 	constructor(
 		private _route: ActivatedRoute,
 		private _titleService: Title,
-		private _recaptchaV3Service: ReCaptchaV3Service,
+		// private _recaptchaV3Service: ReCaptchaV3Service,
 		private _authService: AuthService,
 		private _router: Router,
 		private _googleAuthService: GoogleAuthService,
@@ -142,45 +142,45 @@ export class SignupComponent extends BasePageDirective
 						if (token != "")
 						{
 							// Execute the reCAPTCHA v3
-							this._recaptchaSubscription = this._recaptchaV3Service.execute("signup_action")
-								.subscribe({
-									next: (reCAPTCHAToken: string) =>
-									{
-										// After signup we don't care that they verify their email, next time they 
-										// log in they'll be asked to verify it. Just make it easy right now.
-										// Need to manually set the data so the auth guard works
-										// Immediately update the users first and last name
-										let memberAccountCreateRequest = new MemberAccountCreateRequest();
-										memberAccountCreateRequest.AccessToken = token;
-										memberAccountCreateRequest.APID = res.user.uid;
-										memberAccountCreateRequest.EmailAddress = signupEmail;
-										memberAccountCreateRequest.FirstName = firstName;
-										memberAccountCreateRequest.LastName = lastName;
-										memberAccountCreateRequest.ReCAPTCHAToken = reCAPTCHAToken;
-										memberAccountCreateRequest.IG = this._ig ?? "";
+							// this._recaptchaSubscription = this._recaptchaV3Service.execute("signup_action")
+							// 	.subscribe({
+							// 		next: (reCAPTCHAToken: string) =>
+							// 		{
+							// After signup we don't care that they verify their email, next time they 
+							// log in they'll be asked to verify it. Just make it easy right now.
+							// Need to manually set the data so the auth guard works
+							// Immediately update the users first and last name
+							let memberAccountCreateRequest = new MemberAccountCreateRequest();
+							memberAccountCreateRequest.AccessToken = token;
+							memberAccountCreateRequest.APID = res.user.uid;
+							memberAccountCreateRequest.EmailAddress = signupEmail;
+							memberAccountCreateRequest.FirstName = firstName;
+							memberAccountCreateRequest.LastName = lastName;
+							// memberAccountCreateRequest.ReCAPTCHAToken = reCAPTCHAToken;
+							memberAccountCreateRequest.IG = this._ig ?? "";
 
-										this._membershipAuthService.CreateNewMemberAccount(memberAccountCreateRequest)
-											.subscribe((response: IdentityActionResponseDto) =>
-											{
-												const fullName = `${ firstName } ${ lastName }`;
+							this._membershipAuthService.CreateNewMemberAccount(memberAccountCreateRequest)
+								.subscribe((response: IdentityActionResponseDto) =>
+								{
+									const fullName = `${ firstName } ${ lastName }`;
 
-												let activeUserDetail = new ActiveUserDetail();
-												activeUserDetail.User = res.user;
-												activeUserDetail.OGID = response.OGID;
-												activeUserDetail.IsSubscriptionValid = response.IsSubscriptionValid;
+									let activeUserDetail = new ActiveUserDetail();
+									activeUserDetail.User = res.user;
+									activeUserDetail.OGID = response.OGID;
+									activeUserDetail.IsSubscriptionValid = response.IsSubscriptionValid;
 
-												this._authService.UpdateDisplayName(activeUserDetail, fullName)
-													.then(() =>
-													{
-														this.SetUserDataAndRedirect(activeUserDetail);
-													});
-											});
-									},
-									complete: () =>
-									{
-										this._blockUI.stop();
-									}
+									this._authService.UpdateDisplayName(activeUserDetail, fullName)
+										.then(() =>
+										{
+											this.SetUserDataAndRedirect(activeUserDetail);
+										});
 								});
+							// 				},
+							// 				complete: () =>
+							// 				{
+							// 					this._blockUI.stop();
+							// 				}
+							// 			});
 						}
 					});
 			}).catch((err: any) =>

@@ -16,9 +16,11 @@ import { SignupComponent } from './views/identity/signup/signup.component';
 import { ForgotPasswordComponent } from './views/identity/forgot-password/forgot-password.component';
 import { ActionComponent } from './views/identity/action/action.component';
 import { BlockUIModule } from 'ng-block-ui';
-import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
+// import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { AuthService } from './domain/auth/services/auth.service';
 import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
+import { SortablejsModule } from 'htcp-sortablejs';
+import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-tree.component';
 
 @NgModule({
 	declarations: [
@@ -29,7 +31,8 @@ import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 		LoginComponent,
 		SignupComponent,
 		ForgotPasswordComponent,
-		ActionComponent
+		ActionComponent,
+  BookmarkTreeComponent
 	],
 	imports: [
 		BrowserModule,
@@ -39,8 +42,9 @@ import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 		HttpClientModule,
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
-		RecaptchaV3Module,
-		BlockUIModule.forRoot()
+		// RecaptchaV3Module,
+		BlockUIModule.forRoot(),
+		SortablejsModule.forRoot({ animation: 150 })
 	],
 	providers: [
 		AuthService,
@@ -49,10 +53,10 @@ import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 			useClass: AuthInterceptor,
 			multi: true
 		},
-		{
-			provide: RECAPTCHA_V3_SITE_KEY,
-			useValue: environment.reCAPTCHASiteKey
-		}
+		// {
+		// 	provide: RECAPTCHA_V3_SITE_KEY,
+		// 	useValue: environment.reCAPTCHASiteKey
+		// }
 	],
 	bootstrap: [AppComponent]
 })

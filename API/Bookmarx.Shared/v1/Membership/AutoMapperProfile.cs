@@ -10,7 +10,6 @@ public class AutoMapperProfile : Profile
 {
 	public AutoMapperProfile()
 	{
-		// Domain object always on the left (think lower, or left side) UI or response object always on the right
-		this.CreateMap<MemberAccountDto, MemberAccount>();
+		// Do nothing for now
 	}
 }

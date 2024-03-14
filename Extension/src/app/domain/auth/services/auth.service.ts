@@ -13,12 +13,14 @@ import
 	sendPasswordResetEmail,
 	signInWithEmailAndPassword,
 	signInWithRedirect,
+	signOut,
 	updateProfile
 } from '@angular/fire/auth';
 import { environment } from 'src/environments/environment';
 import { LocalStorageService } from '../../web-api/services/local-storage.service';
 import { ActiveUserDetail } from '../models/active-user-detail';
 import { ApiRequestHeader } from '../models/api-request-header';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
@@ -31,7 +33,8 @@ export class AuthService
 
 	constructor(
 		private _firebaseAuth: Auth,
-		private _localStorageService: LocalStorageService
+		private _localStorageService: LocalStorageService,
+		private _router: Router
 	)
 	{
 		// Refreshes the user any time a change is noticed
@@ -253,4 +256,18 @@ export class AuthService
 	}
 
 	//#endregion Forgot Password Controls
+
+	/**
+	 * Log a user out
+	 */
+	public SignOut(): Promise<any>
+	{
+		return signOut(this._firebaseAuth)
+			.then(() =>
+			{
+				this._localStorageService.RemoveItem(this.localUserStore);
+				this._localStorageService.ClearAll();
+				this._router.navigate(['/identity/login']);
+			});
+	}
 }
