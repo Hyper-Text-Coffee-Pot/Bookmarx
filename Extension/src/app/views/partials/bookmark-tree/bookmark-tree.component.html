@@ -1,10 +1,12 @@
-<div [sortablejs]>
-	{{ BookmarkCollection.Name }}
-	<div *ngIf="BookmarkCollection.BookmarkCollections?.length">
-		<app-bookmark-tree *ngFor="let child of BookmarkCollection.BookmarkCollections"
-						   [BookmarkCollection]="child"></app-bookmark-tree>
-	</div>
-	<div [sortablejs] *ngIf="!BookmarkCollection.BookmarkCollections?.length">
+<ng-container *ngIf="BookmarkCollection.BookmarkCollections?.length">
+	<app-bookmark-tree *ngFor="let child of BookmarkCollection.BookmarkCollections"
+					   [BookmarkCollection]="child"></app-bookmark-tree>
+</ng-container>
+<div [sortablejs]
+	 [sortablejsOptions]="Options">
+	<span>{{BookmarkCollection.Name}}</span>
+	<div [sortablejs]
+		 [sortablejsOptions]="Options">
 		<p *ngFor="let bookmark of BookmarkCollection.Bookmarks">
 			{{ bookmark.Title }}
 		</p>

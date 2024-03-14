@@ -4,7 +4,7 @@ export class BookmarkCollection
 {
 	constructor(id: number, name: string)
 	{
-		this.Id = id.toString();
+		this.Id = id;
 		this.Name = name;
 	}
 
@@ -17,7 +17,7 @@ export class BookmarkCollection
 	 */
 	public Icon: string = "&#x1F4C1;";
 
-	public Id: string;
+	public Id: number;
 
 	public Name: string;
 
