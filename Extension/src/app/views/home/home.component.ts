@@ -27,7 +27,6 @@ export class HomeComponent extends BasePageDirective
 
 	public override ngOnInit(): void
 	{
-		// Add your code here
 	}
 
 	public GetAllBookmarks(): void

@@ -4,22 +4,25 @@ export class BookmarkTreeNode
 {
 	constructor(existingBookmarkTreeNode: IBookmarkTreeNode)
 	{
-		this.DateAdded = existingBookmarkTreeNode.dateAdded;
-		this.Id = existingBookmarkTreeNode.id;
-		this.Index = existingBookmarkTreeNode.index;
-		this.ParentId = existingBookmarkTreeNode.parentId;
-		this.Title = existingBookmarkTreeNode.title;
-
-		if (existingBookmarkTreeNode.url != null
-			&& existingBookmarkTreeNode.url != undefined
-			&& existingBookmarkTreeNode.url != "")
+		if (existingBookmarkTreeNode != null)
 		{
-			this.Url = existingBookmarkTreeNode.url;
-		}
+			this.DateAdded = existingBookmarkTreeNode.dateAdded;
+			this.Id = existingBookmarkTreeNode.id;
+			this.Index = existingBookmarkTreeNode.index;
+			this.ParentId = existingBookmarkTreeNode.parentId;
+			this.Title = existingBookmarkTreeNode.title;
 
-		if (existingBookmarkTreeNode.children)
-		{
-			this.Children = existingBookmarkTreeNode.children.map((child) => new BookmarkTreeNode(child));
+			if (existingBookmarkTreeNode.url != null
+				&& existingBookmarkTreeNode.url != undefined
+				&& existingBookmarkTreeNode.url != "")
+			{
+				this.Url = existingBookmarkTreeNode.url;
+			}
+
+			if (existingBookmarkTreeNode.children)
+			{
+				this.Children = existingBookmarkTreeNode.children.map((child) => new BookmarkTreeNode(child));
+			}
 		}
 	}
 

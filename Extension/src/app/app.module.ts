@@ -19,7 +19,6 @@ import { BlockUIModule } from 'ng-block-ui';
 // import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { AuthService } from './domain/auth/services/auth.service';
 import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
-import { SortablejsModule } from 'htcp-sortablejs';
 import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-tree.component';
 
 @NgModule({
@@ -32,7 +31,7 @@ import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-t
 		SignupComponent,
 		ForgotPasswordComponent,
 		ActionComponent,
-  BookmarkTreeComponent
+		BookmarkTreeComponent
 	],
 	imports: [
 		BrowserModule,
@@ -43,8 +42,7 @@ import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-t
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
 		// RecaptchaV3Module,
-		BlockUIModule.forRoot(),
-		SortablejsModule.forRoot({ animation: 150 })
+		BlockUIModule.forRoot()
 	],
 	providers: [
 		AuthService,

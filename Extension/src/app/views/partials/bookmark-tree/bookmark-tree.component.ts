@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Options } from 'sortablejs';
 import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 
 @Component({
@@ -9,26 +8,13 @@ import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tre
 })
 export class BookmarkTreeComponent implements OnInit
 {
-
 	constructor() { }
 
 	@Input()
 	public BookmarkTreeNode: BookmarkTreeNode;
-	public Options: Options = {
-		animation: 150,
-		group: 'nested',
-		fallbackOnBody: true,
-		swapThreshold: 0.65
-	};
 
 	ngOnInit(): void
 	{
-		this.Options = {
-			onChange: (event: any) =>
-			{
-				console.log(event);
-			}
-		};
-	}
 
+	}
 }
