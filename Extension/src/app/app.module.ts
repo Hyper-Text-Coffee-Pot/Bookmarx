@@ -21,6 +21,8 @@ import { AuthService } from './domain/auth/services/auth.service';
 import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-tree.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 @NgModule({
 	declarations: [
@@ -44,7 +46,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 		provideAuth(() => getAuth()),
 		// RecaptchaV3Module,
 		BlockUIModule.forRoot(),
-		BrowserAnimationsModule
+		BrowserAnimationsModule,
+		DragDropModule
 	],
 	providers: [
 		AuthService,

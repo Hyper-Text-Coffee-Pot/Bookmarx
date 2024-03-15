@@ -53,5 +53,5 @@ Read above about Build & Deploy steps for information on how this is used. There
 root of the `Extension` project that contains more information and the configuration for this process.
 - https://cheerio.js.org/
 
-### SortableJS
-- https://github.com/SortableJS/Sortable
+### Angular Material
+- https://v13.material.angular.io/

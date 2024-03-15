@@ -5,4 +5,5 @@
 <!-- <div [sortablejs]="items">
 	<div *ngFor="let item of items">{{ item }}</div>
 </div> -->
-<app-bookmark-tree [BookmarkTreeNode]="BookmarkTreeNode"></app-bookmark-tree>
+<app-bookmark-tree cdkDropListGroup
+				   [BookmarkTreeNode]="BookmarkTreeNode"></app-bookmark-tree>

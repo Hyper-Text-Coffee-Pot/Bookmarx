@@ -1,7 +1,10 @@
 <ng-container *ngIf="BookmarkTreeNode != null 
 	&& (BookmarkTreeNode?.Url == undefined || BookmarkTreeNode?.Url == null || BookmarkTreeNode?.Url == '')">
-	<div style="margin-left: 10px;">
-		<p>{{BookmarkTreeNode?.Title}}</p>
+	<div>
+		<p cdkDropList
+		   [cdkDropListData]="BookmarkTreeNode.Children"
+		   style="margin-left: 10px;"
+		   (cdkDropListDropped)="drop($event)">{{BookmarkTreeNode?.Title}}</p>
 		<ng-container *ngIf="BookmarkTreeNode.Children?.length">
 			<app-bookmark-tree *ngFor="let child of BookmarkTreeNode.Children"
 							   [BookmarkTreeNode]="child"></app-bookmark-tree>
