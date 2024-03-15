@@ -20,6 +20,7 @@ import { BlockUIModule } from 'ng-block-ui';
 import { AuthService } from './domain/auth/services/auth.service';
 import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-tree.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
 	declarations: [
@@ -42,7 +43,8 @@ import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-t
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
 		// RecaptchaV3Module,
-		BlockUIModule.forRoot()
+		BlockUIModule.forRoot(),
+		BrowserAnimationsModule
 	],
 	providers: [
 		AuthService,
