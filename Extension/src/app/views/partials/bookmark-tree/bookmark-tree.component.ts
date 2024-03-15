@@ -19,8 +19,11 @@ export class BookmarkTreeComponent implements OnInit
 
 	}
 
-	// drop(event: CdkDragDrop<string[]>)
-	drop(event: any)
+	todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
+
+	done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
+
+	drop(event: CdkDragDrop<string[]>)
 	{
 		if (event.previousContainer === event.container)
 		{
