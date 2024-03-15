@@ -1,41 +1,47 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'app-bookmark-tree',
 	templateUrl: './bookmark-tree.component.html',
 	styleUrls: ['./bookmark-tree.component.scss']
 })
-export class BookmarkTreeComponent implements OnInit
+export class BookmarkTreeComponent
 {
-	constructor() { }
-
-	@Input()
-	public BookmarkTreeNode: BookmarkTreeNode;
-
-	ngOnInit(): void
+	@Input() item: BookmarkTreeNode;
+	@Input() parentItem?: BookmarkTreeNode;
+	@Input() public set connectedDropListsIds(ids: string[])
 	{
+		this.allDropListsIds = ids;
+	}
+	public get connectedDropListsIds(): string[]
+	{
+		return this.allDropListsIds.filter((id) => id !== this.item.Id);
+	}
+	public allDropListsIds: string[];
 
+	public get dragDisabled(): boolean
+	{
+		return !this.parentItem;
 	}
 
-	todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
-
-	done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
-
-	drop(event: CdkDragDrop<string[]>)
+	public get parentItemId(): string
 	{
-		if (event.previousContainer === event.container)
-		{
-			moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-		} else
-		{
-			transferArrayItem(
-				event.previousContainer.data,
-				event.container.data,
-				event.previousIndex,
-				event.currentIndex,
-			);
-		}
+		return this.dragDisabled ? '' : this.parentItem.Id;
+	}
+
+
+	@Output() itemDrop: EventEmitter<CdkDragDrop<BookmarkTreeNode>>
+
+	constructor()
+	{
+		this.allDropListsIds = [];
+		this.itemDrop = new EventEmitter();
+	}
+
+	public onDragDrop(event: CdkDragDrop<BookmarkTreeNode, BookmarkTreeNode>): void
+	{
+		this.itemDrop.emit(event);
 	}
 }

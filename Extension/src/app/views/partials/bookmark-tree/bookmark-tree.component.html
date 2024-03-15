@@ -1,27 +1,39 @@
-<div cdkDropListGroup>
-	<div class="example-container">
-		<h2>To do</h2>
-
-		<div cdkDropList
-			 [cdkDropListData]="todo"
-			 class="example-list"
-			 (cdkDropListDropped)="drop($event)">
-			<div class="example-box"
-				 *ngFor="let item of todo"
-				 cdkDrag>{{item}}</div>
+<div cdkDropList
+	 class="item-dropzone parent"
+	 [id]="parentItemId"
+	 [cdkDropListData]="parentItem"
+	 [cdkDropListConnectedTo]="allDropListsIds"
+	 (cdkDropListDropped)="onDragDrop($event)">
+	<div cdkDrag
+		 [id]="item.Id"
+		 [cdkDragData]="item"
+		 [cdkDragDisabled]="dragDisabled">
+		<div title="Drag this item with children"
+			 class="item-drag-handle"
+			 cdkDragHandle>
+			{{item.Title}}
+			<i *ngIf="!dragDisabled"
+			   class="material-icons">
+				drag_indicator
+			</i>
+		</div>
+		<div class="item-drag-preview"
+			 *cdkDragPreview>
+			{{item.Title}} with {{item.Children.length}} child item(s)
 		</div>
 	</div>
-
-	<div class="example-container">
-		<h2>Done</h2>
-
-		<div cdkDropList
-			 [cdkDropListData]="done"
-			 class="example-list"
-			 (cdkDropListDropped)="drop($event)">
-			<div class="example-box"
-				 *ngFor="let item of done"
-				 cdkDrag>{{item}}</div>
-		</div>
-	</div>
+	<ul cdkDropList
+		class="item-dropzone"
+		[id]="item.Id"
+		[cdkDropListConnectedTo]="connectedDropListsIds"
+		[cdkDropListData]="item"
+		(cdkDropListDropped)="onDragDrop($event)">
+		<li *ngFor="let subItem of item.Children">
+			<app-bookmark-tree [item]="subItem"
+							   [parentItem]="item"
+							   [connectedDropListsIds]="allDropListsIds"
+							   (itemDrop)="onDragDrop($event)">
+			</app-bookmark-tree>
+		</li>
+	</ul>
 </div>

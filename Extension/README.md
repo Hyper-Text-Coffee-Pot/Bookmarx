@@ -55,3 +55,6 @@ root of the `Extension` project that contains more information and the configura
 
 ### Angular Material
 - https://v13.material.angular.io/
+
+### Lifesaver for Material Drag and Drop Nested
+- https://stackblitz.com/edit/angular-cdk-nested-drag-drop-demo?file=src%2Fapp%2Fshared%2Fcomponents%2Flist-item%2Flist-item.html

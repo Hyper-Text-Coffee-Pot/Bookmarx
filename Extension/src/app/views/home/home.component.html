@@ -2,8 +2,5 @@
 <button (click)="SignOut()">Sign Out</button>
 <button (click)="GetAllBookmarks()">Get all bookmarks</button>
 <h2>Drag / drop the item</h2>
-<!-- <div [sortablejs]="items">
-	<div *ngFor="let item of items">{{ item }}</div>
-</div> -->
 <app-bookmark-tree cdkDropListGroup
 				   [BookmarkTreeNode]="BookmarkTreeNode"></app-bookmark-tree>
