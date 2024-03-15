@@ -9,7 +9,13 @@ export class BookmarkTreeNode
 		this.Index = existingBookmarkTreeNode.index;
 		this.ParentId = existingBookmarkTreeNode.parentId;
 		this.Title = existingBookmarkTreeNode.title;
-		this.Url = existingBookmarkTreeNode.url;
+
+		if (existingBookmarkTreeNode.url != null
+			&& existingBookmarkTreeNode.url != undefined
+			&& existingBookmarkTreeNode.url != "")
+		{
+			this.Url = existingBookmarkTreeNode.url;
+		}
 
 		if (existingBookmarkTreeNode.children)
 		{
