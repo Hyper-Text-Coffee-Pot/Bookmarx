@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Options } from 'sortablejs';
-import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
+import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 
 @Component({
 	selector: 'app-bookmark-tree',
@@ -13,7 +13,7 @@ export class BookmarkTreeComponent implements OnInit
 	constructor() { }
 
 	@Input()
-	public BookmarkCollection: BookmarkCollection = null;
+	public BookmarkTreeNodes: BookmarkTreeNode[] = [];
 	public Options: Options = {
 		animation: 150,
 		group: 'nested',

@@ -1,14 +1,26 @@
-<ng-container *ngIf="BookmarkCollection.BookmarkCollections?.length">
-	<app-bookmark-tree *ngFor="let child of BookmarkCollection.BookmarkCollections"
-					   [BookmarkCollection]="child"></app-bookmark-tree>
-</ng-container>
-<div [sortablejs]
-	 [sortablejsOptions]="Options">
-	<span>{{BookmarkCollection.Name}}</span>
-	<div [sortablejs]
-		 [sortablejsOptions]="Options">
-		<p *ngFor="let bookmark of BookmarkCollection.Bookmarks">
-			{{ bookmark.Title }}
-		</p>
+<!-- It's a bookmark -->
+<!--<ng-container *ngIf="BookmarkTreeNodes.url != '' && BookmarkTreeNodes.children?.length">
+	<div>
+		{{BookmarkTreeNodes.title}}
 	</div>
-</div>
+</ng-container>
+<ng-container *ngIf="BookmarkTreeNodes.url != '' && BookmarkTreeNodes.children?.length"></ng-container>
+<div>
+	<p>{{BookmarkCollection.Name}}</p>
+	<ng-container *ngIf="BookmarkCollection.Bookmarks?.length">
+		<div [sortablejs]
+			 [sortablejsOptions]="Options">
+			<span>{{BookmarkCollection.Name}}</span>
+			<div [sortablejs]
+				 [sortablejsOptions]="Options">
+				<p *ngFor="let bookmark of BookmarkCollection.Bookmarks">
+					{{ bookmark.Title }}
+				</p>
+			</div>
+		</div>
+	</ng-container>
+	<ng-container *ngIf="BookmarkCollection.BookmarkCollections?.length">
+		<app-bookmark-tree *ngFor="let child of BookmarkCollection.BookmarkCollections"
+						   [BookmarkCollection]="child"></app-bookmark-tree>
+	</ng-container>
+</div>-->

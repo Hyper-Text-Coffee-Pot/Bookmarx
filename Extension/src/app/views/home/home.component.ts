@@ -3,10 +3,9 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BasePageDirective } from '../shared/base-page.directive';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
-import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
-import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
-import { IBookmarks } from 'src/app/domain/web-api/chrome/models/bookmarks';
 import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.service';
+import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
+import { IBookmarkTreeNode } from 'src/app/domain/web-api/chrome/models/ibookmark-tree-node';
 
 @Component({
 	selector: 'app-home',
@@ -24,7 +23,7 @@ export class HomeComponent extends BasePageDirective
 		super(_route, _titleService);
 	}
 
-	public BookmarkCollection: BookmarkCollection = null;
+	public BookmarkTreeNodes: BookmarkTreeNode[] = null;
 
 	public override ngOnInit(): void
 	{
@@ -36,21 +35,19 @@ export class HomeComponent extends BasePageDirective
 		//@ts-expect-error - This is a chrome extension property.
 		chrome.bookmarks.getTree((bookmarks) =>
 		{
-			let primaryBookmarkFolders = bookmarks[0].children[0].children;
+			// Get the root tree node for now.
+			// This first one is always a folder which will contain child elements.
+			let bookmarksToImport: IBookmarkTreeNode = bookmarks[0].children[0];
 
-			this.BookmarkCollection = new BookmarkCollection(0, "Synced Bookmarks");
+			this.TraverseBookmarks([bookmarksToImport]);
 
-			this.TraverseBookmarks(primaryBookmarkFolders, this.BookmarkCollection);
-
-			console.log(this.BookmarkCollection);
-
-			this._bookmarksService.SyncBookmarks(this.BookmarkCollection)
-				.subscribe({
-					next: (result: BookmarkCollection) =>
-					{
-						console.log(result);
-					}
-				});
+			// this._bookmarksService.SyncBookmarks(this.BookmarkTreeNodes)
+			// 	.subscribe({
+			// 		next: (result: BookmarkTreeNode) =>
+			// 		{
+			// 			console.log(result);
+			// 		}
+			// 	});
 		});
 	}
 
@@ -59,24 +56,44 @@ export class HomeComponent extends BasePageDirective
 		this._authService.SignOut();
 	}
 
-	private TraverseBookmarks(primaryBookmarkFolders: IBookmarks, syncedBookmarks: BookmarkCollection): void
+	private TraverseBookmarks(bookmarkTreeNodes: IBookmarkTreeNode[]): void
 	{
-		for (let i = 0; i < primaryBookmarkFolders.length; i++)
+		for (let i = 0; i < bookmarkTreeNodes.length; i++)
 		{
-			if (primaryBookmarkFolders[i].children == null)
+			if (bookmarkTreeNodes[i].url == null
+				|| bookmarkTreeNodes[i].url == undefined
+				|| bookmarkTreeNodes[i].url == "")
 			{
-				// It's a straight up bookmark
-				let bookmark = new Bookmark(primaryBookmarkFolders[i].title, primaryBookmarkFolders[i].url);
-				syncedBookmarks.Bookmarks.push(bookmark);
+				// It's a folder.
+				let folder = new BookmarkTreeNode(
+					bookmarkTreeNodes[i].dateAdded,
+					bookmarkTreeNodes[i].id,
+					bookmarkTreeNodes[i].index,
+					bookmarkTreeNodes[i].parentId,
+					bookmarkTreeNodes[i].title,
+					null,
+					bookmarkTreeNodes[i].children);
+				console.log(folder);
 				continue;
-			}
-			else
-			{
-				// It's a folder, need to go deeper
-				let bookmarkCollection = new BookmarkCollection(i, primaryBookmarkFolders[i].title);
-				syncedBookmarks.AddBookmarkCollection(bookmarkCollection);
-				this.TraverseBookmarks(primaryBookmarkFolders[i].children as IBookmarks, bookmarkCollection);
 			}
 		}
 	}
+
+	// for (let i = 0; i < existingBookmarkTreeNodes.length; i++)
+	// {
+	// 	if (existingBookmarkTreeNodes[i].children == null)
+	// 	{
+	// 		// It's a straight up bookmark
+	// 		let bookmark = new Bookmark(existingBookmarkTreeNodes[i].title, existingBookmarkTreeNodes[i].url);
+	// 		syncedBookmarks.Bookmarks.push(bookmark);
+	// 		continue;
+	// 	}
+	// 	else
+	// 	{
+	// 		// It's a folder, need to go deeper
+	// 		let bookmarkCollection = new BookmarkCollection(i, existingBookmarkTreeNodes[i].title);
+	// 		syncedBookmarks.AddBookmarkCollection(bookmarkCollection);
+	// 		this.TraverseBookmarks(existingBookmarkTreeNodes[i].children as IBookmarks, bookmarkCollection);
+	// 	}
+	// }
 }
