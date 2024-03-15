@@ -23,7 +23,7 @@ export class HomeComponent extends BasePageDirective
 		super(_route, _titleService);
 	}
 
-	public BookmarkTreeNodes: BookmarkTreeNode[] = null;
+	public BookmarkTreeNode: BookmarkTreeNode;
 
 	public override ngOnInit(): void
 	{
@@ -39,7 +39,9 @@ export class HomeComponent extends BasePageDirective
 			// This first one is always a folder which will contain child elements.
 			let bookmarksToImport: IBookmarkTreeNode = bookmarks[0].children[0];
 
-			this.TraverseBookmarks([bookmarksToImport]);
+			this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
+
+			console.log(this.BookmarkTreeNode);
 
 			// this._bookmarksService.SyncBookmarks(this.BookmarkTreeNodes)
 			// 	.subscribe({
@@ -55,45 +57,4 @@ export class HomeComponent extends BasePageDirective
 	{
 		this._authService.SignOut();
 	}
-
-	private TraverseBookmarks(bookmarkTreeNodes: IBookmarkTreeNode[]): void
-	{
-		for (let i = 0; i < bookmarkTreeNodes.length; i++)
-		{
-			if (bookmarkTreeNodes[i].url == null
-				|| bookmarkTreeNodes[i].url == undefined
-				|| bookmarkTreeNodes[i].url == "")
-			{
-				// It's a folder.
-				let folder = new BookmarkTreeNode(
-					bookmarkTreeNodes[i].dateAdded,
-					bookmarkTreeNodes[i].id,
-					bookmarkTreeNodes[i].index,
-					bookmarkTreeNodes[i].parentId,
-					bookmarkTreeNodes[i].title,
-					null,
-					bookmarkTreeNodes[i].children);
-				console.log(folder);
-				continue;
-			}
-		}
-	}
-
-	// for (let i = 0; i < existingBookmarkTreeNodes.length; i++)
-	// {
-	// 	if (existingBookmarkTreeNodes[i].children == null)
-	// 	{
-	// 		// It's a straight up bookmark
-	// 		let bookmark = new Bookmark(existingBookmarkTreeNodes[i].title, existingBookmarkTreeNodes[i].url);
-	// 		syncedBookmarks.Bookmarks.push(bookmark);
-	// 		continue;
-	// 	}
-	// 	else
-	// 	{
-	// 		// It's a folder, need to go deeper
-	// 		let bookmarkCollection = new BookmarkCollection(i, existingBookmarkTreeNodes[i].title);
-	// 		syncedBookmarks.AddBookmarkCollection(bookmarkCollection);
-	// 		this.TraverseBookmarks(existingBookmarkTreeNodes[i].children as IBookmarks, bookmarkCollection);
-	// 	}
-	// }
 }

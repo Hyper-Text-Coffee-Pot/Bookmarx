@@ -20,5 +20,4 @@ export interface IBookmarkTreeNode
 	 * This field is omitted if the node is not a folder.
 	 */
 	children?: IBookmarkTreeNode[];
-	dateGroupModified?: number;
 }

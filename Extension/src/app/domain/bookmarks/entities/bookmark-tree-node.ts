@@ -1,56 +1,46 @@
 import { IBookmarkTreeNode } from "../../web-api/chrome/models/ibookmark-tree-node";
 
-export class BookmarkTreeNode implements IBookmarkTreeNode
+export class BookmarkTreeNode
 {
-	constructor(
-		dateAdded: number,
-		id: string,
-		index: number,
-		parentId: string,
-		title: string,
-		url?: string,
-		children?: IBookmarkTreeNode[])
+	constructor(existingBookmarkTreeNode: IBookmarkTreeNode)
 	{
-		this.dateAdded = dateAdded;
-		this.id = id;
-		this.index = index;
-		this.parentId = parentId;
-		this.title = title;
-		this.url = url;
-		this.children = children;
+		this.DateAdded = existingBookmarkTreeNode.dateAdded;
+		this.Id = existingBookmarkTreeNode.id;
+		this.Index = existingBookmarkTreeNode.index;
+		this.ParentId = existingBookmarkTreeNode.parentId;
+		this.Title = existingBookmarkTreeNode.title;
+		this.Url = existingBookmarkTreeNode.url;
+
+		if (existingBookmarkTreeNode.children)
+		{
+			this.Children = existingBookmarkTreeNode.children.map((child) => new BookmarkTreeNode(child));
+		}
 	}
+
+	/**
+ * Optional.
+ * This field is omitted if the node is not a folder.
+ */
+	public Children?: BookmarkTreeNode[];
+
+	public DateAdded: number;
 
 	/**
 	 * Defaults to the unicode character for a file folder.
 	 */
 	public Icon: string = "&#x1F4C1;";
 
-	public dateAdded: number;
+	public Id: string;
 
-	public id: string;
+	public Index: number;
 
-	public index: number;
+	public ParentId: string;
 
-	public parentId: string;
-
-	public title: string;
+	public Title: string;
 
 	/**
 	 * Optional.
 	 * If this node is a folder, this property is omitted.
 	 */
-	public url?: string;
-
-	/**
-	 * Optional.
-	 * This field is omitted if the node is not a folder.
-	 */
-	public children?: IBookmarkTreeNode[];
-
-	public dateGroupModified?: number;
-
-	public AddBookmarkTreeNode(bookmarkTreeNode: BookmarkTreeNode): void
-	{
-		this.children.push(bookmarkTreeNode);
-	}
+	public Url?: string;
 }

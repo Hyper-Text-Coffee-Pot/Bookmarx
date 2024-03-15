@@ -13,7 +13,7 @@ export class BookmarkTreeComponent implements OnInit
 	constructor() { }
 
 	@Input()
-	public BookmarkTreeNodes: BookmarkTreeNode[] = [];
+	public BookmarkTreeNode: BookmarkTreeNode;
 	public Options: Options = {
 		animation: 150,
 		group: 'nested',
