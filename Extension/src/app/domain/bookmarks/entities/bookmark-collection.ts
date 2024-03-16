@@ -10,6 +10,7 @@ export class BookmarkCollection
 	/**
 	 * The parent collection Id of the bookmark collection.
 	 * If this is null, then it's a root collection.
+	 * Root collections cannot be dragged and moved.
 	 */
 	public ParentId: string;
 
@@ -17,7 +18,7 @@ export class BookmarkCollection
 	 * Represents the depth of the collection in the folder tree.
 	 * Helps simplify the UI by indenting the collections.
 	 */
-	public Depth: number;
+	public Depth: number = 0;
 
 	/**
 	 * The index of the bookmark collection.

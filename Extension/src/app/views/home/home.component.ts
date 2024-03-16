@@ -58,15 +58,13 @@ export class HomeComponent extends BasePageDirective
 			// to loop over these initial root nodes first to get to the actual bookmarks.
 			for (let i = 0; i < bookmarksToImport.length; i++)
 			{
-				let depth = 0;
 				// These root collections will never have a parent, so we set it to null.
 				let bookmarkCollection = new BookmarkCollection();
 				// Walking backwards for the index on these root folders to keep them up top.
 				bookmarkCollection.Id = uuid.v4();
 				bookmarkCollection.ParentId = null;
-				bookmarkCollection.Depth = depth;
 				bookmarkCollection.Title = bookmarksToImport[i].title;
-				collections = collections.concat(this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection, depth));
+				collections = collections.concat(this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection));
 			}
 
 			// Sort the collections by index to pull root folders to the top, then start setting the indexes on collections.
@@ -109,8 +107,7 @@ export class HomeComponent extends BasePageDirective
 
 	private FlattenBookmarkTreeNodesIntoCollections(
 		bookmarkTreeNode: IBookmarkTreeNode,
-		bookmarkCollection: BookmarkCollection,
-		depth: number): BookmarkCollection[]
+		bookmarkCollection: BookmarkCollection): BookmarkCollection[]
 	{
 		let bookmarkCollections: BookmarkCollection[] = [bookmarkCollection];
 
@@ -135,9 +132,9 @@ export class HomeComponent extends BasePageDirective
 					let childBookmarkCollection = new BookmarkCollection();
 					childBookmarkCollection.Id = uuid.v4();
 					childBookmarkCollection.ParentId = bookmarkCollection.Id;
-					childBookmarkCollection.Depth = depth;
 					childBookmarkCollection.Title = child.title;
-					bookmarkCollections = bookmarkCollections.concat(this.FlattenBookmarkTreeNodesIntoCollections(child, childBookmarkCollection, depth + 1));
+					childBookmarkCollection.Depth = bookmarkCollection.Depth + 1;
+					bookmarkCollections = bookmarkCollections.concat(this.FlattenBookmarkTreeNodesIntoCollections(child, childBookmarkCollection));
 				}
 			});
 		}

@@ -14,7 +14,8 @@
 		 class="example-box"
 		 [cdkDragData]="collection"
 		 *ngFor="let collection of BookmarkCollections"
-		 [style.margin-left.px]="collection.Depth * 20">
+		 [style.padding-left.px]="collection.Depth * 20"
+		 [cdkDragDisabled]="collection.ParentId == null">
 		{{collection.Title}}
 	</div>
 </div>
