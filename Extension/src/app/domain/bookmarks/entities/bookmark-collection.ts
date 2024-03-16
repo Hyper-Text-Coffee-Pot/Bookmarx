@@ -26,7 +26,7 @@ export class BookmarkCollection
 	 */
 	public Index: number = 0;
 
-	public Title: string;
+	public Title: string = "N/A";
 
 	public Bookmarks: Bookmark[] = [];
 }

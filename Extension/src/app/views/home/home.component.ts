@@ -10,6 +10,7 @@ import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit } from '@angula
 import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
 import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
+import { BlockUIService } from 'ng-block-ui';
 
 @Component({
 	selector: 'app-home',
@@ -22,32 +23,26 @@ export class HomeComponent extends BasePageDirective
 		private _route: ActivatedRoute,
 		private _titleService: Title,
 		private _authService: AuthService,
-		private _bookmarksService: BookmarksService)
+		private _bookmarksService: BookmarksService,
+		private _blockUI: BlockUIService)
 	{
 		super(_route, _titleService);
 	}
 
-	public BookmarkTreeNode: BookmarkTreeNode = null;
-
 	public BookmarkCollections: BookmarkCollection[] = [];
-
-	public get ConnectedDropListsIds(): string[]
-	{
-		// We reverse ids here to respect items nesting hierarchy
-		let ids = this.getIdsRecursive(this.BookmarkTreeNode).reverse();
-
-		console.log(ids);
-
-		return ids;
-	}
 
 	public override ngOnInit(): void
 	{
 	}
 
-	public GetAllBookmarks(): void
+	public ClearBookmarks(): void
 	{
 		this.BookmarkCollections = [];
+	}
+
+	public GetAllBookmarks(): void
+	{
+		// this.BookmarkCollections = [];
 
 		//@ts-expect-error - This is a chrome extension property.
 		chrome.bookmarks.getTree((bookmarks) =>
@@ -75,10 +70,25 @@ export class HomeComponent extends BasePageDirective
 			}
 
 			// Sort the collections by index to pull root folders to the top, then start setting the indexes on collections.
-			this.BookmarkCollections = collections.sort((a, b) => a.Index - b.Index);
-			this.BookmarkCollections.forEach((collection, index) => collection.Index = index);
+			collections = collections.sort((a, b) => a.Index - b.Index);
+			for (let i = 0; i < collections.length; i++)
+			{
+				collections[i].Index = i;
+			}
 
-			console.log(this.BookmarkCollections);
+			// // We need to slowly add things to the DOM tree or we'll overwhelm the browser.
+			// let batchSize = 10; // Adjust this value based on your performance needs
+			// let batchCount = Math.ceil(collections.length / batchSize);
+
+			// for (let i = 0; i < batchCount; i++)
+			// {
+			// 	setTimeout(() =>
+			// 	{
+			// 		let batch = collections.slice(i * batchSize, (i + 1) * batchSize);
+			// 		this.BookmarkCollections = this.BookmarkCollections.concat(batch);
+			// 	}, i * 500); // Adjust delay as needed
+			// }
+
 
 			// this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
 
@@ -132,66 +142,10 @@ export class HomeComponent extends BasePageDirective
 		return bookmarkCollections;
 	}
 
-	public onDragDrop(event: CdkDragDrop<BookmarkTreeNode>)
+	drop(event: CdkDragDrop<BookmarkCollection[]>)
 	{
-		event.container.element.nativeElement.classList.remove('active');
 		console.log(event);
-
-		if (this.canBeDropped(event))
-		{
-			console.log("I can be dropped");
-			const movingItem: BookmarkTreeNode = event.item.data;
-			event.container.data.Children.push(movingItem);
-			event.previousContainer.data.Children = event.previousContainer.data.Children.filter((child) => child.Id !== movingItem.Id);
-		} else
-		{
-			console.log("I was just moved in the array");
-			moveItemInArray(
-				event.container.data.Children,
-				event.previousContainer.data.Index,
-				event.container.data.Index
-			);
-			// moveItemInArray(
-			// 	event.container.data.Children,
-			// 	event.previousIndex,
-			// 	event.currentIndex
-			// );
-		}
-
-		// Check for changes
-		console.log(this.BookmarkTreeNode);
-	}
-
-	private getIdsRecursive(item: BookmarkTreeNode): string[]
-	{
-		let ids = [item.Id];
-
-		if (item.Children?.length > 0)
-		{
-			item.Children.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)) });
-		}
-
-		return ids;
-	}
-
-	private canBeDropped(event: CdkDragDrop<BookmarkTreeNode, BookmarkTreeNode>): boolean
-	{
-		const movingItem: BookmarkTreeNode = event.item.data;
-
-		return event.previousContainer.id !== event.container.id
-			&& this.isNotSelfDrop(event)
-			&& !this.hasChild(movingItem, event.container.data);
-	}
-
-	private isNotSelfDrop(event: CdkDragDrop<BookmarkTreeNode> | CdkDragEnter<BookmarkTreeNode> | CdkDragExit<BookmarkTreeNode>): boolean
-	{
-		return event.container.data.Id !== event.item.data.uId;
-	}
-
-	private hasChild(parentItem: BookmarkTreeNode, childItem: BookmarkTreeNode): boolean
-	{
-		const hasChild = parentItem.Children?.some((item) => item.Id === childItem.Id);
-		return hasChild ? true : parentItem.Children?.some((item) => this.hasChild(item, childItem));
+		moveItemInArray(this.BookmarkCollections, event.previousIndex, event.currentIndex);
 	}
 
 	public SignOut(): void
