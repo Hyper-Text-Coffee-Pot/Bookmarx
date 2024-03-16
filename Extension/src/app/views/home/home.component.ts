@@ -62,19 +62,26 @@ export class HomeComponent extends BasePageDirective
 	public onDragDrop(event: CdkDragDrop<BookmarkTreeNode>)
 	{
 		event.container.element.nativeElement.classList.remove('active');
+		console.log(event);
+
 		if (this.canBeDropped(event))
 		{
+			console.log("I can be dropped");
 			const movingItem: BookmarkTreeNode = event.item.data;
 			event.container.data.Children.push(movingItem);
 			event.previousContainer.data.Children = event.previousContainer.data.Children.filter((child) => child.Id !== movingItem.Id);
 		} else
 		{
+			console.log("I was just moved in the array");
 			moveItemInArray(
 				event.container.data.Children,
 				event.previousIndex,
 				event.currentIndex
 			);
 		}
+
+		// Check for changes
+		console.log(this.BookmarkTreeNode);
 	}
 
 	private getIdsRecursive(item: BookmarkTreeNode): string[]

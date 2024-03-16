@@ -27,10 +27,11 @@ export class BookmarkTreeNode
 	}
 
 	/**
- * Optional.
- * This field is omitted if the node is not a folder.
- */
-	public Children?: BookmarkTreeNode[];
+	 * Optional.
+	 * This field is omitted if the node is not a folder.
+	 * However, for the purpose of drag-and-drop sorting it needs to be an empty array.
+	 */
+	public Children?: BookmarkTreeNode[] = [];
 
 	public DateAdded: number;
 

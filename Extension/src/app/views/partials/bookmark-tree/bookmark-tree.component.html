@@ -1,5 +1,5 @@
 <div cdkDropList
-	 class="item-dropzone parent"
+	 class="item-dropzone parent example-list"
 	 [id]="parentItemId"
 	 [cdkDropListData]="parentItem"
 	 [cdkDropListConnectedTo]="allDropListsIds"
@@ -7,15 +7,11 @@
 	<div cdkDrag
 		 [id]="item.Id"
 		 [cdkDragData]="item"
-		 [cdkDragDisabled]="dragDisabled">
+		 [cdkDragDisabled]="dragDisabled"
+		 class="example-box">
 		<div title="Drag this item with children"
-			 class="item-drag-handle"
-			 cdkDragHandle>
+			 class="item-drag-handle">
 			{{item.Title}}
-			<i *ngIf="!dragDisabled"
-			   class="material-icons">
-				drag_indicator
-			</i>
 		</div>
 		<div class="item-drag-preview"
 			 *cdkDragPreview>
