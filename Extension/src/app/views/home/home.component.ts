@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.service';
 import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 import { IBookmarkTreeNode } from 'src/app/domain/web-api/chrome/models/ibookmark-tree-node';
+import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
 
 @Component({
 	selector: 'app-home',
@@ -24,6 +25,12 @@ export class HomeComponent extends BasePageDirective
 	}
 
 	public BookmarkTreeNode: BookmarkTreeNode;
+
+	public get ConnectedDropListsIds(): string[]
+	{
+		// We reverse ids here to respect items nesting hierarchy
+		return this.getIdsRecursive(this.BookmarkTreeNode).reverse();
+	}
 
 	public override ngOnInit(): void
 	{
@@ -50,6 +57,51 @@ export class HomeComponent extends BasePageDirective
 			// 		}
 			// 	});
 		});
+	}
+
+	public onDragDrop(event: CdkDragDrop<BookmarkTreeNode>)
+	{
+		event.container.element.nativeElement.classList.remove('active');
+		if (this.canBeDropped(event))
+		{
+			const movingItem: BookmarkTreeNode = event.item.data;
+			event.container.data.Children.push(movingItem);
+			event.previousContainer.data.Children = event.previousContainer.data.Children.filter((child) => child.Id !== movingItem.Id);
+		} else
+		{
+			moveItemInArray(
+				event.container.data.Children,
+				event.previousIndex,
+				event.currentIndex
+			);
+		}
+	}
+
+	private getIdsRecursive(item: BookmarkTreeNode): string[]
+	{
+		let ids = [item.Id];
+		item.Children.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)) });
+		return ids;
+	}
+
+	private canBeDropped(event: CdkDragDrop<BookmarkTreeNode, BookmarkTreeNode>): boolean
+	{
+		const movingItem: BookmarkTreeNode = event.item.data;
+
+		return event.previousContainer.id !== event.container.id
+			&& this.isNotSelfDrop(event)
+			&& !this.hasChild(movingItem, event.container.data);
+	}
+
+	private isNotSelfDrop(event: CdkDragDrop<BookmarkTreeNode> | CdkDragEnter<BookmarkTreeNode> | CdkDragExit<BookmarkTreeNode>): boolean
+	{
+		return event.container.data.Id !== event.item.data.uId;
+	}
+
+	private hasChild(parentItem: BookmarkTreeNode, childItem: BookmarkTreeNode): boolean
+	{
+		const hasChild = parentItem.Children.some((item) => item.Id === childItem.Id);
+		return hasChild ? true : parentItem.Children.some((item) => this.hasChild(item, childItem));
 	}
 
 	public SignOut(): void
