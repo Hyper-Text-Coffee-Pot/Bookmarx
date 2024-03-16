@@ -1,18 +1,37 @@
 <main class="row">
+	<mat-toolbar>
+		<button mat-icon-button
+				class="example-icon"
+				aria-label="Example icon-button with menu icon">
+			<mat-icon>menu</mat-icon>
+		</button>
+		<span>My App</span>
+		<span class="example-spacer"></span>
+		<button mat-icon-button
+				class="example-icon favorite-icon"
+				aria-label="Example icon-button with heart icon">
+			<mat-icon>favorite</mat-icon>
+		</button>
+		<button mat-icon-button
+				class="example-icon"
+				aria-label="Example icon-button with share icon">
+			<mat-icon>share</mat-icon>
+		</button>
+	</mat-toolbar>
 	<div cdkDropList
 		 class="col p-0 example-list"
 		 [cdkDropListData]="BookmarkCollections"
 		 (cdkDropListDropped)="drop($event)">
-		<div cdkDrag
-			 class="example-box"
-			 [cdkDragData]="collection"
-			 *ngFor="let collection of BookmarkCollections"
-			 [style.padding-left.px]="collection.Depth * 20"
-			 [cdkDragDisabled]="collection.ParentId == null"
-			 (cdkDragStarted)="HandleDragStart($event)"
-			 (click)="OpenBookmarkCollection(collection)">
+		<mat-card cdkDrag
+				  class="example-box"
+				  [cdkDragData]="collection"
+				  *ngFor="let collection of BookmarkCollections"
+				  [style.padding-left.px]="collection.Depth * 20"
+				  [cdkDragDisabled]="collection.ParentId == null"
+				  (cdkDragStarted)="HandleDragStart($event)"
+				  (click)="OpenBookmarkCollection(collection)">
 			{{collection.Title}}
-		</div>
+		</mat-card>
 	</div>
 	<div class="col-9 p-0">
 		<button type="button"
@@ -22,11 +41,16 @@
 		<button type="button"
 				(click)="ClearBookmarks()">Clear all</button>
 		<hr />
-		<div *ngFor="let bookmark of Bookmarks">
-			<a [href]="SanitizeUrl(bookmark.Url)"
-			   target="_blank">
-				{{bookmark.Title}}
-			</a>
-		</div>
+		<ng-container *ngIf="Bookmarks != null">
+			<p>No saved bookmarks.</p>
+		</ng-container>
+		<ng-container *ngIf="Bookmarks != null">
+			<div *ngFor="let bookmark of Bookmarks">
+				<a [href]="SanitizeUrl(bookmark.Url)"
+				   target="_blank">
+					{{bookmark.Title}}
+				</a>
+			</div>
+		</ng-container>
 	</div>
 </main>

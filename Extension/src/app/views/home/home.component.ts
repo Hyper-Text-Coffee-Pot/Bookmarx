@@ -103,6 +103,13 @@ export class HomeComponent extends BasePageDirective
 			let bookmarksToImport: IBookmarkTreeNode[] = bookmarks[0].children;
 			let collections: BookmarkCollection[] = [];
 
+			// New root node for the current devices set of bookmarks.
+			let deviceBookmarkCollection = new BookmarkCollection();
+			deviceBookmarkCollection.Id = uuid.v4();
+			deviceBookmarkCollection.ParentId = null;
+			deviceBookmarkCollection.Title = "Device Bookmarks";
+			collections.push(deviceBookmarkCollection);
+
 			// This initial import goes and gets all the browsers existing bookmarks.
 			// This typically will include Favorites, Other and Mobile, so we need
 			// to loop over these initial root nodes first to get to the actual bookmarks.
@@ -112,7 +119,8 @@ export class HomeComponent extends BasePageDirective
 				let bookmarkCollection = new BookmarkCollection();
 				// Walking backwards for the index on these root folders to keep them up top.
 				bookmarkCollection.Id = uuid.v4();
-				bookmarkCollection.ParentId = null;
+				bookmarkCollection.ParentId = deviceBookmarkCollection.Id;
+				bookmarkCollection.Depth = deviceBookmarkCollection.Depth + 1;
 				bookmarkCollection.Title = bookmarksToImport[i].title;
 				collections = collections.concat(this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection));
 			}

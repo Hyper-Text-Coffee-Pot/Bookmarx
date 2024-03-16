@@ -22,7 +22,9 @@ import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
 import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-tree.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
 	declarations: [
@@ -47,7 +49,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 		// RecaptchaV3Module,
 		BlockUIModule.forRoot(),
 		BrowserAnimationsModule,
-		DragDropModule
+		DragDropModule,
+		MatToolbarModule,
+		MatIconModule,
+		MatButtonModule
 	],
 	providers: [
 		AuthService,
