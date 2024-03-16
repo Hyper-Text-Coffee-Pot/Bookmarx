@@ -14,6 +14,12 @@ export class BookmarkCollection
 	public ParentId: string;
 
 	/**
+	 * Represents the depth of the collection in the folder tree.
+	 * Helps simplify the UI by indenting the collections.
+	 */
+	public Depth: number;
+
+	/**
 	 * The index of the bookmark collection.
 	 * Used to order the collections.
 	 * Upon flattening the tree, this value is just 0, then it gets reassigned.
