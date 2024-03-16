@@ -63,6 +63,11 @@ $theme-colors: (
 	background: #555;
 }
 
+body.inheritCursors *
+{
+	cursor: inherit !important;
+}
+
 // /* Shimmer Effect */
 // // https://www.geeksforgeeks.org/shimmer-effect-using-css/
 // // https://codepen.io/umng/pen/xMXXRj

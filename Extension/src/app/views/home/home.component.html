@@ -23,7 +23,10 @@
 				(click)="ClearBookmarks()">Clear all</button>
 		<hr />
 		<div *ngFor="let bookmark of Bookmarks">
-			{{bookmark.Title}}
+			<a [href]="SanitizeUrl(bookmark.Url)"
+			   target="_blank">
+				{{bookmark.Title}}
+			</a>
 		</div>
 	</div>
 </main>

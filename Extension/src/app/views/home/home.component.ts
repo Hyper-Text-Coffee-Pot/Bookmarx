@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { ChangeDetectorRef, Component, SecurityContext } from '@angular/core';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BasePageDirective } from '../shared/base-page.directive';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
@@ -25,7 +25,8 @@ export class HomeComponent extends BasePageDirective
 		private _authService: AuthService,
 		private _bookmarksService: BookmarksService,
 		private _blockUI: BlockUIService,
-		private _cdr: ChangeDetectorRef)
+		private _cdr: ChangeDetectorRef,
+		private _sanitizer: DomSanitizer)
 	{
 		super(_route, _titleService);
 	}
@@ -35,6 +36,8 @@ export class HomeComponent extends BasePageDirective
 	public Bookmarks: Bookmark[] = [];
 
 	public IsDragging: boolean;
+
+	public BodyElement: HTMLElement = document.body;
 
 	public override ngOnInit(): void
 	{
@@ -61,18 +64,31 @@ export class HomeComponent extends BasePageDirective
 
 	public drop(event: CdkDragDrop<BookmarkCollection[]>)
 	{
-		console.log(event);
+		this.BodyElement.classList.remove('inheritCursors');
+		this.BodyElement.style.cursor = 'unset';
 		moveItemInArray(this.BookmarkCollections, event.previousIndex, event.currentIndex);
 	}
 
 	public HandleDragStart(event: CdkDragStart): void
 	{
 		this.IsDragging = true;
+		this.BodyElement.classList.add('inheritCursors');
+		this.BodyElement.style.cursor = 'grabbing';
 	}
 
 	public SignOut(): void
 	{
 		this._authService.SignOut();
+	}
+
+	/**
+	 * Sanitize a URL to prevent XSS attacks.
+	 * @param userGeneratedUrl 
+	 * @returns 
+	 */
+	public SanitizeUrl(userGeneratedUrl: string): string
+	{
+		return this._sanitizer.sanitize(SecurityContext.URL, userGeneratedUrl);
 	}
 
 	public ImportExistingBookmarks(): void
