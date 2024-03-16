@@ -47,6 +47,8 @@ export class HomeComponent extends BasePageDirective
 
 	public GetAllBookmarks(): void
 	{
+		this.BookmarkCollections = [];
+		
 		//@ts-expect-error - This is a chrome extension property.
 		chrome.bookmarks.getTree((bookmarks) =>
 		{
@@ -59,7 +61,12 @@ export class HomeComponent extends BasePageDirective
 			// to loop over these initial root nodes first to get to the actual bookmarks.
 			for (let i = 0; i < bookmarksToImport.length; i++)
 			{
-				this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i]);
+				// These root collections will never have a parent, so we set it to null.
+				let bookmarkCollection = new BookmarkCollection();
+				bookmarkCollection.Id = uuid.v4();
+				bookmarkCollection.ParentId = null;
+				bookmarkCollection.Title = bookmarksToImport[i].title;
+				this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection);
 			}
 
 			console.log(this.BookmarkCollections);
@@ -78,33 +85,45 @@ export class HomeComponent extends BasePageDirective
 		});
 	}
 
-	private FlattenBookmarkTreeNodesIntoCollections(bookmarkTreeNode: IBookmarkTreeNode, parentId: string = null): void
+	private FlattenBookmarkTreeNodesIntoCollections(
+		bookmarkTreeNode: IBookmarkTreeNode,
+		bookmarkCollection: BookmarkCollection): void
 	{
-		let bookmarkCollection = new BookmarkCollection();
-		bookmarkCollection.Id = uuid.v4();
-		bookmarkCollection.ParentId = parentId;
-		bookmarkCollection.Title = bookmarkTreeNode.title;
-
 		if (bookmarkTreeNode.children)
 		{
 			bookmarkTreeNode.children.forEach((child) =>
 			{
-				if (child.children)
+				if (child.url != null && child.url != undefined && child.url != "")
 				{
-					this.FlattenBookmarkTreeNodesIntoCollections(child, bookmarkCollection.Id);
-				} else
-				{
+					// If the URL has a value it's a bookmark so add it.
 					let bookmark = new Bookmark();
 					bookmark.Id = uuid.v4();
 					bookmark.ParentId = bookmarkCollection.Id;
 					bookmark.Title = child.title;
 					bookmark.Url = child.url;
-
-					// To maintain the hierarchy we need to add the bookmark to the front of the array.
-					bookmarkCollection.Bookmarks.unshift(bookmark);
+					bookmarkCollection.Bookmarks.push(bookmark);
+					return;
+				}
+				else if (child.children)
+				{
+					// If there are any more children items on this then iterate those.
+					let childBookmarkCollection = new BookmarkCollection();
+					childBookmarkCollection.Id = uuid.v4();
+					childBookmarkCollection.ParentId = bookmarkCollection.Id;
+					childBookmarkCollection.Title = child.title;
+					this.FlattenBookmarkTreeNodesIntoCollections(child, childBookmarkCollection);
 				}
 			});
 		}
+
+		// let ids = [item.Id];
+
+		// if (item.Children?.length > 0)
+		// {
+		// 	item.Children.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)) });
+		// }
+
+		// return ids;
 
 		this.BookmarkCollections.push(bookmarkCollection);
 	}
