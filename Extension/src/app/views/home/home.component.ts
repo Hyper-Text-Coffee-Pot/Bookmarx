@@ -64,13 +64,18 @@ export class HomeComponent extends BasePageDirective
 			{
 				// These root collections will never have a parent, so we set it to null.
 				let bookmarkCollection = new BookmarkCollection();
+				// Walking backwards for the index on these root folders to keep them up top.
+				bookmarkCollection.Index = -i;
 				bookmarkCollection.Id = uuid.v4();
 				bookmarkCollection.ParentId = null;
 				bookmarkCollection.Title = bookmarksToImport[i].title;
 				collections = collections.concat(this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection));
 			}
 
-			this.BookmarkCollections = collections;
+			// Sort the collections by index to pull root folders to the top, then start setting the indexes on collections.
+			this.BookmarkCollections = collections.sort((a, b) => a.Index - b.Index);
+			this.BookmarkCollections.forEach((collection, index) => collection.Index = index);
+
 			console.log(this.BookmarkCollections);
 
 			// this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
@@ -119,15 +124,6 @@ export class HomeComponent extends BasePageDirective
 				}
 			});
 		}
-
-		// let ids = [item.Id];
-
-		// if (item.Children?.length > 0)
-		// {
-		// 	item.Children.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)) });
-		// }
-
-		// return ids;
 
 		return bookmarkCollections;
 	}
