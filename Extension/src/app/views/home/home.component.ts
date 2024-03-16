@@ -75,9 +75,14 @@ export class HomeComponent extends BasePageDirective
 			console.log("I was just moved in the array");
 			moveItemInArray(
 				event.container.data.Children,
-				event.previousIndex,
-				event.currentIndex
+				event.previousContainer.data.Index,
+				event.container.data.Index
 			);
+			// moveItemInArray(
+			// 	event.container.data.Children,
+			// 	event.previousIndex,
+			// 	event.currentIndex
+			// );
 		}
 
 		// Check for changes
