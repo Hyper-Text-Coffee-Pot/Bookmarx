@@ -40,6 +40,9 @@ export class BookmarkTreeNode
 	 */
 	public Icon: string = "&#x1F4C1;";
 
+	/**
+	 * A UUID that's generated for each bookmark node.
+	 */
 	public Id: string;
 
 	public Index: number;

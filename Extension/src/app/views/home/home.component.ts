@@ -7,6 +7,9 @@ import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.se
 import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 import { IBookmarkTreeNode } from 'src/app/domain/web-api/chrome/models/ibookmark-tree-node';
 import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
+import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
+import * as uuid from 'uuid';
+import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
 
 @Component({
 	selector: 'app-home',
@@ -25,6 +28,8 @@ export class HomeComponent extends BasePageDirective
 	}
 
 	public BookmarkTreeNode: BookmarkTreeNode = null;
+
+	public BookmarkCollections: BookmarkCollection[] = [];
 
 	public get ConnectedDropListsIds(): string[]
 	{
@@ -47,11 +52,21 @@ export class HomeComponent extends BasePageDirective
 		{
 			// Get the root tree node for now.
 			// This first one is always a folder which will contain child elements.
-			let bookmarksToImport: IBookmarkTreeNode = bookmarks[0].children[0];
+			let bookmarksToImport: IBookmarkTreeNode[] = bookmarks[0].children;
 
-			this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
+			// This initial import goes and gets all the browsers existing bookmarks.
+			// This typically will include Favorites, Other and Mobile, so we need
+			// to loop over these initial root nodes first to get to the actual bookmarks.
+			for (let i = 0; i < bookmarksToImport.length; i++)
+			{
+				this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i]);
+			}
 
-			console.log(this.BookmarkTreeNode);
+			console.log(this.BookmarkCollections);
+
+			// this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
+
+			// console.log(this.BookmarkTreeNode);
 
 			// this._bookmarksService.SyncBookmarks(this.BookmarkTreeNodes)
 			// 	.subscribe({
@@ -61,6 +76,37 @@ export class HomeComponent extends BasePageDirective
 			// 		}
 			// 	});
 		});
+	}
+
+	private FlattenBookmarkTreeNodesIntoCollections(bookmarkTreeNode: IBookmarkTreeNode, parentId: string = null): void
+	{
+		let bookmarkCollection = new BookmarkCollection();
+		bookmarkCollection.Id = uuid.v4();
+		bookmarkCollection.ParentId = parentId;
+		bookmarkCollection.Title = bookmarkTreeNode.title;
+
+		if (bookmarkTreeNode.children)
+		{
+			bookmarkTreeNode.children.forEach((child) =>
+			{
+				if (child.children)
+				{
+					this.FlattenBookmarkTreeNodesIntoCollections(child, bookmarkCollection.Id);
+				} else
+				{
+					let bookmark = new Bookmark();
+					bookmark.Id = uuid.v4();
+					bookmark.ParentId = bookmarkCollection.Id;
+					bookmark.Title = child.title;
+					bookmark.Url = child.url;
+
+					// To maintain the hierarchy we need to add the bookmark to the front of the array.
+					bookmarkCollection.Bookmarks.unshift(bookmark);
+				}
+			});
+		}
+
+		this.BookmarkCollections.push(bookmarkCollection);
 	}
 
 	public onDragDrop(event: CdkDragDrop<BookmarkTreeNode>)

@@ -2,6 +2,3 @@
 <button (click)="SignOut()">Sign Out</button>
 <button (click)="GetAllBookmarks()">Get all bookmarks</button>
 <h2>Drag / drop the item</h2>
-<app-bookmark-tree [item]="BookmarkTreeNode"
-				   [connectedDropListsIds]="ConnectedDropListsIds"
-				   (itemDrop)="onDragDrop($event)">></app-bookmark-tree>
