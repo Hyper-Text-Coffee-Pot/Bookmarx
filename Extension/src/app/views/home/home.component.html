@@ -1,6 +1,6 @@
 <main class="row">
 	<div cdkDropList
-		 class="col example-list"
+		 class="col p-0 example-list"
 		 [cdkDropListData]="BookmarkCollections"
 		 (cdkDropListDropped)="drop($event)">
 		<div cdkDrag
@@ -8,11 +8,13 @@
 			 [cdkDragData]="collection"
 			 *ngFor="let collection of BookmarkCollections"
 			 [style.padding-left.px]="collection.Depth * 20"
-			 [cdkDragDisabled]="collection.ParentId == null">
+			 [cdkDragDisabled]="collection.ParentId == null"
+			 (cdkDragStarted)="HandleDragStart($event)"
+			 (click)="OpenBookmarkCollection(collection)">
 			{{collection.Title}}
 		</div>
 	</div>
-	<div class="col-9">
+	<div class="col-9 p-0">
 		<button type="button"
 				(click)="SignOut()">Sign Out</button>
 		<button type="button"
@@ -20,5 +22,8 @@
 		<button type="button"
 				(click)="ClearBookmarks()">Clear all</button>
 		<hr />
+		<div *ngFor="let bookmark of Bookmarks">
+			{{bookmark.Title}}
+		</div>
 	</div>
 </main>

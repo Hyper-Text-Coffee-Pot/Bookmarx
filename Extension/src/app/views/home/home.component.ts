@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.service';
 import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 import { IBookmarkTreeNode } from 'src/app/domain/web-api/chrome/models/ibookmark-tree-node';
-import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit, CdkDragStart } from '@angular/cdk/drag-drop';
 import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
 import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
@@ -32,6 +32,10 @@ export class HomeComponent extends BasePageDirective
 
 	public BookmarkCollections: BookmarkCollection[] = [];
 
+	public Bookmarks: Bookmark[] = [];
+
+	public IsDragging: boolean;
+
 	public override ngOnInit(): void
 	{
 	}
@@ -39,6 +43,36 @@ export class HomeComponent extends BasePageDirective
 	public ClearBookmarks(): void
 	{
 		this.BookmarkCollections = [];
+	}
+
+	public OpenBookmarkCollection(collection: BookmarkCollection): void
+	{
+		console.log(collection);
+		if (this.IsDragging)
+		{
+			this.IsDragging = false;
+			return;
+		}
+
+		this.Bookmarks = [...collection.Bookmarks];
+		this._cdr.detectChanges();
+	}
+
+
+	public drop(event: CdkDragDrop<BookmarkCollection[]>)
+	{
+		console.log(event);
+		moveItemInArray(this.BookmarkCollections, event.previousIndex, event.currentIndex);
+	}
+
+	public HandleDragStart(event: CdkDragStart): void
+	{
+		this.IsDragging = true;
+	}
+
+	public SignOut(): void
+	{
+		this._authService.SignOut();
 	}
 
 	public ImportExistingBookmarks(): void
@@ -140,16 +174,5 @@ export class HomeComponent extends BasePageDirective
 		}
 
 		return bookmarkCollections;
-	}
-
-	drop(event: CdkDragDrop<BookmarkCollection[]>)
-	{
-		console.log(event);
-		moveItemInArray(this.BookmarkCollections, event.previousIndex, event.currentIndex);
-	}
-
-	public SignOut(): void
-	{
-		this._authService.SignOut();
 	}
 }
