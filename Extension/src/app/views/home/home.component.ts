@@ -48,13 +48,14 @@ export class HomeComponent extends BasePageDirective
 	public GetAllBookmarks(): void
 	{
 		this.BookmarkCollections = [];
-		
+
 		//@ts-expect-error - This is a chrome extension property.
 		chrome.bookmarks.getTree((bookmarks) =>
 		{
 			// Get the root tree node for now.
 			// This first one is always a folder which will contain child elements.
 			let bookmarksToImport: IBookmarkTreeNode[] = bookmarks[0].children;
+			let collections: BookmarkCollection[] = [];
 
 			// This initial import goes and gets all the browsers existing bookmarks.
 			// This typically will include Favorites, Other and Mobile, so we need
@@ -66,9 +67,10 @@ export class HomeComponent extends BasePageDirective
 				bookmarkCollection.Id = uuid.v4();
 				bookmarkCollection.ParentId = null;
 				bookmarkCollection.Title = bookmarksToImport[i].title;
-				this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection);
+				collections = collections.concat(this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection));
 			}
 
+			this.BookmarkCollections = collections;
 			console.log(this.BookmarkCollections);
 
 			// this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
@@ -87,8 +89,10 @@ export class HomeComponent extends BasePageDirective
 
 	private FlattenBookmarkTreeNodesIntoCollections(
 		bookmarkTreeNode: IBookmarkTreeNode,
-		bookmarkCollection: BookmarkCollection): void
+		bookmarkCollection: BookmarkCollection): BookmarkCollection[]
 	{
+		let bookmarkCollections: BookmarkCollection[] = [bookmarkCollection];
+
 		if (bookmarkTreeNode.children)
 		{
 			bookmarkTreeNode.children.forEach((child) =>
@@ -111,7 +115,7 @@ export class HomeComponent extends BasePageDirective
 					childBookmarkCollection.Id = uuid.v4();
 					childBookmarkCollection.ParentId = bookmarkCollection.Id;
 					childBookmarkCollection.Title = child.title;
-					this.FlattenBookmarkTreeNodesIntoCollections(child, childBookmarkCollection);
+					bookmarkCollections = bookmarkCollections.concat(this.FlattenBookmarkTreeNodesIntoCollections(child, childBookmarkCollection));
 				}
 			});
 		}
@@ -125,7 +129,7 @@ export class HomeComponent extends BasePageDirective
 
 		// return ids;
 
-		this.BookmarkCollections.push(bookmarkCollection);
+		return bookmarkCollections;
 	}
 
 	public onDragDrop(event: CdkDragDrop<BookmarkTreeNode>)
