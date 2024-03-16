@@ -29,7 +29,11 @@ export class HomeComponent extends BasePageDirective
 	public get ConnectedDropListsIds(): string[]
 	{
 		// We reverse ids here to respect items nesting hierarchy
-		return this.getIdsRecursive(this.BookmarkTreeNode).reverse();
+		let ids = this.getIdsRecursive(this.BookmarkTreeNode).reverse();
+
+		console.log(ids);
+
+		return ids;
 	}
 
 	public override ngOnInit(): void
