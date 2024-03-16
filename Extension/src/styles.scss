@@ -8,19 +8,22 @@ $theme-colors: (
 /* https://loiane.com/2017/08/how-to-add-bootstrap-to-an-angular-cli-project/ */
 @import "~bootstrap/scss/bootstrap";
 
+/* cyrillic-ext */
+@font-face
+{
+	font-family: 'Roboto';
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url('./assets/fonts/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2') format('woff2');
+	unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
 // regular style toast
 //@import '~ngx-toastr/toastr';
 
 // bootstrap style toast
 //@import '~ngx-toastr/toastr-bs4-alert';
-
-html,
-body
-{
-	height: 100%;
-	width: 500px;
-	height: 600px;
-}
 
 .lock-scroll
 {
@@ -88,5 +91,12 @@ body
 // Dark-mode global styles.
 @media (prefers-color-scheme: dark)
 {}
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+html,
+body
+{
+	margin: 0;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
+	width: 800px;
+	height: 600px;
+}

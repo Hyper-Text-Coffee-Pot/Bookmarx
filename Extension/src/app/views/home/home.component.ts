@@ -41,7 +41,7 @@ export class HomeComponent extends BasePageDirective
 		this.BookmarkCollections = [];
 	}
 
-	public GetAllBookmarks(): void
+	public ImportExistingBookmarks(): void
 	{
 		this.BookmarkCollections = [];
 

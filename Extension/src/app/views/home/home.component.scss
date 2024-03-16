@@ -3,16 +3,17 @@
 	width: 500px;
 	max-width: 100%;
 	border: solid 1px #ccc;
-	min-height: 60px;
+	height: 100vh;
+	overflow-x: hidden;
+	overflow-y: scroll;
 	display: block;
 	background: white;
 	border-radius: 4px;
-	overflow: hidden;
 }
 
 .example-box
 {
-	padding: 10px 5px;
+	padding: 5px;
 	border-bottom: solid 1px #ccc;
 	color: rgba(0, 0, 0, 0.87);
 	display: flex;

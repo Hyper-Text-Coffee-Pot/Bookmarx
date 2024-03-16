@@ -1,27 +1,24 @@
-<p>home works!</p>
-<button type="button"
-		(click)="SignOut()">Sign Out</button>
-<button type="button"
-		(click)="GetAllBookmarks()">Get all bookmarks</button>
-<button type="button"
-		(click)="ClearBookmarks()">Clear all</button>
-<h2>Drag / drop the item</h2>
-<div cdkDropList
-	 class="example-list"
-	 [cdkDropListData]="BookmarkCollections"
-	 (cdkDropListDropped)="drop($event)">
-	<div cdkDrag
-		 class="example-box"
-		 [cdkDragData]="collection"
-		 *ngFor="let collection of BookmarkCollections"
-		 [style.padding-left.px]="collection.Depth * 20"
-		 [cdkDragDisabled]="collection.ParentId == null">
-		{{collection.Title}}
+<main class="row">
+	<div cdkDropList
+		 class="col example-list"
+		 [cdkDropListData]="BookmarkCollections"
+		 (cdkDropListDropped)="drop($event)">
+		<div cdkDrag
+			 class="example-box"
+			 [cdkDragData]="collection"
+			 *ngFor="let collection of BookmarkCollections"
+			 [style.padding-left.px]="collection.Depth * 20"
+			 [cdkDragDisabled]="collection.ParentId == null">
+			{{collection.Title}}
+		</div>
 	</div>
-</div>
-<!-- <div class="example-list">
-	<div class="example-box"
-		 *ngFor="let collection of BookmarkCollections">
-		{{collection.Title}}
+	<div class="col-9">
+		<button type="button"
+				(click)="SignOut()">Sign Out</button>
+		<button type="button"
+				(click)="ImportExistingBookmarks()">Import existing bookmarks</button>
+		<button type="button"
+				(click)="ClearBookmarks()">Clear all</button>
+		<hr />
 	</div>
-</div> -->
+</main>
