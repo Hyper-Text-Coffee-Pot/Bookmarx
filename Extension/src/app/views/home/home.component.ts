@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BasePageDirective } from '../shared/base-page.directive';
@@ -24,7 +24,8 @@ export class HomeComponent extends BasePageDirective
 		private _titleService: Title,
 		private _authService: AuthService,
 		private _bookmarksService: BookmarksService,
-		private _blockUI: BlockUIService)
+		private _blockUI: BlockUIService,
+		private _cdr: ChangeDetectorRef)
 	{
 		super(_route, _titleService);
 	}
@@ -42,7 +43,7 @@ export class HomeComponent extends BasePageDirective
 
 	public GetAllBookmarks(): void
 	{
-		// this.BookmarkCollections = [];
+		this.BookmarkCollections = [];
 
 		//@ts-expect-error - This is a chrome extension property.
 		chrome.bookmarks.getTree((bookmarks) =>
@@ -61,7 +62,6 @@ export class HomeComponent extends BasePageDirective
 				// These root collections will never have a parent, so we set it to null.
 				let bookmarkCollection = new BookmarkCollection();
 				// Walking backwards for the index on these root folders to keep them up top.
-				bookmarkCollection.Index = -i;
 				bookmarkCollection.Id = uuid.v4();
 				bookmarkCollection.ParentId = null;
 				bookmarkCollection.Depth = depth;
@@ -75,6 +75,9 @@ export class HomeComponent extends BasePageDirective
 			{
 				collections[i].Index = i;
 			}
+
+			this.BookmarkCollections = [...collections];
+			this._cdr.detectChanges();
 
 			// // We need to slowly add things to the DOM tree or we'll overwhelm the browser.
 			// let batchSize = 10; // Adjust this value based on your performance needs

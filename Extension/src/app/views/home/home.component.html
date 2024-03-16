@@ -6,20 +6,21 @@
 <button type="button"
 		(click)="ClearBookmarks()">Clear all</button>
 <h2>Drag / drop the item</h2>
-<!-- <div cdkDropList
+<div cdkDropList
 	 class="example-list"
 	 [cdkDropListData]="BookmarkCollections"
 	 (cdkDropListDropped)="drop($event)">
 	<div cdkDrag
 		 class="example-box"
 		 [cdkDragData]="collection"
-		 *ngFor="let collection of BookmarkCollections">
+		 *ngFor="let collection of BookmarkCollections"
+		 [style.margin-left.px]="collection.Depth * 20">
 		{{collection.Title}}
 	</div>
-</div> -->
-<div class="example-list">
+</div>
+<!-- <div class="example-list">
 	<div class="example-box"
 		 *ngFor="let collection of BookmarkCollections">
 		{{collection.Title}}
 	</div>
-</div>
+</div> -->
