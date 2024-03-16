@@ -11,14 +11,18 @@ export class BookmarkTreeComponent
 {
 	@Input() item: BookmarkTreeNode;
 	@Input() parentItem?: BookmarkTreeNode;
-	@Input() public set connectedDropListsIds(ids: string[])
+
+	@Input()
+	public set connectedDropListsIds(ids: string[])
 	{
 		this.allDropListsIds = ids;
 	}
+	
 	public get connectedDropListsIds(): string[]
 	{
 		return this.allDropListsIds.filter((id) => id !== this.item.Id);
 	}
+	
 	public allDropListsIds: string[];
 
 	public get dragDisabled(): boolean

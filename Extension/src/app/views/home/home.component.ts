@@ -24,7 +24,7 @@ export class HomeComponent extends BasePageDirective
 		super(_route, _titleService);
 	}
 
-	public BookmarkTreeNode: BookmarkTreeNode;
+	public BookmarkTreeNode: BookmarkTreeNode = null;
 
 	public get ConnectedDropListsIds(): string[]
 	{
@@ -80,7 +80,12 @@ export class HomeComponent extends BasePageDirective
 	private getIdsRecursive(item: BookmarkTreeNode): string[]
 	{
 		let ids = [item.Id];
-		item.Children.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)) });
+
+		if (item.Children?.length > 0)
+		{
+			item.Children.forEach((childItem) => { ids = ids.concat(this.getIdsRecursive(childItem)) });
+		}
+
 		return ids;
 	}
 
@@ -100,8 +105,8 @@ export class HomeComponent extends BasePageDirective
 
 	private hasChild(parentItem: BookmarkTreeNode, childItem: BookmarkTreeNode): boolean
 	{
-		const hasChild = parentItem.Children.some((item) => item.Id === childItem.Id);
-		return hasChild ? true : parentItem.Children.some((item) => this.hasChild(item, childItem));
+		const hasChild = parentItem.Children?.some((item) => item.Id === childItem.Id);
+		return hasChild ? true : parentItem.Children?.some((item) => this.hasChild(item, childItem));
 	}
 
 	public SignOut(): void
