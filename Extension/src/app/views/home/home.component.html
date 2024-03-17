@@ -27,7 +27,7 @@
 				  [cdkDragData]="collection"
 				  *ngFor="let collection of BookmarkCollections"
 				  [cdkDragDisabled]="collection.ParentId == null"
-				  (cdkDragStarted)="HandleDragStart($event)"
+				  (cdkDragStarted)="HandleDragStart($event, collection)"
 				  (click)="OpenBookmarkCollection(collection)"
 				  (dblclick)="HandleDoubleClick(collection)"
 				  [style.padding-left.px]="collection.Depth * 20">

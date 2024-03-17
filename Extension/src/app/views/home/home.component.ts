@@ -73,9 +73,10 @@ export class HomeComponent extends BasePageDirective
 		moveItemInArray(this.BookmarkCollections, event.previousIndex, event.currentIndex);
 	}
 
-	public HandleDragStart(event: CdkDragStart): void
+	public HandleDragStart(event: CdkDragStart, collection: BookmarkCollection): void
 	{
 		this.IsDragging = true;
+		this.CollapseTree(collection);
 		this.BodyElement.classList.add('inheritCursors');
 		this.BodyElement.style.cursor = 'grabbing';
 	}
