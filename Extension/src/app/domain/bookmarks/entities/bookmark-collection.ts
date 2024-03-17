@@ -30,4 +30,25 @@ export class BookmarkCollection
 	public Title: string = "N/A";
 
 	public Bookmarks: Bookmark[] = [];
+
+	/**
+	 * This determines if its child collections are collapsed.
+	 * Different from IsCollapsed which tells us about itself.
+	 * This one is used to show the correct arrow icon.
+	 * It also helps ensure that each child collection state is in sync.
+	 */
+	public ChildCollectionsCollapsed: boolean = false;
+
+	/**
+	 * Just some UI magic to toggle the visibility of the collection.
+	 * This is used to determine if the collection should be shown or not
+	 * when it is a nested collection.
+	 */
+	public IsCollapsed: boolean = false;
+
+	/**
+	 * A flattened way of knowing if the collection has child collections.
+	 * This is used to determine if the collection should have a toggle button.
+	 */
+	public HasChildren: boolean = false;
 }

@@ -76,6 +76,24 @@ export class HomeComponent extends BasePageDirective
 		this.BodyElement.style.cursor = 'grabbing';
 	}
 
+	public CollapseTree(collection: BookmarkCollection): void
+	{
+		collection.ChildCollectionsCollapsed = !collection.ChildCollectionsCollapsed;
+
+		// Go and find all the children of this collection and collapse them.
+		// We also need to go and find all the children of the children and collapse them.
+		for (let i = 0; i < this.BookmarkCollections.length; i++)
+		{
+			if (this.BookmarkCollections[i].ParentId == collection.Id)
+			{
+				this.BookmarkCollections[i].IsCollapsed = collection.ChildCollectionsCollapsed;
+
+				// recursively call the function for child collections
+				this.CollapseTree(this.BookmarkCollections[i]);
+			}
+		}
+	}
+
 	public SignOut(): void
 	{
 		this._authService.SignOut();
@@ -101,65 +119,70 @@ export class HomeComponent extends BasePageDirective
 			// Get the root tree node for now.
 			// This first one is always a folder which will contain child elements.
 			let bookmarksToImport: IBookmarkTreeNode[] = bookmarks[0].children;
-			let collections: BookmarkCollection[] = [];
 
-			// New root node for the current devices set of bookmarks.
-			let deviceBookmarkCollection = new BookmarkCollection();
-			deviceBookmarkCollection.Id = uuid.v4();
-			deviceBookmarkCollection.ParentId = null;
-			deviceBookmarkCollection.Title = "Device Bookmarks";
-			collections.push(deviceBookmarkCollection);
-
-			// This initial import goes and gets all the browsers existing bookmarks.
-			// This typically will include Favorites, Other and Mobile, so we need
-			// to loop over these initial root nodes first to get to the actual bookmarks.
-			for (let i = 0; i < bookmarksToImport.length; i++)
+			if (bookmarksToImport.length > 0)
 			{
-				// These root collections will never have a parent, so we set it to null.
-				let bookmarkCollection = new BookmarkCollection();
-				// Walking backwards for the index on these root folders to keep them up top.
-				bookmarkCollection.Id = uuid.v4();
-				bookmarkCollection.ParentId = deviceBookmarkCollection.Id;
-				bookmarkCollection.Depth = deviceBookmarkCollection.Depth + 1;
-				bookmarkCollection.Title = bookmarksToImport[i].title;
-				collections = collections.concat(this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection));
+				let collections: BookmarkCollection[] = [];
+
+				// New root node for the current devices set of bookmarks.
+				let deviceBookmarkCollection = new BookmarkCollection();
+				deviceBookmarkCollection.Id = uuid.v4();
+				deviceBookmarkCollection.ParentId = null;
+				deviceBookmarkCollection.Title = "Device Bookmarks";
+				deviceBookmarkCollection.HasChildren = true;
+				collections.push(deviceBookmarkCollection);
+
+				// This initial import goes and gets all the browsers existing bookmarks.
+				// This typically will include Favorites, Other and Mobile, so we need
+				// to loop over these initial root nodes first to get to the actual bookmarks.
+				for (let i = 0; i < bookmarksToImport.length; i++)
+				{
+					// These root collections will never have a parent, so we set it to null.
+					let bookmarkCollection = new BookmarkCollection();
+					// Walking backwards for the index on these root folders to keep them up top.
+					bookmarkCollection.Id = uuid.v4();
+					bookmarkCollection.ParentId = deviceBookmarkCollection.Id;
+					bookmarkCollection.Depth = deviceBookmarkCollection.Depth + 1;
+					bookmarkCollection.Title = bookmarksToImport[i].title;
+					collections = collections.concat(this.FlattenBookmarkTreeNodesIntoCollections(bookmarksToImport[i], bookmarkCollection));
+				}
+
+				// Sort the collections by index to pull root folders to the top, then start setting the indexes on collections.
+				collections = collections.sort((a, b) => a.Index - b.Index);
+				for (let i = 0; i < collections.length; i++)
+				{
+					collections[i].Index = i;
+				}
+
+				this.BookmarkCollections = [...collections];
+				this._cdr.detectChanges();
+
+				// // We need to slowly add things to the DOM tree or we'll overwhelm the browser.
+				// let batchSize = 10; // Adjust this value based on your performance needs
+				// let batchCount = Math.ceil(collections.length / batchSize);
+
+				// for (let i = 0; i < batchCount; i++)
+				// {
+				// 	setTimeout(() =>
+				// 	{
+				// 		let batch = collections.slice(i * batchSize, (i + 1) * batchSize);
+				// 		this.BookmarkCollections = this.BookmarkCollections.concat(batch);
+				// 	}, i * 500); // Adjust delay as needed
+				// }
+
+
+				// this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
+
+				// console.log(this.BookmarkTreeNode);
+
+				// this._bookmarksService.SyncBookmarks(this.BookmarkTreeNodes)
+				// 	.subscribe({
+				// 		next: (result: BookmarkTreeNode) =>
+				// 		{
+				// 			console.log(result);
+				// 		}
+				// 	});
 			}
-
-			// Sort the collections by index to pull root folders to the top, then start setting the indexes on collections.
-			collections = collections.sort((a, b) => a.Index - b.Index);
-			for (let i = 0; i < collections.length; i++)
-			{
-				collections[i].Index = i;
-			}
-
-			this.BookmarkCollections = [...collections];
-			this._cdr.detectChanges();
-
-			// // We need to slowly add things to the DOM tree or we'll overwhelm the browser.
-			// let batchSize = 10; // Adjust this value based on your performance needs
-			// let batchCount = Math.ceil(collections.length / batchSize);
-
-			// for (let i = 0; i < batchCount; i++)
-			// {
-			// 	setTimeout(() =>
-			// 	{
-			// 		let batch = collections.slice(i * batchSize, (i + 1) * batchSize);
-			// 		this.BookmarkCollections = this.BookmarkCollections.concat(batch);
-			// 	}, i * 500); // Adjust delay as needed
-			// }
-
-
-			// this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
-
-			// console.log(this.BookmarkTreeNode);
-
-			// this._bookmarksService.SyncBookmarks(this.BookmarkTreeNodes)
-			// 	.subscribe({
-			// 		next: (result: BookmarkTreeNode) =>
-			// 		{
-			// 			console.log(result);
-			// 		}
-			// 	});
 		});
 	}
 
@@ -186,6 +209,9 @@ export class HomeComponent extends BasePageDirective
 				}
 				else if (child.children)
 				{
+
+					bookmarkCollection.HasChildren = true;
+
 					// If there are any more children items on this then iterate those.
 					let childBookmarkCollection = new BookmarkCollection();
 					childBookmarkCollection.Id = uuid.v4();

@@ -1,5 +1,5 @@
 <main class="row">
-	<mat-toolbar>
+	<mat-toolbar color="primary">
 		<button mat-icon-button
 				class="example-icon"
 				aria-label="Example icon-button with menu icon">
@@ -26,11 +26,30 @@
 				  class="example-box"
 				  [cdkDragData]="collection"
 				  *ngFor="let collection of BookmarkCollections"
-				  [style.padding-left.px]="collection.Depth * 20"
 				  [cdkDragDisabled]="collection.ParentId == null"
 				  (cdkDragStarted)="HandleDragStart($event)"
 				  (click)="OpenBookmarkCollection(collection)">
-			{{collection.Title}}
+			<div *ngIf="!collection.IsCollapsed">
+				<div class="d-flex align-items-center">
+					<ng-container *ngIf="collection.HasChildren">
+						<button mat-icon-button
+								aria-label="Example icon button with a vertical three dot icon"
+								(click)="CollapseTree(collection)">
+							<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
+								<mat-icon aria-hidden="false"
+										  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
+							</ng-container>
+							<ng-container *ngIf="collection.ChildCollectionsCollapsed">
+								<mat-icon aria-hidden="false"
+										  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
+							</ng-container>
+						</button>
+					</ng-container>
+					<p [style.padding-left.px]="collection.Depth * 20">
+						{{collection.Title}}
+					</p>
+				</div>
+			</div>
 		</mat-card>
 	</div>
 	<div class="col-9 p-0">
@@ -41,10 +60,10 @@
 		<button type="button"
 				(click)="ClearBookmarks()">Clear all</button>
 		<hr />
-		<ng-container *ngIf="Bookmarks != null">
+		<ng-container *ngIf="!Bookmarks.length">
 			<p>No saved bookmarks.</p>
 		</ng-container>
-		<ng-container *ngIf="Bookmarks != null">
+		<ng-container *ngIf="Bookmarks.length">
 			<div *ngFor="let bookmark of Bookmarks">
 				<a [href]="SanitizeUrl(bookmark.Url)"
 				   target="_blank">
