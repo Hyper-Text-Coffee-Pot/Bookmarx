@@ -66,9 +66,13 @@ export class HomeComponent extends BasePageDirective
 		this.CollapseTree(collection);
 	}
 
+	/**
+	 * This is a costly method, but there's not really a way around it.
+	 * It's not a huge deal because it's only called when the user is dragging something.
+	 * @param viewModelCollection
+	 */
 	public drop(viewModelCollection: CdkDragDrop<BookmarkCollection[]>)
 	{
-		console.log(this.BookmarkCollections);
 		let activeCollection = viewModelCollection.item.data;
 
 		this.BodyElement.classList.remove('inheritCursors');
@@ -76,11 +80,6 @@ export class HomeComponent extends BasePageDirective
 
 		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
 		let nextCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
-
-		// Verify that the move doesn't attempt to move a collection into itself or a child collection.
-		console.log(activeCollection);
-		console.log(targetCollection);
-		console.log(nextCollection);
 
 		// Check if the target collection is a child of the active collection
 		let isChild = this.IsChildCollection(targetCollection, activeCollection);
@@ -103,26 +102,29 @@ export class HomeComponent extends BasePageDirective
 
 		// Now, reorder everything correctly.
 		let reorderedCollections: BookmarkCollection[] = [];
-
 		let childCollections: BookmarkCollection[] = this.FindChildCollections(activeCollection.Id);
 
 		// Remove child collections from BookmarkCollections array
-		this.BookmarkCollections = this.BookmarkCollections.filter(collection => !childCollections.includes(collection));
+		reorderedCollections = this.BookmarkCollections.filter(collection => !childCollections.includes(collection));
 
 		// Reinsert child collections after the moved viewModelCollection
-		for (let i = 0; i < childCollections.length; i++)
+		for (let i = 0; i < reorderedCollections.length; i++)
 		{
-			let index = this.BookmarkCollections.findIndex(collection => collection.Id === childCollections[i].Id);
-			if (index !== -1)
+			if (reorderedCollections[i].Id === activeCollection.Id)
 			{
-				this.BookmarkCollections.splice(index + 1, 0, childCollections[i]);
+				reorderedCollections = reorderedCollections.slice(0, i + 1).concat(childCollections).concat(reorderedCollections.slice(i + 1));
+				break;
 			}
 		}
 
-		// for (let i = 0; i < this.BookmarkCollections.length; i++)
-		// {
-		// 	this.BookmarkCollections[i].Index = i;
-		// }
+		// Rewrite our indexes to match the new order.
+		reorderedCollections.forEach((collection, index) =>
+		{
+			collection.Index = index;
+		});
+
+		this.BookmarkCollections = [...reorderedCollections];
+		this._cdr.detectChanges();
 
 		console.log(this.BookmarkCollections);
 	}
