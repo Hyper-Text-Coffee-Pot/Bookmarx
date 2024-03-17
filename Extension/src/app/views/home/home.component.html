@@ -28,13 +28,15 @@
 				  *ngFor="let collection of BookmarkCollections"
 				  [cdkDragDisabled]="collection.ParentId == null"
 				  (cdkDragStarted)="HandleDragStart($event)"
-				  (click)="OpenBookmarkCollection(collection)">
+				  (click)="OpenBookmarkCollection(collection)"
+				  [style.padding-left.px]="collection.Depth * 20">
 			<div *ngIf="!collection.IsCollapsed">
-				<div class="d-flex align-items-baseline">
+				<div class="d-flex align-items-center">
 					<ng-container *ngIf="collection.HasChildren">
 						<button mat-icon-button
 								aria-label="Example icon button with a vertical three dot icon"
-								(click)="CollapseTree(collection)">
+								(click)="CollapseTree(collection)"
+								[style.margin-left.px]="-20">
 							<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
 								<mat-icon aria-hidden="false"
 										  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
@@ -45,7 +47,7 @@
 							</ng-container>
 						</button>
 					</ng-container>
-					<p [style.padding-left.px]="collection.Depth * 20">
+					<p class="m-0 p-0">
 						{{collection.Title}}
 					</p>
 				</div>
