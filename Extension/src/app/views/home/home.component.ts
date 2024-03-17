@@ -101,12 +101,35 @@ export class HomeComponent extends BasePageDirective
 			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 		}
 
-		for (let i = 0; i < this.BookmarkCollections.length; i++)
-		{
-			this.BookmarkCollections[i].Index = i;
-		}
+		// Now, reorder everything correctly.
+		let reorderedCollections: BookmarkCollection[] = [];
+
+		let childCollections: BookmarkCollection[] = this.FindChildCollections(activeCollection.Id);
+		console.log(childCollections);
+
+		// for (let i = 0; i < this.BookmarkCollections.length; i++)
+		// {
+		// 	this.BookmarkCollections[i].Index = i;
+		// }
 
 		console.log(this.BookmarkCollections);
+	}
+
+	private FindChildCollections(parentId: string): BookmarkCollection[]
+	{
+		let childCollections: BookmarkCollection[] = [];
+
+		for (let i = 0; i < this.BookmarkCollections.length; i++)
+		{
+			if (this.BookmarkCollections[i].ParentId === parentId)
+			{
+				childCollections.push(this.BookmarkCollections[i]);
+				let grandchildren = this.FindChildCollections(this.BookmarkCollections[i].Id);
+				childCollections = childCollections.concat(grandchildren);
+			}
+		}
+
+		return childCollections;
 	}
 
 	public HandleDragStart(event: CdkDragStart, collection: BookmarkCollection): void
@@ -277,7 +300,6 @@ export class HomeComponent extends BasePageDirective
 	 */
 	private IsChildCollection(targetCollection: BookmarkCollection, activeCollection: BookmarkCollection): boolean
 	{
-		console.log(activeCollection);
 		if (targetCollection.ParentId == activeCollection.Id)
 		{
 			return true;
