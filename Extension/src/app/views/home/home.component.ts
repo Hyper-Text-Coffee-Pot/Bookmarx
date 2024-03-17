@@ -84,17 +84,22 @@ export class HomeComponent extends BasePageDirective
 		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
 		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
-		let isChild = this.IsChildCollection(targetCollection, activeCollection);
-		if (isChild)
+		// We only need to worry about this when moving down the list because we should be able
+		// to move a directory from inside a deeper folder to outside of it.
+		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
 		{
-			// Check if the target collection is a child of the active collection
-			this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
-				politeness: 'assertive',
-				duration: 5000
-			});
+			let isChild = this.IsChildCollection(targetCollection, activeCollection);
+			if (isChild)
+			{
+				// Check if the target collection is a child of the active collection
+				this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
+					politeness: 'assertive',
+					duration: 5000
+				});
 
-			// Kick out as we don't need to perform any logic.
-			return;
+				// Kick out as we don't need to perform any logic.
+				return;
+			}
 		}
 		else if (viewModelCollection.currentIndex === viewModelCollection.previousIndex)
 		{
@@ -102,36 +107,49 @@ export class HomeComponent extends BasePageDirective
 			return;
 		}
 
-		// If the location it's being moved to has children, it should be automatically nested based on its parent.
+		// Scoot the collection in a depth if the target has children.
 		activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
 		activeCollection.ParentId = targetCollection.ParentId;
-		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
-		// Now, reorder everything correctly.
-		let reorderedCollections: BookmarkCollection[] = [];
-		let childCollections: BookmarkCollection[] = this.FindChildCollections(activeCollection.Id);
-
-		// Remove child collections from BookmarkCollections array
-		reorderedCollections = this.BookmarkCollections.filter(collection => !childCollections.includes(collection));
-
-		// Reinsert child collections after the moved viewModelCollection
-		for (let i = 0; i < reorderedCollections.length; i++)
+		// If the target move is down and the target has children then we should parent this using the 
+		// same Id as that first child element.
+		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
 		{
-			if (reorderedCollections[i].Id === activeCollection.Id)
-			{
-				reorderedCollections = reorderedCollections.slice(0, i + 1).concat(childCollections).concat(reorderedCollections.slice(i + 1));
-				break;
-			}
+			activeCollection.ParentId = leadingCollection.ParentId;
 		}
 
-		// Rewrite our indexes to match the new order.
-		reorderedCollections.forEach((collection, index) =>
-		{
-			collection.Index = index;
-		});
+		// Finally, move stuff around.
+		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
-		this.BookmarkCollections = [...reorderedCollections];
-		this._cdr.detectChanges();
+		// If there are any child elements on the moved collection then go move those back under the collection.
+		if (activeCollection.HasChildren)
+		{
+			// Now, reorder everything correctly.
+			let reorderedCollections: BookmarkCollection[] = [];
+			let childCollections: BookmarkCollection[] = this.FindChildCollections(activeCollection.Id);
+
+			// Remove child collections from BookmarkCollections array
+			reorderedCollections = this.BookmarkCollections.filter(collection => !childCollections.includes(collection));
+
+			// Reinsert child collections after the moved viewModelCollection
+			for (let i = 0; i < reorderedCollections.length; i++)
+			{
+				if (reorderedCollections[i].Id === activeCollection.Id)
+				{
+					reorderedCollections = reorderedCollections.slice(0, i + 1).concat(childCollections).concat(reorderedCollections.slice(i + 1));
+					break;
+				}
+			}
+
+			// Rewrite our indexes to match the new order.
+			reorderedCollections.forEach((collection, index) =>
+			{
+				collection.Index = index;
+			});
+
+			this.BookmarkCollections = [...reorderedCollections];
+			this._cdr.detectChanges();
+		}
 
 		console.log(this.BookmarkCollections);
 	}
