@@ -97,19 +97,26 @@ export class HomeComponent extends BasePageDirective
 				politeness: 'assertive',
 				duration: 5000
 			});
+
+			// Kick out as we don't need to perform any logic.
+			return;
 		}
-		// else if (targetCollection.ParentId === activeCollection.Id)
-		else if (activeCollection.Depth === targetCollection.Depth)
+
+		// else if (activeCollection.ParentId == targetCollection.ParentId)
+		if (activeCollection.ParentId == targetCollection.ParentId
+			&& activeCollection.ParentId == laggingCollection.ParentId)
 		{
 			// If we're moving things around in the same level, then we just need to reorder them.
+			// This one is dialed in.
 			console.log("I moved at the same level");
 			activeCollection.Index = activeCollection.currentIndex;
 			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 		}
-		else if (activeCollection.Depth < laggingCollection.Depth
+		else if (activeCollection.ParentId != laggingCollection.Id
+			|| activeCollection.Depth < laggingCollection.Depth
 			|| (activeCollection.Depth - laggingCollection.Depth) >= 0)
 		{
-			// If the moved item lives at a depth less than the lagging item, then we need to move it to the same level.
+			// We moved an item under a new parent, so we need to update the parent id and depth.
 			activeCollection.Depth = laggingCollection.Depth + 1;
 			activeCollection.ParentId = laggingCollection.Id;
 			console.log("I got renested");
