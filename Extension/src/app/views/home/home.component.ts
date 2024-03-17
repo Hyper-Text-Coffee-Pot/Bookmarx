@@ -11,6 +11,7 @@ import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-c
 import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
 import { BlockUIService } from 'ng-block-ui';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
 	selector: 'app-home',
@@ -26,7 +27,8 @@ export class HomeComponent extends BasePageDirective
 		private _bookmarksService: BookmarksService,
 		private _blockUI: BlockUIService,
 		private _cdr: ChangeDetectorRef,
-		private _sanitizer: DomSanitizer)
+		private _sanitizer: DomSanitizer,
+		private _snackBar: MatSnackBar)
 	{
 		super(_route, _titleService);
 	}
@@ -63,7 +65,7 @@ export class HomeComponent extends BasePageDirective
 
 	public HandleDoubleClick(collection: BookmarkCollection): void
 	{
-		this.CollapseTree(collection);
+		this.ToggleTree(collection, !collection.IsCollapsed);
 	}
 
 	/**
@@ -78,25 +80,39 @@ export class HomeComponent extends BasePageDirective
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
 
+		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
 		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
-		let nextCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+
+		console.log(laggingCollection);
+		console.log(activeCollection);
+		console.log(targetCollection);
+		console.log(leadingCollection);
 
 		// Check if the target collection is a child of the active collection
 		let isChild = this.IsChildCollection(targetCollection, activeCollection);
 		if (isChild)
 		{
-			alert("Cannot move a collection into itself or its child collection.");
+			this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
+				politeness: 'assertive',
+				duration: 5000
+			});
 		}
-		else if (targetCollection.ParentId === activeCollection.Id)
+		// else if (targetCollection.ParentId === activeCollection.Id)
+		else if (activeCollection.Depth === targetCollection.Depth)
 		{
-			// If we're moving the collection to the same parent, then we can just move it.
-			activeCollection.ParentId = targetCollection.ParentId;
-			activeCollection.Depth = targetCollection.Depth;
+			// If we're moving things around in the same level, then we just need to reorder them.
+			console.log("I moved at the same level");
 			activeCollection.Index = activeCollection.currentIndex;
 			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 		}
-		else
+		else if (activeCollection.Depth < laggingCollection.Depth
+			|| (activeCollection.Depth - laggingCollection.Depth) >= 0)
 		{
+			// If the moved item lives at a depth less than the lagging item, then we need to move it to the same level.
+			activeCollection.Depth = laggingCollection.Depth + 1;
+			activeCollection.ParentId = laggingCollection.Id;
+			console.log("I got renested");
 			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 		}
 
@@ -149,16 +165,18 @@ export class HomeComponent extends BasePageDirective
 	public HandleDragStart(event: CdkDragStart, collection: BookmarkCollection): void
 	{
 		this.IsDragging = true;
-
-		// TODO: Put this back.
-		//this.CollapseTree(collection);
+		this.ToggleTree(collection, true);
 		this.BodyElement.classList.add('inheritCursors');
 		this.BodyElement.style.cursor = 'grabbing';
 	}
 
-	public CollapseTree(collection: BookmarkCollection): void
+	/**
+	 * Sets collapsed properties to true, always.
+	 * @param collection 
+	 */
+	public ToggleTree(collection: BookmarkCollection, isCollapsed: boolean): void
 	{
-		collection.ChildCollectionsCollapsed = !collection.ChildCollectionsCollapsed;
+		collection.ChildCollectionsCollapsed = isCollapsed;
 
 		// Go and find all the children of this collection and collapse them.
 		// We also need to go and find all the children of the children and collapse them.
@@ -166,10 +184,10 @@ export class HomeComponent extends BasePageDirective
 		{
 			if (this.BookmarkCollections[i].ParentId == collection.Id)
 			{
-				this.BookmarkCollections[i].IsCollapsed = collection.ChildCollectionsCollapsed;
+				this.BookmarkCollections[i].IsCollapsed = isCollapsed;
 
 				// recursively call the function for child collections
-				this.CollapseTree(this.BookmarkCollections[i]);
+				this.ToggleTree(this.BookmarkCollections[i], isCollapsed);
 			}
 		}
 	}

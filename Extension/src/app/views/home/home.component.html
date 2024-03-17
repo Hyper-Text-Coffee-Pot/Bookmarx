@@ -31,28 +31,30 @@
 				  (click)="OpenBookmarkCollection(collection)"
 				  (dblclick)="HandleDoubleClick(collection)"
 				  [style.padding-left.px]="collection.Depth * 20">
-			<div *ngIf="!collection.IsCollapsed">
-				<div class="d-flex align-items-center">
-					<ng-container *ngIf="collection.HasChildren">
-						<button mat-icon-button
-								aria-label="Example icon button with a vertical three dot icon"
-								(click)="CollapseTree(collection)"
-								[style.margin-left.px]="-20">
-							<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
-								<mat-icon aria-hidden="false"
-										  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
-							</ng-container>
-							<ng-container *ngIf="collection.ChildCollectionsCollapsed">
-								<mat-icon aria-hidden="false"
-										  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
-							</ng-container>
-						</button>
-					</ng-container>
-					<p class="m-0 p-0">
-						{{collection.Title}}
-					</p>
+			<ng-container *ngIf="!collection.IsCollapsed">
+				<div>
+					<div class="d-flex align-items-center">
+						<ng-container *ngIf="collection.HasChildren">
+							<button mat-icon-button
+									aria-label="Example icon button with a vertical three dot icon"
+									(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
+									[style.margin-left.px]="-20">
+								<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
+									<mat-icon aria-hidden="false"
+											  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
+								</ng-container>
+								<ng-container *ngIf="collection.ChildCollectionsCollapsed">
+									<mat-icon aria-hidden="false"
+											  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
+								</ng-container>
+							</button>
+						</ng-container>
+						<p class="m-0 p-0">
+							{{collection.Title}}
+						</p>
+					</div>
 				</div>
-			</div>
+			</ng-container>
 		</mat-card>
 	</div>
 	<div class="col-9 p-0">

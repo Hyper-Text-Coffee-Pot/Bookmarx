@@ -25,6 +25,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
 	declarations: [
@@ -52,7 +53,8 @@ import { MatButtonModule } from '@angular/material/button';
 		DragDropModule,
 		MatToolbarModule,
 		MatIconModule,
-		MatButtonModule
+		MatButtonModule,
+		MatSnackBarModule
 	],
 	providers: [
 		AuthService,
