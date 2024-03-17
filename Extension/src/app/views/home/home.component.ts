@@ -114,9 +114,18 @@ export class HomeComponent extends BasePageDirective
 		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
 		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
-		// Scoot the collection in a depth if the target has children.
-		activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
-		activeCollection.ParentId = targetCollection.HasChildren ? laggingCollection.Id : targetCollection.ParentId;
+		if (laggingCollection == null)
+		{
+			// They may have dragged it to a new root location, so set it as such.
+			activeCollection.Depth = 0;
+			activeCollection.ParentId = null;
+		}
+		else
+		{
+			// Otherwise scoot the collection in a depth if the target has children.
+			activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
+			activeCollection.ParentId = targetCollection.HasChildren ? laggingCollection.Id : targetCollection.ParentId;
+		}
 
 		// If there are any child elements on the moved collection then go move those back under the collection.
 		if (activeCollection.HasChildren)
