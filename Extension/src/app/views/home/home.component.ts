@@ -105,7 +105,19 @@ export class HomeComponent extends BasePageDirective
 		let reorderedCollections: BookmarkCollection[] = [];
 
 		let childCollections: BookmarkCollection[] = this.FindChildCollections(activeCollection.Id);
-		console.log(childCollections);
+
+		// Remove child collections from BookmarkCollections array
+		this.BookmarkCollections = this.BookmarkCollections.filter(collection => !childCollections.includes(collection));
+
+		// Reinsert child collections after the moved viewModelCollection
+		for (let i = 0; i < childCollections.length; i++)
+		{
+			let index = this.BookmarkCollections.findIndex(collection => collection.Id === childCollections[i].Id);
+			if (index !== -1)
+			{
+				this.BookmarkCollections.splice(index + 1, 0, childCollections[i]);
+			}
+		}
 
 		// for (let i = 0; i < this.BookmarkCollections.length; i++)
 		// {
