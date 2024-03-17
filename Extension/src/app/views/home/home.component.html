@@ -29,6 +29,7 @@
 				  [cdkDragDisabled]="collection.ParentId == null"
 				  (cdkDragStarted)="HandleDragStart($event)"
 				  (click)="OpenBookmarkCollection(collection)"
+				  (dblclick)="HandleDoubleClick(collection)"
 				  [style.padding-left.px]="collection.Depth * 20">
 			<div *ngIf="!collection.IsCollapsed">
 				<div class="d-flex align-items-center">

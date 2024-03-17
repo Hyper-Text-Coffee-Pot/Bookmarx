@@ -61,6 +61,10 @@ export class HomeComponent extends BasePageDirective
 		this._cdr.detectChanges();
 	}
 
+	public HandleDoubleClick(collection: BookmarkCollection): void
+	{
+		this.CollapseTree(collection);
+	}
 
 	public drop(event: CdkDragDrop<BookmarkCollection[]>)
 	{
