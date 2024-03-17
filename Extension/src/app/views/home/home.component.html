@@ -30,7 +30,7 @@
 				  (cdkDragStarted)="HandleDragStart($event)"
 				  (click)="OpenBookmarkCollection(collection)">
 			<div *ngIf="!collection.IsCollapsed">
-				<div class="d-flex align-items-center">
+				<div class="d-flex align-items-baseline">
 					<ng-container *ngIf="collection.HasChildren">
 						<button mat-icon-button
 								aria-label="Example icon button with a vertical three dot icon"
