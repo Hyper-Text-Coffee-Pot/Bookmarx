@@ -80,9 +80,9 @@ export class HomeComponent extends BasePageDirective
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
 
-		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
+		// let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
 		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
-		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+		// let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
 		// We only need to worry about this when moving down the list because we should be able
 		// to move a directory from inside a deeper folder to outside of it.
@@ -107,19 +107,22 @@ export class HomeComponent extends BasePageDirective
 			return;
 		}
 
+		// Finally, move things around, then do some work to smooth out the changes.
+		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
+
+		// We need to wait for things to be moved around in the array before working with them.
+		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
+		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+
 		// Scoot the collection in a depth if the target has children.
 		activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
 		activeCollection.ParentId = targetCollection.ParentId;
 
-		// If the target move is down and the target has children then we should parent this using the 
-		// same Id as that first child element.
-		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
+		console.log(laggingCollection);
+		if (targetCollection.HasChildren)
 		{
-			activeCollection.ParentId = leadingCollection.ParentId;
+			activeCollection.ParentId = laggingCollection.Id;
 		}
-
-		// Finally, move stuff around.
-		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
 		// If there are any child elements on the moved collection then go move those back under the collection.
 		if (activeCollection.HasChildren)
