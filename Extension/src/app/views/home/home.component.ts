@@ -84,15 +84,10 @@ export class HomeComponent extends BasePageDirective
 		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
 		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
-		console.log(laggingCollection);
-		console.log(activeCollection);
-		console.log(targetCollection);
-		console.log(leadingCollection);
-
-		// Check if the target collection is a child of the active collection
 		let isChild = this.IsChildCollection(targetCollection, activeCollection);
 		if (isChild)
 		{
+			// Check if the target collection is a child of the active collection
 			this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
 				politeness: 'assertive',
 				duration: 5000
@@ -101,27 +96,16 @@ export class HomeComponent extends BasePageDirective
 			// Kick out as we don't need to perform any logic.
 			return;
 		}
+		else if (viewModelCollection.currentIndex === viewModelCollection.previousIndex)
+		{
+			// The user didn't move anything, so we don't need to do anything.
+			return;
+		}
 
-		// else if (activeCollection.ParentId == targetCollection.ParentId)
-		if (activeCollection.ParentId == targetCollection.ParentId
-			&& activeCollection.ParentId == laggingCollection.ParentId)
-		{
-			// If we're moving things around in the same level, then we just need to reorder them.
-			// This one is dialed in.
-			console.log("I moved at the same level");
-			activeCollection.Index = activeCollection.currentIndex;
-			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
-		}
-		else if (activeCollection.ParentId != laggingCollection.Id
-			|| activeCollection.Depth < laggingCollection.Depth
-			|| (activeCollection.Depth - laggingCollection.Depth) >= 0)
-		{
-			// We moved an item under a new parent, so we need to update the parent id and depth.
-			activeCollection.Depth = laggingCollection.Depth + 1;
-			activeCollection.ParentId = laggingCollection.Id;
-			console.log("I got renested");
-			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
-		}
+		// If the location it's being moved to has children, it should be automatically nested based on its parent.
+		activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
+		activeCollection.ParentId = targetCollection.ParentId;
+		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
 		// Now, reorder everything correctly.
 		let reorderedCollections: BookmarkCollection[] = [];
