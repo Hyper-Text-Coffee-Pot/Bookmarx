@@ -116,13 +116,7 @@ export class HomeComponent extends BasePageDirective
 
 		// Scoot the collection in a depth if the target has children.
 		activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
-		activeCollection.ParentId = targetCollection.ParentId;
-
-		console.log(laggingCollection);
-		if (targetCollection.HasChildren)
-		{
-			activeCollection.ParentId = laggingCollection.Id;
-		}
+		activeCollection.ParentId = targetCollection.HasChildren ? laggingCollection.Id : targetCollection.ParentId;
 
 		// If there are any child elements on the moved collection then go move those back under the collection.
 		if (activeCollection.HasChildren)
