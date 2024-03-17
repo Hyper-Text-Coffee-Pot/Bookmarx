@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.service';
 import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 import { IBookmarkTreeNode } from 'src/app/domain/web-api/chrome/models/ibookmark-tree-node';
-import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit, CdkDragStart } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit, CdkDragStart, CdkDrag } from '@angular/cdk/drag-drop';
 import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
 import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
@@ -66,17 +66,55 @@ export class HomeComponent extends BasePageDirective
 		this.CollapseTree(collection);
 	}
 
-	public drop(event: CdkDragDrop<BookmarkCollection[]>)
+	public drop(viewModelCollection: CdkDragDrop<BookmarkCollection[]>)
 	{
+		console.log(this.BookmarkCollections);
+		let activeCollection = viewModelCollection.item.data;
+
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
-		moveItemInArray(this.BookmarkCollections, event.previousIndex, event.currentIndex);
+
+		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
+		let nextCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+
+		// Verify that the move doesn't attempt to move a collection into itself or a child collection.
+		console.log(activeCollection);
+		console.log(targetCollection);
+		console.log(nextCollection);
+
+		// Check if the target collection is a child of the active collection
+		let isChild = this.IsChildCollection(targetCollection, activeCollection);
+		if (isChild)
+		{
+			alert("Cannot move a collection into itself or its child collection.");
+		}
+		else if (targetCollection.ParentId === activeCollection.Id)
+		{
+			// If we're moving the collection to the same parent, then we can just move it.
+			activeCollection.ParentId = targetCollection.ParentId;
+			activeCollection.Depth = targetCollection.Depth;
+			activeCollection.Index = activeCollection.currentIndex;
+			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
+		}
+		else
+		{
+			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
+		}
+
+		for (let i = 0; i < this.BookmarkCollections.length; i++)
+		{
+			this.BookmarkCollections[i].Index = i;
+		}
+
+		console.log(this.BookmarkCollections);
 	}
 
 	public HandleDragStart(event: CdkDragStart, collection: BookmarkCollection): void
 	{
 		this.IsDragging = true;
-		this.CollapseTree(collection);
+
+		// TODO: Put this back.
+		//this.CollapseTree(collection);
 		this.BodyElement.classList.add('inheritCursors');
 		this.BodyElement.style.cursor = 'grabbing';
 	}
@@ -229,5 +267,33 @@ export class HomeComponent extends BasePageDirective
 		}
 
 		return bookmarkCollections;
+	}
+
+	/**
+	 * Iterate over the collections to see if the target collection is a child of the active collection.
+	 * @param targetCollection 
+	 * @param activeCollection 
+	 * @returns 
+	 */
+	private IsChildCollection(targetCollection: BookmarkCollection, activeCollection: BookmarkCollection): boolean
+	{
+		console.log(activeCollection);
+		if (targetCollection.ParentId == activeCollection.Id)
+		{
+			return true;
+		}
+
+		for (let i = 0; i < this.BookmarkCollections.length; i++)
+		{
+			if (this.BookmarkCollections[i].ParentId == targetCollection.Id)
+			{
+				if (this.IsChildCollection(this.BookmarkCollections[i], activeCollection))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }
