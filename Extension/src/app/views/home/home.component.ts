@@ -362,17 +362,14 @@ export class HomeComponent extends BasePageDirective
 	 */
 	private IsChildCollection(targetCollection: BookmarkCollection, activeCollection: BookmarkCollection): boolean
 	{
-		console.log(targetCollection);
-		console.log(activeCollection);
-		if (targetCollection.ParentId == activeCollection.Id
-			&& targetCollection.Depth > activeCollection.Depth)
+		if (targetCollection.ParentId === activeCollection.Id)
 		{
 			return true;
 		}
 
 		for (let i = 0; i < this.BookmarkCollections.length; i++)
 		{
-			if (this.BookmarkCollections[i].ParentId == targetCollection.Id)
+			if (this.BookmarkCollections[i].ParentId === targetCollection.Id)
 			{
 				if (this.IsChildCollection(this.BookmarkCollections[i], activeCollection))
 				{
