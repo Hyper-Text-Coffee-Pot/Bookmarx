@@ -20,6 +20,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class HomeComponent extends BasePageDirective
 {
+	/**
+	 * Not a huge fan of maintaining state here, but it's the best we got.
+	 */
+	private singleClickTimer: any;
+
 	constructor(
 		private _route: ActivatedRoute,
 		private _titleService: Title,
@@ -52,20 +57,23 @@ export class HomeComponent extends BasePageDirective
 
 	public OpenBookmarkCollection(collection: BookmarkCollection): void
 	{
-		console.log(collection);
-		if (this.IsDragging)
+		this.singleClickTimer = setTimeout(() =>
 		{
-			this.IsDragging = false;
-			return;
-		}
+			if (this.IsDragging)
+			{
+				this.IsDragging = false;
+				return;
+			}
 
-		this.Bookmarks = [...collection.Bookmarks];
-		this._cdr.detectChanges();
+			this.Bookmarks = [...collection.Bookmarks];
+			this._cdr.detectChanges();
+		}, 250); // delay of 250ms
 	}
 
 	public HandleDoubleClick(collection: BookmarkCollection): void
 	{
-		this.ToggleTree(collection, !collection.IsCollapsed);
+		clearTimeout(this.singleClickTimer);
+		this.ToggleTree(collection, !collection.ChildCollectionsCollapsed);
 	}
 
 	/**
@@ -142,6 +150,13 @@ export class HomeComponent extends BasePageDirective
 			{
 				if (reorderedCollections[i].Id === activeCollection.Id)
 				{
+					// Update the depth to match the new location.
+					childCollections.forEach((collection) =>
+					{
+						collection.Depth = activeCollection.Depth + 1;
+					});
+
+					// Insert the child collections into the array right after the parent collection.
 					reorderedCollections = reorderedCollections.slice(0, i + 1).concat(childCollections).concat(reorderedCollections.slice(i + 1));
 					break;
 				}
@@ -180,7 +195,7 @@ export class HomeComponent extends BasePageDirective
 	public HandleDragStart(event: CdkDragStart, collection: BookmarkCollection): void
 	{
 		this.IsDragging = true;
-		this.ToggleTree(collection, true);
+		//this.ToggleTree(collection, true);
 		this.BodyElement.classList.add('inheritCursors');
 		this.BodyElement.style.cursor = 'grabbing';
 	}
@@ -347,7 +362,10 @@ export class HomeComponent extends BasePageDirective
 	 */
 	private IsChildCollection(targetCollection: BookmarkCollection, activeCollection: BookmarkCollection): boolean
 	{
-		if (targetCollection.ParentId == activeCollection.Id)
+		console.log(targetCollection);
+		console.log(activeCollection);
+		if (targetCollection.ParentId == activeCollection.Id
+			&& targetCollection.Depth > activeCollection.Depth)
 		{
 			return true;
 		}

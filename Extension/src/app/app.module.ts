@@ -26,6 +26,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRippleModule } from '@angular/material/core';
 
 @NgModule({
 	declarations: [
@@ -54,7 +55,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 		MatToolbarModule,
 		MatIconModule,
 		MatButtonModule,
-		MatSnackBarModule
+		MatSnackBarModule,
+		MatRippleModule
 	],
 	providers: [
 		AuthService,

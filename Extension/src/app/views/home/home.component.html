@@ -24,6 +24,7 @@
 		 (cdkDropListDropped)="drop($event)">
 		<ng-container *ngFor="let collection of BookmarkCollections">
 			<mat-card cdkDrag
+					  matRipple
 					  class="example-box"
 					  [cdkDragData]="collection"
 					  *ngIf="!collection.IsCollapsed"
@@ -49,6 +50,7 @@
 							</button>
 						</ng-container>
 						<p class="m-0 p-0">
+							<span [innerHTML]="collection.Icon"></span>&nbsp;
 							{{collection.Title}}
 						</p>
 					</div>
@@ -56,7 +58,7 @@
 			</mat-card>
 		</ng-container>
 	</div>
-	<div class="col-9 p-0">
+	<div class="col-9 p-0 bookmarks__output">
 		<button type="button"
 				(click)="SignOut()">Sign Out</button>
 		<button type="button"

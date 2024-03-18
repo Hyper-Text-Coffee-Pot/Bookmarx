@@ -51,4 +51,9 @@ export class BookmarkCollection
 	 * This is used to determine if the collection should have a toggle button.
 	 */
 	public HasChildren: boolean = false;
+
+	/**
+	 * Defaults to the unicode character for a file folder.
+	 */
+	public Icon: string = "&#x1F4C1;";
 }
