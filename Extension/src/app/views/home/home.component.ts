@@ -141,46 +141,6 @@ export class HomeComponent extends BasePageDirective
 			movedCollection.ParentId = laggingCollection.HasChildren ? laggingCollection.Id : leadingCollection.ParentId;
 		}
 
-		// // We only need to worry about this when moving down the list because we should be able
-		// // to move a directory from inside a deeper folder to outside of it.
-		// if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
-		// {
-		// 	let isChild = this.IsChildCollection(targetCollection, activeCollection);
-		// 	if (isChild)
-		// 	{
-		// 		// Check if the target collection is a child of the active collection
-		// 		this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
-		// 			politeness: 'assertive',
-		// 			duration: 5000
-		// 		});
-
-		// 		// Kick out as we don't need to perform any logic.
-		// 		return;
-		// 	}
-		// }
-		// else if (viewModelCollection.currentIndex === viewModelCollection.previousIndex)
-		// {
-		// 	// The user didn't move anything, so we don't need to do anything.
-		// 	return;
-		// }
-
-		// // We need to wait for things to be moved around in the array before working with them.
-		// // let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
-		// // let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
-
-		// if (laggingCollection == null)
-		// {
-		// 	// They may have dragged it to a new root location, so set it as such.
-		// 	activeCollection.Depth = 0;
-		// 	activeCollection.ParentId = null;
-		// }
-		// else
-		// {
-		// 	// Otherwise scoot the collection in a depth if the target has children.
-		// 	activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
-		// 	activeCollection.ParentId = targetCollection.HasChildren ? laggingCollection.Id : targetCollection.ParentId;
-		// }
-
 		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
 		this.ReparentChildItemsOfMovedCollection(movedCollection);
 	}
