@@ -27,11 +27,16 @@
 					  matRipple
 					  class="example-box"
 					  [cdkDragData]="collection"
-					  *ngIf="!collection.IsCollapsed"
 					  (cdkDragStarted)="HandleDragStart($event, collection)"
 					  (click)="OpenBookmarkCollection(collection)"
 					  (dblclick)="HandleDoubleClick(collection)"
-					  [style.padding-left.px]="collection.Depth * 20">
+					  [style.padding-left.px]="collection.Depth * 20"
+					  [ngStyle]="{
+						'height.px': collection.IsCollapsed ? '0' : 'auto',
+						'padding-top': collection.IsCollapsed ? '0' : '5px',
+						'padding-bottom': collection.IsCollapsed ? '0' : '5px',
+						'border-bottom': collection.IsCollapsed ? 'none' : 'solid 1px #ccc'
+						}">
 				<div>
 					<div class="d-flex align-items-center">
 						<ng-container *ngIf="collection.HasChildren">

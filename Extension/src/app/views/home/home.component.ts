@@ -134,6 +134,12 @@ export class HomeComponent extends BasePageDirective
 					&& movedCollection.ParentId == leadingCollection.ParentId)
 				{
 					console.log("Moved in the same collection at the same leve as next folder");
+					console.log("Lagging Collection: ");
+					console.log(laggingCollection);
+					console.log("Moved Collection: ");
+					console.log(movedCollection);
+					console.log("Leading Collection: ");
+					console.log(leadingCollection);
 					// The element was dragged within the same collection, so just move it within that collection.
 					movedCollection.Depth = leadingCollection.Depth;
 					movedCollection.ParentId = leadingCollection.ParentId;
