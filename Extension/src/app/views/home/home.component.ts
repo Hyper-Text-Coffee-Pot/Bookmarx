@@ -83,10 +83,28 @@ export class HomeComponent extends BasePageDirective
 	 */
 	public drop(viewModelCollection: CdkDragDrop<BookmarkCollection[]>)
 	{
-		let activeCollection = viewModelCollection.item.data;
-
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
+
+		// The way in which the user is dragging the item and how Angular Material
+		// handles moving the target element changes depending on drag direction.
+		// In order to correctly handle move locations we need to factor this in.
+		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
+		{
+			// When you drag down the target slides up.
+			console.log("Moved down");
+		}
+		else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
+		{
+			console.log("Didn't move");
+		}
+		else
+		{
+			// When you drag up the target slides down.
+			console.log("Moved up");
+		}
+
+		let activeCollection = viewModelCollection.item.data;
 
 		// let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
 		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
