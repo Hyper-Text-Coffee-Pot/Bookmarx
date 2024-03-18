@@ -32,11 +32,10 @@
 					  (dblclick)="HandleDoubleClick(collection)"
 					  [style.padding-left.px]="collection.Depth * 20"
 					  [ngStyle]="{
-						'height': collection.IsCollapsed ? '8px' : 'auto',
+						'height': collection.IsCollapsed ? '0px' : 'auto',
 						'min-height': collection.IsCollapsed ? '0' : 'auto',
 						'padding-top': collection.IsCollapsed ? '0' : '5px',
-						'padding-bottom': collection.IsCollapsed ? '0' : '5px',
-						'border-bottom': collection.IsCollapsed ? 'none' : 'solid 1px #ccc'
+						'padding-bottom': collection.IsCollapsed ? '0' : '5px'
 						}">
 
 				<div class="d-flex">
