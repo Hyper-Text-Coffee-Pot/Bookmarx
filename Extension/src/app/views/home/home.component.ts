@@ -122,22 +122,11 @@ export class HomeComponent extends BasePageDirective
 			}
 			else
 			{
-				if (laggingCollection.HasChildren)
-				{
-					// This one is working great, do not touch.
-					console.log("Pulled into a nested folder and increased depth");
-					// The element was dragged outside of the original collection so reparent to the next collection.
-					movedCollection.Depth = laggingCollection.Depth + 1;
-					movedCollection.ParentId = laggingCollection.Id;
-				}
-				else if (draggedCollection.ParentId == movedCollection.ParentId
-					&& movedCollection.ParentId == leadingCollection.ParentId)
-				{
-					console.log("Moved in the same collection at the same leve as next folder");
-					// The element was dragged within the same collection, so just move it within that collection.
-					movedCollection.Depth = leadingCollection.Depth;
-					movedCollection.ParentId = leadingCollection.ParentId;
-				}
+				// Simply move the folder to the same level as the leading collection.
+				console.log("Moved down and reparented to the leading folders location");
+				console.log(leadingCollection);
+				movedCollection.Depth = leadingCollection.Depth;
+				movedCollection.ParentId = leadingCollection.ParentId;
 			}
 		}
 		else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
@@ -208,7 +197,7 @@ export class HomeComponent extends BasePageDirective
 		// This is so close to being really refined.
 		// Just needs to be worked on a bit longer to really lock in the sorting.
 		// But, it works well enough for now to keep moving I think.
-		return !container.data[index].ChildCollectionsCollapsed;
+		return !container.data[index].IsCollapsed;
 	}
 
 	private FindChildCollections(parentId: string): BookmarkCollection[]
