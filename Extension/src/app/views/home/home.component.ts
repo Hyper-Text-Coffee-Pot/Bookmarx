@@ -92,6 +92,7 @@ export class HomeComponent extends BasePageDirective
 		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
 		// let activeCollection = viewModelCollection.item.data;
+		let draggedCollection = viewModelCollection.item.data;
 		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
 		let movedCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
 		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
@@ -101,7 +102,7 @@ export class HomeComponent extends BasePageDirective
 		// In order to correctly handle move locations we need to factor this in.
 		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
 		{
-			// When you drag down the target slides up so we need to use the leading collection.
+			// When you drag DOWN the target slides up so we need to use the leading collection.
 			console.log("Moved down");
 			let isChild = this.IsChildCollection(leadingCollection, movedCollection);
 			if (isChild)
@@ -121,9 +122,22 @@ export class HomeComponent extends BasePageDirective
 			}
 			else
 			{
-				// Match the active collection with the leading collection.
-				movedCollection.Depth = leadingCollection.Depth;
-				movedCollection.ParentId = leadingCollection.ParentId;
+				if (laggingCollection.HasChildren)
+				{
+					// This one is working great, do not touch.
+					console.log("Pulled into a nested folder and increased depth");
+					// The element was dragged outside of the original collection so reparent to the next collection.
+					movedCollection.Depth = laggingCollection.Depth + 1;
+					movedCollection.ParentId = laggingCollection.Id;
+				}
+				else if (draggedCollection.ParentId == movedCollection.ParentId
+					&& movedCollection.ParentId == leadingCollection.ParentId)
+				{
+					console.log("Moved in the same collection at the same leve as next folder");
+					// The element was dragged within the same collection, so just move it within that collection.
+					movedCollection.Depth = leadingCollection.Depth;
+					movedCollection.ParentId = leadingCollection.ParentId;
+				}
 			}
 		}
 		else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
