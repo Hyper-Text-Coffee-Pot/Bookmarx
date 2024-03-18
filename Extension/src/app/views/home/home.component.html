@@ -21,8 +21,7 @@
 	<div cdkDropList
 		 class="col p-0 example-list"
 		 [cdkDropListData]="BookmarkCollections"
-		 (cdkDropListDropped)="drop($event)"
-		 [cdkDropListSortPredicate]="SortPredicate">
+		 (cdkDropListDropped)="HandleDrop($event)">
 		<ng-container *ngFor="let collection of BookmarkCollections">
 			<mat-card cdkDrag
 					  matRipple

@@ -81,7 +81,7 @@ export class HomeComponent extends BasePageDirective
 	 * It's not a huge deal because it's only called when the user is dragging something.
 	 * @param viewModelCollection
 	 */
-	public drop(viewModelCollection: CdkDragDrop<BookmarkCollection[]>)
+	public HandleDrop(viewModelCollection: CdkDragDrop<BookmarkCollection[]>)
 	{
 		let collectionSuccessfullyMoved = true;
 
@@ -96,6 +96,33 @@ export class HomeComponent extends BasePageDirective
 		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
 		let movedCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
 		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+
+		// Gross hack to get around some quirks with drag and drop
+		// Check if the item was just dropped into a child collection
+		// that is currently collapsed. If it was then we need to move
+		// it down to the first instance of an array location where the
+		// collection is not collapsed.
+		// let newParentCollection = this.BookmarkCollections.find(collection => collection.Id === leadingCollection.ParentId);
+		// let newIndex = this.BookmarkCollections.indexOf(newParentCollection);
+		// This needs to take place for both up and down movements.
+		if (leadingCollection.IsCollapsed)
+		{
+			let leadingCollectionIndex = this.BookmarkCollections.indexOf(leadingCollection);
+			console.log(leadingCollectionIndex);
+			for (let i = leadingCollectionIndex; i < this.BookmarkCollections.length; i++)
+			{
+				// Loop through until we find the first collection that isn't collapsed and then move
+				// the collection to the position just before it. This is a gross hack, but because 
+				// of how drag and drop works and how nested collections function we have to do it.
+				// Also update the leading collection as it's now different.
+				leadingCollection = this.BookmarkCollections[i];
+				if (!leadingCollection.IsCollapsed)
+				{
+					moveItemInArray(this.BookmarkCollections, viewModelCollection.currentIndex, i - 1);
+					break;
+				}
+			}
+		}
 
 		// The way in which the user is dragging the item and how Angular Material
 		// handles moving the target element changes depending on drag direction.
@@ -188,31 +215,32 @@ export class HomeComponent extends BasePageDirective
 		}
 	}
 
-	/**
-	 * Predicate function that when returning true allows a target drop zone to be droppable.
-	 * If it return false then the target drop zone is not allowed.
-	 * https://v13.material.angular.io/cdk/drag-drop/overview#controlling-whether-an-item-can-be-sorted-into-a-particular-index
-	 * @param item - The item being dragged.
-	 * @param containers - All of the containers available.
-	 */
-	public SortPredicate(index: number, item: CdkDrag<BookmarkCollection>, containers: CdkDropList<BookmarkCollection[]>)
-	{
-		console.log("Target predicate item");
-		console.log(containers.data[index]);
-		// This is so close to being really refined.
-		// Just needs to be worked on a bit longer to really lock in the sorting.
-		// But, it works well enough for now to keep moving I think.
-		// return !container.data[index].ChildCollectionsCollapsed || !container.data[index].IsCollapsed;
+	// /**
+	//  * Predicate function that when returning true allows a target drop zone to be droppable.
+	//  * If it return false then the target drop zone is not allowed.
+	//  * https://v13.material.angular.io/cdk/drag-drop/overview#controlling-whether-an-item-can-be-sorted-into-a-particular-index
+	//  * @param item - The item being dragged.
+	//  * @param containers - All of the containers available.
+	//  */
+	// public SortPredicate(index: number, item: CdkDrag<BookmarkCollection>, containers: CdkDropList<BookmarkCollection[]>)
+	// {
+	// 	console.log("Target predicate item");
+	// 	console.log(containers.data[index]);
+	// 	// This is so close to being really refined.
+	// 	// Just needs to be worked on a bit longer to really lock in the sorting.
+	// 	// But, it works well enough for now to keep moving I think.
+	// 	// return !container.data[index].ChildCollectionsCollapsed || !container.data[index].IsCollapsed;
 
-		// Get the item at the target index
-		const targetItem = containers.data[index];
+	// 	// Get the item at the target index
+	// 	const targetItem = containers.data[index];
 
-		// Check if it's hidden
-		const isHidden = targetItem.ChildCollectionsCollapsed || targetItem.IsCollapsed;
+	// 	// Check if it's hidden
+	// 	const isHidden = targetItem.ChildCollectionsCollapsed || targetItem.IsCollapsed;
 
-		// Prevent the item from being dropped at this index if the target item is hidden
-		return !isHidden;
-	}
+	// 	// Prevent the item from being dropped at this index if the target item is hidden
+	// 	// and it's not the last child.
+	// 	return !isHidden && !targetItem.IsLastChild;
+	// }
 
 	private FindChildCollections(parentId: string): BookmarkCollection[]
 	{
@@ -324,6 +352,8 @@ export class HomeComponent extends BasePageDirective
 				this.BookmarkCollections = [...collections];
 				this._cdr.detectChanges();
 
+				console.log(this.BookmarkCollections);
+
 				// // We need to slowly add things to the DOM tree or we'll overwhelm the browser.
 				// let batchSize = 10; // Adjust this value based on your performance needs
 				// let batchCount = Math.ceil(collections.length / batchSize);
@@ -361,7 +391,7 @@ export class HomeComponent extends BasePageDirective
 
 		if (bookmarkTreeNode.children)
 		{
-			bookmarkTreeNode.children.forEach((child) =>
+			bookmarkTreeNode.children.forEach((child, index) =>
 			{
 				if (child.url != null && child.url != undefined && child.url != "")
 				{
@@ -386,6 +416,12 @@ export class HomeComponent extends BasePageDirective
 					childBookmarkCollection.Title = child.title;
 					childBookmarkCollection.Depth = bookmarkCollection.Depth + 1;
 					bookmarkCollections = bookmarkCollections.concat(this.FlattenBookmarkTreeNodesIntoCollections(child, childBookmarkCollection));
+
+					// Check if it's the last child
+					if (index === bookmarkTreeNode.children.length - 1)
+					{
+						childBookmarkCollection.IsLastChild = true;
+					}
 				}
 			});
 		}
