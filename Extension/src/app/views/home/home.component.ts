@@ -86,29 +86,34 @@ export class HomeComponent extends BasePageDirective
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
 
+		// Move the item in the array right away so all subsequent logic is being performed on the new state.
+		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
+
+		let activeCollection = viewModelCollection.item.data;
+		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
+		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
+		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+
 		// The way in which the user is dragging the item and how Angular Material
 		// handles moving the target element changes depending on drag direction.
 		// In order to correctly handle move locations we need to factor this in.
 		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
 		{
-			// When you drag down the target slides up.
+			// When you drag down the target slides up so we need to use the leading collection.
 			console.log("Moved down");
+			
 		}
 		else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
 		{
-			console.log("Didn't move");
+			// Nothing happened so we don't do anything.
+			console.log("No changes");
+			return;
 		}
 		else
 		{
-			// When you drag up the target slides down.
+			// When you drag up the target slides down so we need to use the lagging collection.
 			console.log("Moved up");
 		}
-
-		let activeCollection = viewModelCollection.item.data;
-
-		// let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
-		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
-		// let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
 		// We only need to worry about this when moving down the list because we should be able
 		// to move a directory from inside a deeper folder to outside of it.
@@ -133,12 +138,9 @@ export class HomeComponent extends BasePageDirective
 			return;
 		}
 
-		// Finally, move things around, then do some work to smooth out the changes.
-		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
-
 		// We need to wait for things to be moved around in the array before working with them.
-		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
-		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+		// let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
+		// let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
 		if (laggingCollection == null)
 		{
@@ -153,6 +155,13 @@ export class HomeComponent extends BasePageDirective
 			activeCollection.ParentId = targetCollection.HasChildren ? laggingCollection.Id : targetCollection.ParentId;
 		}
 
+		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
+		this.ReparentChildItemsOfMovedCollection(activeCollection);
+	}
+
+	private ReparentChildItemsOfMovedCollection(activeCollection: BookmarkCollection): void
+	{
+		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
 		// If there are any child elements on the moved collection then go move those back under the collection.
 		if (activeCollection.HasChildren)
 		{
