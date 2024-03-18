@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.service';
 import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 import { IBookmarkTreeNode } from 'src/app/domain/web-api/chrome/models/ibookmark-tree-node';
-import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit, CdkDragStart, CdkDrag } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit, CdkDragStart, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
 import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
@@ -134,12 +134,6 @@ export class HomeComponent extends BasePageDirective
 					&& movedCollection.ParentId == leadingCollection.ParentId)
 				{
 					console.log("Moved in the same collection at the same leve as next folder");
-					console.log("Lagging Collection: ");
-					console.log(laggingCollection);
-					console.log("Moved Collection: ");
-					console.log(movedCollection);
-					console.log("Leading Collection: ");
-					console.log(leadingCollection);
 					// The element was dragged within the same collection, so just move it within that collection.
 					movedCollection.Depth = leadingCollection.Depth;
 					movedCollection.ParentId = leadingCollection.ParentId;
@@ -156,7 +150,6 @@ export class HomeComponent extends BasePageDirective
 		{
 			// When you drag UP the target slides down so we need to use the lagging collection.
 			console.log("Moved up");
-			console.log(laggingCollection);
 			movedCollection.Depth = laggingCollection.HasChildren ? laggingCollection.Depth + 1 : leadingCollection.Depth;
 			movedCollection.ParentId = laggingCollection.HasChildren ? laggingCollection.Id : leadingCollection.ParentId;
 		}
@@ -204,8 +197,18 @@ export class HomeComponent extends BasePageDirective
 			this.BookmarkCollections = [...reorderedCollections];
 			this._cdr.detectChanges();
 		}
+	}
 
-		console.log(this.BookmarkCollections);
+	/**
+	 * Predicate function that only allows dropping on items that are not collapsed.
+	 * https://v13.material.angular.io/cdk/drag-drop/overview#controlling-whether-an-item-can-be-sorted-into-a-particular-index
+	 */
+	public SortPredicate(index: number, item: CdkDrag, container: CdkDropList<BookmarkCollection[]>)
+	{
+		// This is so close to being really refined.
+		// Just needs to be worked on a bit longer to really lock in the sorting.
+		// But, it works well enough for now to keep moving I think.
+		return !container.data[index].ChildCollectionsCollapsed;
 	}
 
 	private FindChildCollections(parentId: string): BookmarkCollection[]
