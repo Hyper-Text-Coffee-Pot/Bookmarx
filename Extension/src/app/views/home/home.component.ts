@@ -189,15 +189,29 @@ export class HomeComponent extends BasePageDirective
 	}
 
 	/**
-	 * Predicate function that only allows dropping on items that are not collapsed.
+	 * Predicate function that when returning true allows a target drop zone to be droppable.
+	 * If it return false then the target drop zone is not allowed.
 	 * https://v13.material.angular.io/cdk/drag-drop/overview#controlling-whether-an-item-can-be-sorted-into-a-particular-index
+	 * @param item - The item being dragged.
+	 * @param containers - All of the containers available.
 	 */
-	public SortPredicate(index: number, item: CdkDrag, container: CdkDropList<BookmarkCollection[]>)
+	public SortPredicate(index: number, item: CdkDrag<BookmarkCollection>, containers: CdkDropList<BookmarkCollection[]>)
 	{
+		console.log("Target predicate item");
+		console.log(containers.data[index]);
 		// This is so close to being really refined.
 		// Just needs to be worked on a bit longer to really lock in the sorting.
 		// But, it works well enough for now to keep moving I think.
-		return !container.data[index].IsCollapsed;
+		// return !container.data[index].ChildCollectionsCollapsed || !container.data[index].IsCollapsed;
+
+		// Get the item at the target index
+		const targetItem = containers.data[index];
+
+		// Check if it's hidden
+		const isHidden = targetItem.ChildCollectionsCollapsed || targetItem.IsCollapsed;
+
+		// Prevent the item from being dropped at this index if the target item is hidden
+		return !isHidden;
 	}
 
 	private FindChildCollections(parentId: string): BookmarkCollection[]
