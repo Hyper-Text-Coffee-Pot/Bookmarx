@@ -1,19 +1,21 @@
 export class Bookmark
 {
-	constructor(title: string, url: string)
-	{
-		this.Title = title;
-		this.URL = url;
-		this.DateTimeAddedUTC = new Date().toISOString();
-	}
+	/**
+	 * A UUID that's generated for each bookmark.
+	 */
+	public Id: string;
 
-	public DateTimeAddedUTC: string;
+	/**
+	 * The parent collection Id of the bookmark.
+	 */
+	public ParentId: string;
 
-	public Description: string;
-
-	public Note: string;
+	/**
+	 * The index of the bookmark, used for sorting.
+	 */
+	public Index: number;
 
 	public Title: string;
 
-	public URL: string;
+	public Url: string;
 }

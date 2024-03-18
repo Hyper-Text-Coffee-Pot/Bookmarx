@@ -19,8 +19,14 @@ import { BlockUIModule } from 'ng-block-ui';
 // import { RECAPTCHA_V3_SITE_KEY, RecaptchaV3Module } from 'ng-recaptcha';
 import { AuthService } from './domain/auth/services/auth.service';
 import { AuthInterceptor } from './domain/auth/interceptors/auth.interceptor';
-import { SortablejsModule } from 'htcp-sortablejs';
 import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-tree.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRippleModule } from '@angular/material/core';
 
 @NgModule({
 	declarations: [
@@ -32,7 +38,7 @@ import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-t
 		SignupComponent,
 		ForgotPasswordComponent,
 		ActionComponent,
-  BookmarkTreeComponent
+		BookmarkTreeComponent
 	],
 	imports: [
 		BrowserModule,
@@ -44,7 +50,13 @@ import { BookmarkTreeComponent } from './views/partials/bookmark-tree/bookmark-t
 		provideAuth(() => getAuth()),
 		// RecaptchaV3Module,
 		BlockUIModule.forRoot(),
-		SortablejsModule.forRoot({ animation: 150 })
+		BrowserAnimationsModule,
+		DragDropModule,
+		MatToolbarModule,
+		MatIconModule,
+		MatButtonModule,
+		MatSnackBarModule,
+		MatRippleModule
 	],
 	providers: [
 		AuthService,
