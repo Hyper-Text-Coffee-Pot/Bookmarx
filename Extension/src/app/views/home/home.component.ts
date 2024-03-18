@@ -4,9 +4,8 @@ import { ActivatedRoute } from '@angular/router';
 import { BasePageDirective } from '../shared/base-page.directive';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { BookmarksService } from 'src/app/domain/bookmarks/services/bookmarks.service';
-import { BookmarkTreeNode } from 'src/app/domain/bookmarks/entities/bookmark-tree-node';
 import { IBookmarkTreeNode } from 'src/app/domain/web-api/chrome/models/ibookmark-tree-node';
-import { CdkDragDrop, moveItemInArray, CdkDragEnter, CdkDragExit, CdkDragStart, CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDragStart } from '@angular/cdk/drag-drop';
 import { BookmarkCollection } from 'src/app/domain/bookmarks/entities/bookmark-collection';
 import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
@@ -55,8 +54,9 @@ export class HomeComponent extends BasePageDirective
 		this.BookmarkCollections = [];
 	}
 
-	public OpenBookmarkCollection(collection: BookmarkCollection): void
+	public OpenBookmarkCollection($event: Event, collection: BookmarkCollection): void
 	{
+		$event.preventDefault();
 		this.singleClickTimer = setTimeout(() =>
 		{
 			if (this.IsDragging)
@@ -67,11 +67,12 @@ export class HomeComponent extends BasePageDirective
 
 			this.Bookmarks = [...collection.Bookmarks];
 			this._cdr.detectChanges();
-		}, 250); // delay of 250ms
+		}, 250);
 	}
 
-	public HandleDoubleClick(collection: BookmarkCollection): void
+	public HandleDoubleClick($event: Event, collection: BookmarkCollection): void
 	{
+		$event.preventDefault();
 		clearTimeout(this.singleClickTimer);
 		this.ToggleTree(collection, !collection.ChildCollectionsCollapsed);
 	}
@@ -83,16 +84,13 @@ export class HomeComponent extends BasePageDirective
 	 */
 	public HandleDrop(viewModelCollection: CdkDragDrop<BookmarkCollection[]>)
 	{
-		let collectionSuccessfullyMoved = true;
-
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
 
 		// Move the item in the array right away so all subsequent logic is being performed on the new state.
 		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
-		// let activeCollection = viewModelCollection.item.data;
-		let draggedCollection = viewModelCollection.item.data;
+		let oldCollectionDepth = viewModelCollection.item.data.Depth;
 		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
 		let movedCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
 		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
@@ -102,13 +100,11 @@ export class HomeComponent extends BasePageDirective
 		// that is currently collapsed. If it was then we need to move
 		// it down to the first instance of an array location where the
 		// collection is not collapsed.
-		// let newParentCollection = this.BookmarkCollections.find(collection => collection.Id === leadingCollection.ParentId);
-		// let newIndex = this.BookmarkCollections.indexOf(newParentCollection);
 		// This needs to take place for both up and down movements.
 		if (leadingCollection.IsCollapsed)
 		{
 			let leadingCollectionIndex = this.BookmarkCollections.indexOf(leadingCollection);
-			console.log(leadingCollectionIndex);
+
 			for (let i = leadingCollectionIndex; i < this.BookmarkCollections.length; i++)
 			{
 				// Loop through until we find the first collection that isn't collapsed and then move
@@ -130,7 +126,6 @@ export class HomeComponent extends BasePageDirective
 		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
 		{
 			// When you drag DOWN the target slides up so we need to use the leading collection.
-			console.log("Moved down");
 			let isChild = this.IsChildCollection(leadingCollection, movedCollection);
 			if (isChild)
 			{
@@ -142,16 +137,12 @@ export class HomeComponent extends BasePageDirective
 					duration: 5000
 				});
 
-				collectionSuccessfullyMoved = false;
-
 				// Kick out as we don't need to perform any logic.
 				return;
 			}
 			else
 			{
 				// Simply move the folder to the same level as the leading collection.
-				console.log("Moved down and reparented to the leading folders location");
-				console.log(leadingCollection);
 				movedCollection.Depth = leadingCollection.Depth;
 				movedCollection.ParentId = leadingCollection.ParentId;
 			}
@@ -159,24 +150,24 @@ export class HomeComponent extends BasePageDirective
 		else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
 		{
 			// Nothing happened so we don't do anything.
-			console.log("No changes");
 			return;
 		}
 		else
 		{
 			// When you drag UP the target slides down so we need to use the lagging collection.
-			console.log("Moved up");
 			movedCollection.Depth = laggingCollection.HasChildren ? laggingCollection.Depth + 1 : leadingCollection.Depth;
 			movedCollection.ParentId = laggingCollection.HasChildren ? laggingCollection.Id : leadingCollection.ParentId;
 		}
 
+		// To figure out the depth change, take the new value minus the old.
+		let depthAdjustment: number = movedCollection.Depth - oldCollectionDepth;
+
 		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
-		this.ReparentChildItemsOfMovedCollection(movedCollection);
+		this.ReparentChildItemsOfMovedCollection(movedCollection, depthAdjustment);
 	}
 
-	private ReparentChildItemsOfMovedCollection(movedCollection: BookmarkCollection): void
+	private ReparentChildItemsOfMovedCollection(movedCollection: BookmarkCollection, depthAdjustment: number): void
 	{
-		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
 		// If there are any child elements on the moved collection then go move those back under the collection.
 		if (movedCollection.HasChildren)
 		{
@@ -195,7 +186,7 @@ export class HomeComponent extends BasePageDirective
 					// Update the depth to match the new location.
 					childCollections.forEach((collection) =>
 					{
-						collection.Depth = movedCollection.Depth + 1;
+						collection.Depth += depthAdjustment;
 					});
 
 					// Insert the child collections into the array right after the parent collection.
@@ -214,33 +205,6 @@ export class HomeComponent extends BasePageDirective
 			this._cdr.detectChanges();
 		}
 	}
-
-	// /**
-	//  * Predicate function that when returning true allows a target drop zone to be droppable.
-	//  * If it return false then the target drop zone is not allowed.
-	//  * https://v13.material.angular.io/cdk/drag-drop/overview#controlling-whether-an-item-can-be-sorted-into-a-particular-index
-	//  * @param item - The item being dragged.
-	//  * @param containers - All of the containers available.
-	//  */
-	// public SortPredicate(index: number, item: CdkDrag<BookmarkCollection>, containers: CdkDropList<BookmarkCollection[]>)
-	// {
-	// 	console.log("Target predicate item");
-	// 	console.log(containers.data[index]);
-	// 	// This is so close to being really refined.
-	// 	// Just needs to be worked on a bit longer to really lock in the sorting.
-	// 	// But, it works well enough for now to keep moving I think.
-	// 	// return !container.data[index].ChildCollectionsCollapsed || !container.data[index].IsCollapsed;
-
-	// 	// Get the item at the target index
-	// 	const targetItem = containers.data[index];
-
-	// 	// Check if it's hidden
-	// 	const isHidden = targetItem.ChildCollectionsCollapsed || targetItem.IsCollapsed;
-
-	// 	// Prevent the item from being dropped at this index if the target item is hidden
-	// 	// and it's not the last child.
-	// 	return !isHidden && !targetItem.IsLastChild;
-	// }
 
 	private FindChildCollections(parentId: string): BookmarkCollection[]
 	{
@@ -262,7 +226,7 @@ export class HomeComponent extends BasePageDirective
 	public HandleDragStart(event: CdkDragStart, collection: BookmarkCollection): void
 	{
 		this.IsDragging = true;
-		//this.ToggleTree(collection, true);
+		this.ToggleTree(collection, true);
 		this.BodyElement.classList.add('inheritCursors');
 		this.BodyElement.style.cursor = 'grabbing';
 	}
@@ -351,26 +315,6 @@ export class HomeComponent extends BasePageDirective
 
 				this.BookmarkCollections = [...collections];
 				this._cdr.detectChanges();
-
-				console.log(this.BookmarkCollections);
-
-				// // We need to slowly add things to the DOM tree or we'll overwhelm the browser.
-				// let batchSize = 10; // Adjust this value based on your performance needs
-				// let batchCount = Math.ceil(collections.length / batchSize);
-
-				// for (let i = 0; i < batchCount; i++)
-				// {
-				// 	setTimeout(() =>
-				// 	{
-				// 		let batch = collections.slice(i * batchSize, (i + 1) * batchSize);
-				// 		this.BookmarkCollections = this.BookmarkCollections.concat(batch);
-				// 	}, i * 500); // Adjust delay as needed
-				// }
-
-
-				// this.BookmarkTreeNode = new BookmarkTreeNode(bookmarksToImport);
-
-				// console.log(this.BookmarkTreeNode);
 
 				// this._bookmarksService.SyncBookmarks(this.BookmarkTreeNodes)
 				// 	.subscribe({

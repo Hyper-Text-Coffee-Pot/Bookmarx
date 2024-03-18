@@ -28,14 +28,15 @@
 					  class="example-box d-flex w-100 align-items-end justify-content-between"
 					  [cdkDragData]="collection"
 					  (cdkDragStarted)="HandleDragStart($event, collection)"
-					  (click)="OpenBookmarkCollection(collection)"
-					  (dblclick)="HandleDoubleClick(collection)"
+					  (click)="OpenBookmarkCollection($event, collection)"
+					  (dblclick)="HandleDoubleClick($event, collection)"
 					  [style.padding-left.px]="collection.Depth * 20"
 					  [ngStyle]="{
 						'height': collection.IsCollapsed ? '0px' : 'auto',
 						'min-height': collection.IsCollapsed ? '0' : 'auto',
 						'padding-top': collection.IsCollapsed ? '0' : '5px',
-						'padding-bottom': collection.IsCollapsed ? '0' : '5px'
+						'padding-bottom': collection.IsCollapsed ? '0' : '5px',
+						'border-bottom': collection.IsCollapsed ? 'none' : 'solid 1px #ccc'
 						}">
 
 				<div class="d-flex">
