@@ -369,9 +369,9 @@ export class HomeComponent extends BasePageDirective
 
 		for (let i = 0; i < this.BookmarkCollections.length; i++)
 		{
-			if (this.BookmarkCollections[i].ParentId === targetCollection.Id)
+			if (this.BookmarkCollections[i].ParentId === activeCollection.Id)
 			{
-				if (this.IsChildCollection(this.BookmarkCollections[i], activeCollection))
+				if (this.IsChildCollection(targetCollection, this.BookmarkCollections[i]))
 				{
 					return true;
 				}
