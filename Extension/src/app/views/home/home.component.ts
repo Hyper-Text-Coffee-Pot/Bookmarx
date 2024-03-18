@@ -83,15 +83,17 @@ export class HomeComponent extends BasePageDirective
 	 */
 	public drop(viewModelCollection: CdkDragDrop<BookmarkCollection[]>)
 	{
+		let collectionSuccessfullyMoved = true;
+
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
 
 		// Move the item in the array right away so all subsequent logic is being performed on the new state.
 		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
-		let activeCollection = viewModelCollection.item.data;
+		// let activeCollection = viewModelCollection.item.data;
 		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
-		let targetCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
+		let movedCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
 		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
 		// The way in which the user is dragging the item and how Angular Material
@@ -101,7 +103,28 @@ export class HomeComponent extends BasePageDirective
 		{
 			// When you drag down the target slides up so we need to use the leading collection.
 			console.log("Moved down");
-			
+			let isChild = this.IsChildCollection(leadingCollection, movedCollection);
+			if (isChild)
+			{
+				// Move the item back to where it was originally.
+				moveItemInArray(this.BookmarkCollections, viewModelCollection.currentIndex, viewModelCollection.previousIndex);
+
+				this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
+					politeness: 'assertive',
+					duration: 5000
+				});
+
+				collectionSuccessfullyMoved = false;
+
+				// Kick out as we don't need to perform any logic.
+				return;
+			}
+			else
+			{
+				// Match the active collection with the leading collection.
+				movedCollection.Depth = leadingCollection.Depth;
+				movedCollection.ParentId = leadingCollection.ParentId;
+			}
 		}
 		else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
 		{
@@ -111,63 +134,66 @@ export class HomeComponent extends BasePageDirective
 		}
 		else
 		{
-			// When you drag up the target slides down so we need to use the lagging collection.
+			// When you drag UP the target slides down so we need to use the lagging collection.
 			console.log("Moved up");
+			console.log(laggingCollection);
+			movedCollection.Depth = laggingCollection.HasChildren ? laggingCollection.Depth + 1 : leadingCollection.Depth;
+			movedCollection.ParentId = laggingCollection.HasChildren ? laggingCollection.Id : leadingCollection.ParentId;
 		}
 
-		// We only need to worry about this when moving down the list because we should be able
-		// to move a directory from inside a deeper folder to outside of it.
-		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
-		{
-			let isChild = this.IsChildCollection(targetCollection, activeCollection);
-			if (isChild)
-			{
-				// Check if the target collection is a child of the active collection
-				this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
-					politeness: 'assertive',
-					duration: 5000
-				});
+		// // We only need to worry about this when moving down the list because we should be able
+		// // to move a directory from inside a deeper folder to outside of it.
+		// if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
+		// {
+		// 	let isChild = this.IsChildCollection(targetCollection, activeCollection);
+		// 	if (isChild)
+		// 	{
+		// 		// Check if the target collection is a child of the active collection
+		// 		this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
+		// 			politeness: 'assertive',
+		// 			duration: 5000
+		// 		});
 
-				// Kick out as we don't need to perform any logic.
-				return;
-			}
-		}
-		else if (viewModelCollection.currentIndex === viewModelCollection.previousIndex)
-		{
-			// The user didn't move anything, so we don't need to do anything.
-			return;
-		}
+		// 		// Kick out as we don't need to perform any logic.
+		// 		return;
+		// 	}
+		// }
+		// else if (viewModelCollection.currentIndex === viewModelCollection.previousIndex)
+		// {
+		// 	// The user didn't move anything, so we don't need to do anything.
+		// 	return;
+		// }
 
-		// We need to wait for things to be moved around in the array before working with them.
-		// let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
-		// let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+		// // We need to wait for things to be moved around in the array before working with them.
+		// // let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
+		// // let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
 
-		if (laggingCollection == null)
-		{
-			// They may have dragged it to a new root location, so set it as such.
-			activeCollection.Depth = 0;
-			activeCollection.ParentId = null;
-		}
-		else
-		{
-			// Otherwise scoot the collection in a depth if the target has children.
-			activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
-			activeCollection.ParentId = targetCollection.HasChildren ? laggingCollection.Id : targetCollection.ParentId;
-		}
+		// if (laggingCollection == null)
+		// {
+		// 	// They may have dragged it to a new root location, so set it as such.
+		// 	activeCollection.Depth = 0;
+		// 	activeCollection.ParentId = null;
+		// }
+		// else
+		// {
+		// 	// Otherwise scoot the collection in a depth if the target has children.
+		// 	activeCollection.Depth = targetCollection.HasChildren ? laggingCollection.Depth + 1 : targetCollection.Depth;
+		// 	activeCollection.ParentId = targetCollection.HasChildren ? laggingCollection.Id : targetCollection.ParentId;
+		// }
 
 		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
-		this.ReparentChildItemsOfMovedCollection(activeCollection);
+		this.ReparentChildItemsOfMovedCollection(movedCollection);
 	}
 
-	private ReparentChildItemsOfMovedCollection(activeCollection: BookmarkCollection): void
+	private ReparentChildItemsOfMovedCollection(movedCollection: BookmarkCollection): void
 	{
 		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
 		// If there are any child elements on the moved collection then go move those back under the collection.
-		if (activeCollection.HasChildren)
+		if (movedCollection.HasChildren)
 		{
 			// Now, reorder everything correctly.
 			let reorderedCollections: BookmarkCollection[] = [];
-			let childCollections: BookmarkCollection[] = this.FindChildCollections(activeCollection.Id);
+			let childCollections: BookmarkCollection[] = this.FindChildCollections(movedCollection.Id);
 
 			// Remove child collections from BookmarkCollections array
 			reorderedCollections = this.BookmarkCollections.filter(collection => !childCollections.includes(collection));
@@ -175,12 +201,12 @@ export class HomeComponent extends BasePageDirective
 			// Reinsert child collections after the moved viewModelCollection
 			for (let i = 0; i < reorderedCollections.length; i++)
 			{
-				if (reorderedCollections[i].Id === activeCollection.Id)
+				if (reorderedCollections[i].Id === movedCollection.Id)
 				{
 					// Update the depth to match the new location.
 					childCollections.forEach((collection) =>
 					{
-						collection.Depth = activeCollection.Depth + 1;
+						collection.Depth = movedCollection.Depth + 1;
 					});
 
 					// Insert the child collections into the array right after the parent collection.
