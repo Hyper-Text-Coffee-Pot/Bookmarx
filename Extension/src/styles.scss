@@ -1,12 +1,93 @@
-/* You can add global styles to this file, and also import other style files */
+/* Bookmarx Custom Theme */
+// https://materialpalettes.com/
+// background: linear-gradient(90.49deg, #121212 15.36%, #282828 70.44%);
+// https://materialtheme.arcsine.dev/
+// https://v13.material.angular.io/guide/theming#create-your-own-palette
+
+@use '@angular/material' as mat;
+@import "~bootstrap/scss/bootstrap";
+@include mat.core();
+
+body
+{
+	--clr-primary-50: #def3ef;
+	--clr-primary-100: #ade1d6;
+	--clr-primary-200: #77cebc;
+	--clr-primary-300: #36baa2;
+	--clr-primary: var(--clr-primary-300);
+	--clr-primary-400: #00ab8e;
+	--clr-primary-500: #009a7c;
+	--clr-primary-600: #008d6f;
+	--clr-primary-700: #007d60;
+	--clr-primary-800: #006d52;
+	--clr-primary-900: #005136;
+	--clr-secondary-50: #fce5e9;
+	--clr-secondary-100: #f8bdc9;
+	--clr-secondary-200: #f394a6;
+	--clr-secondary-300: #ec6d84;
+	--clr-secondary-400: #e5536b;
+	--clr-secondary-500: #df4154;
+	--clr-secondary-600: #cf3c52;
+	--clr-secondary-700: #ba364e;
+	--clr-secondary: var(--clr-secondary-700);
+	--clr-secondary-800: #a6304b;
+	--clr-secondary-900: #812844;
+}
+
+$mint-palette: (
+	50: var(--clr-primary-50),
+	100: var(--clr-primary-100),
+	200: var(--clr-primary-200),
+	300: var(--clr-primary-300),
+	400: var(--clr-primary-400),
+	500: var(--clr-primary-500),
+	600: var(--clr-primary-600),
+	700: var(--clr-primary-700),
+	800: var(--clr-primary-800),
+	900: var(--clr-primary-900),
+	A100: var(--clr-primary-100),
+	A200: var(--clr-primary-200),
+	A400: var(--clr-primary-400),
+	A700: var(--clr-primary-700),
+	contrast: (
+	  light: #000000,
+	  dark: #ffffff,
+	),
+);
+
+$pink-palette: (
+	50: var(--clr-secondary-50),
+	100: var(--clr-secondary-100),
+	200: var(--clr-secondary-200),
+	300: var(--clr-secondary-300),
+	400: var(--clr-secondary-400),
+	500: var(--clr-secondary-500),
+	600: var(--clr-secondary-600),
+	700: var(--clr-secondary-700),
+	800: var(--clr-secondary-800),
+	900: var(--clr-secondary-900),
+	A100: var(--clr-secondary-100),
+	A200: var(--clr-secondary-200),
+	A400: var(--clr-secondary-400),
+	A700: var(--clr-secondary-700),
+	contrast: (
+	  light: #000000,
+	  dark: #ffffff,
+	),
+);
+
+$my-primary: mat.define-palette($mint-palette, 500);
+$my-accent: mat.define-palette($pink-palette, A200, A100, A400);
+
+$my-theme: mat.define-light-theme((color: (primary: $my-primary, accent: $my-accent )));
+
+@include mat.all-component-themes($my-theme);
 
 /* Bootstrap theme overrides */
 $theme-colors: (
-	"primary": #6667ab
+	"primary": #36baa2,
+	"secondary": #ba364e,
 );
-
-/* https://loiane.com/2017/08/how-to-add-bootstrap-to-an-angular-cli-project/ */
-@import "~bootstrap/scss/bootstrap";
 
 /* cyrillic-ext */
 @font-face
@@ -93,31 +174,6 @@ body.inheritCursors *
 {
 	cursor: inherit !important;
 }
-
-// /* Shimmer Effect */
-// // https://www.geeksforgeeks.org/shimmer-effect-using-css/
-// // https://codepen.io/umng/pen/xMXXRj
-// .shimmer {
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   width: 50%;
-//   height: 100%;
-//   background: linear-gradient(90deg, #f6f7f8 0%, #edeef1 40%, #f6f7f8 80%, #f6f7f8 100%);
-//   z-index: 50;
-
-//   animation: shimmer 1s infinite linear;
-// }
-
-// @keyframes shimmer {
-//   from {
-//     transform: translateX(-200%);
-//   }
-
-//   to {
-//     transform: translateX(200%);
-//   }
-// }
 
 // Dark-mode global styles.
 @media (prefers-color-scheme: dark)
