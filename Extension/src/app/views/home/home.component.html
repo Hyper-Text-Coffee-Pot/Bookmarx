@@ -21,44 +21,51 @@
 	<div cdkDropList
 		 class="col p-0 example-list"
 		 [cdkDropListData]="BookmarkCollections"
-		 (cdkDropListDropped)="drop($event)">
+		 (cdkDropListDropped)="HandleDrop($event)">
 		<ng-container *ngFor="let collection of BookmarkCollections">
 			<mat-card cdkDrag
 					  matRipple
-					  class="example-box"
+					  class="example-box d-flex w-100 align-items-end justify-content-between"
 					  [cdkDragData]="collection"
-					  *ngIf="!collection.IsCollapsed"
 					  (cdkDragStarted)="HandleDragStart($event, collection)"
-					  (click)="OpenBookmarkCollection(collection)"
-					  (dblclick)="HandleDoubleClick(collection)"
-					  [style.padding-left.px]="collection.Depth * 20">
-				<div>
-					<div class="d-flex align-items-center">
-						<ng-container *ngIf="collection.HasChildren">
-							<button mat-icon-button
-									aria-label="Example icon button with a vertical three dot icon"
-									(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
-									[style.margin-left.px]="-20">
-								<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
-									<mat-icon aria-hidden="false"
-											  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
-								</ng-container>
-								<ng-container *ngIf="collection.ChildCollectionsCollapsed">
-									<mat-icon aria-hidden="false"
-											  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
-								</ng-container>
-							</button>
+					  (click)="OpenBookmarkCollection($event, collection)"
+					  (dblclick)="HandleDoubleClick($event, collection)"
+					  [style.padding-left.px]="collection.Depth * 20"
+					  [ngStyle]="{
+						'height': collection.IsCollapsed ? '0px' : 'auto',
+						'min-height': collection.IsCollapsed ? '0' : 'auto',
+						'padding-top': collection.IsCollapsed ? '0' : '5px',
+						'padding-bottom': collection.IsCollapsed ? '0' : '5px',
+						'border-bottom': collection.IsCollapsed ? 'none' : 'solid 1px #ccc'
+						}">
+
+				<div class="d-flex">
+					<button mat-icon-button
+							aria-label="Example icon button with a vertical three dot icon"
+							(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
+							[style.margin-left.px]="-20"
+							*ngIf="collection.HasChildren">
+						<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
+							<mat-icon aria-hidden="false"
+									  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
 						</ng-container>
-						<p class="m-0 p-0">
-							<span [innerHTML]="collection.Icon"></span>&nbsp;
-							{{collection.Title}}
-						</p>
-					</div>
+						<ng-container *ngIf="collection.ChildCollectionsCollapsed">
+							<mat-icon aria-hidden="false"
+									  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
+						</ng-container>
+					</button>
+					<p class="m-0 p-0">
+						<span [innerHTML]="collection.Icon"></span>&nbsp;
+						<span>{{collection.Title}}</span>&nbsp;
+					</p>
+				</div>
+				<div>
+					<span class="collections__bookmark-count">{{collection.Bookmarks?.length}}</span>
 				</div>
 			</mat-card>
 		</ng-container>
 	</div>
-	<div class="col-9 p-0 bookmarks__output">
+	<div class="col-8 p-0 bookmarks__output">
 		<button type="button"
 				(click)="SignOut()">Sign Out</button>
 		<button type="button"

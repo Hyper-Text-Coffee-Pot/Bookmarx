@@ -53,6 +53,12 @@ export class BookmarkCollection
 	public HasChildren: boolean = false;
 
 	/**
+	 * I hate this but it's the easiest way to indicate if the collection is the last child
+	 * without having to iterate through the entire collection to find out, every single time.
+	 */
+	public IsLastChild: boolean = false;
+
+	/**
 	 * Defaults to the unicode character for a file folder.
 	 */
 	public Icon: string = "&#x1F4C1;";
