@@ -15,17 +15,20 @@
 	}
 }
 
+.example-spacer
+{
+	flex: 1 1 auto;
+}
+
 .example-list
 {
-	width: 500px;
-	max-width: 100%;
+	width: 100%;
 	border: solid 1px #ccc;
 	height: calc(100vh - 64px);
 	overflow-x: hidden;
 	overflow-y: auto;
 	display: block;
-	background: white;
-	border-radius: 4px;
+	background: green;
 }
 
 .example-box

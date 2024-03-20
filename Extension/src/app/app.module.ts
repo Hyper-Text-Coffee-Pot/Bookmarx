@@ -28,6 +28,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatRippleModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
 	declarations: [
@@ -58,7 +60,9 @@ import { MatCardModule } from '@angular/material/card';
 		MatButtonModule,
 		MatSnackBarModule,
 		MatRippleModule,
-		MatCardModule
+		MatCardModule,
+		MatGridListModule,
+		MatDividerModule
 	],
 	providers: [
 		AuthService,

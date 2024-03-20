@@ -113,6 +113,7 @@ $my-theme: mat.define-light-theme((color: (primary: $my-primary, accent: $my-acc
 	white-space: nowrap;
 	word-wrap: normal;
 	direction: ltr;
+	font-feature-settings: 'liga';
 	-webkit-font-feature-settings: 'liga';
 	-webkit-font-smoothing: antialiased;
 }
@@ -174,4 +175,13 @@ body
 	font-family: Roboto, "Helvetica Neue", sans-serif;
 	width: 750px;
 	height: 600px;
+}
+
+/* Custom Global */
+.mat
+{
+	&-flex
+	{
+		display: flex;
+	}
 }
