@@ -1,3 +1,13 @@
+.toolbar
+{
+	&__title
+	{
+		color: var(--clr-accent);
+		margin: 0;
+		padding: 0;
+	}
+}
+
 .file-explorer
 {
 	&__wrapper
@@ -8,7 +18,7 @@
 
 	&__handle
 	{
-		background: var(--clr-primary-900);
+		background: var(--clr-primary-500);
 		width: 4px;
 		height: calc(100vh - 64px);
 		cursor: col-resize;
@@ -35,7 +45,7 @@
 	overflow-x: hidden;
 	overflow-y: auto;
 	display: block;
-	background: green;
+	background: var(--clr-secondary-900);
 }
 
 .example-box
@@ -80,20 +90,6 @@
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder)
 {
 	transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.mat-icon-button
-{
-	width: 20px;
-	height: 20px;
-	line-height: 20px;
-	border-radius: 50%;
-}
-
-.mat-icon-button i,
-.mat-icon-button .mat-icon
-{
-	line-height: 20px;
 }
 
 .collections
