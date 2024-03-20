@@ -56,7 +56,7 @@
 									  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
 						</ng-container>
 					</button>
-					<p class="m-0 p-0 text-nowrap">
+					<p class="mat-text-nowrap">
 						<span [innerHTML]="collection.Icon"></span>&nbsp;
 						<span>{{collection.Title}}</span>&nbsp;
 					</p>
@@ -68,32 +68,35 @@
 			<mat-divider></mat-divider>
 		</mat-list>
 	</div>
-	<div id="draggableResize"
-		 (mousedown)='OnResizableClick($event)'></div>
-	<div>
-		<div class="bookmarks__output">
-			<button type="button"
-					(click)="SignOut()">Sign Out</button>
-			<button type="button"
-					(click)="ImportExistingBookmarks()">Import existing bookmarks</button>
-			<button type="button"
-					(click)="ClearBookmarks()">Clear all</button>
-			<hr />
-			<mat-card>
-				<mat-card-title>{{ActiveCollection?.Title}}</mat-card-title>
-				<mat-card-subtitle>{{ActiveCollection?.Bookmarks?.length}}</mat-card-subtitle>
+	<div class="file-explorer__handle"
+		 (mousedown)='OnResizableClick($event)'
+		 role="separator"
+		 aria-label="Resize file explorer"
+		 tabindex="0"
+		 aria-grabbed="false">
+	</div>
+	<div class="bookmarks__output">
+		<button type="button"
+				(click)="SignOut()">Sign Out</button>
+		<button type="button"
+				(click)="ImportExistingBookmarks()">Import existing bookmarks</button>
+		<button type="button"
+				(click)="ClearBookmarks()">Clear all</button>
+		<hr />
+		<mat-card>
+			<mat-card-title>{{ActiveCollection?.Title}}</mat-card-title>
+			<mat-card-subtitle>{{ActiveCollection?.Bookmarks?.length}}</mat-card-subtitle>
+		</mat-card>
+		<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
+			<p>No saved bookmarks.</p>
+		</ng-container>
+		<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
+			<mat-card *ngFor="let bookmark of ActiveCollection?.Bookmarks">
+				<a [href]="SanitizeUrl(bookmark.Url)"
+				   target="_blank">
+					{{bookmark.Title}}
+				</a>
 			</mat-card>
-			<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
-				<p>No saved bookmarks.</p>
-			</ng-container>
-			<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
-				<mat-card *ngFor="let bookmark of ActiveCollection?.Bookmarks">
-					<a [href]="SanitizeUrl(bookmark.Url)"
-					   target="_blank">
-						{{bookmark.Title}}
-					</a>
-				</mat-card>
-			</ng-container>
-		</div>
+		</ng-container>
 	</div>
 </div>

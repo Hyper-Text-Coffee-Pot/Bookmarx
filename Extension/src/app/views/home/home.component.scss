@@ -1,17 +1,24 @@
-#draggableResize
-{
-	background: blue;
-	width: 5px;
-	height: calc(100vh - 64px);
-	cursor: col-resize;
-}
-
 .file-explorer
 {
 	&__wrapper
 	{
 		min-width: 25%;
-		max-width: 75%;
+		max-width: 50%;
+	}
+
+	&__handle
+	{
+		background: var(--clr-primary-900);
+		width: 4px;
+		height: calc(100vh - 64px);
+		cursor: col-resize;
+	}
+
+	&__drag-indicator
+	{
+		height: 10px;
+		width: 1px;
+		background: #ccc;
 	}
 }
 
@@ -102,6 +109,7 @@
 	&__output
 	{
 		height: calc(100vh - 64px);
+		flex-grow: 1;
 		overflow-y: auto;
 		overflow-x: hidden;
 	}

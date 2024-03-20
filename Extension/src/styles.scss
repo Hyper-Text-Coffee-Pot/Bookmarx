@@ -184,4 +184,13 @@ body
 	{
 		display: flex;
 	}
+
+	&-text
+	{
+		&-nowrap
+		{
+			overflow: hidden;
+			text-wrap: nowrap;
+		}
+	}
 }
