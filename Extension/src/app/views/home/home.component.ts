@@ -11,6 +11,8 @@ import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
 import { BlockUIService } from 'ng-block-ui';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+
 
 @Component({
 	selector: 'app-home',
@@ -39,7 +41,7 @@ export class HomeComponent extends BasePageDirective
 
 	public BookmarkCollections: BookmarkCollection[] = [];
 
-	public Bookmarks: Bookmark[] = [];
+	public ActiveCollection: BookmarkCollection = null;
 
 	public IsDragging: boolean;
 
@@ -65,7 +67,7 @@ export class HomeComponent extends BasePageDirective
 				return;
 			}
 
-			this.Bookmarks = [...collection.Bookmarks];
+			this.ActiveCollection = collection;
 			this._cdr.detectChanges();
 		}, 250);
 	}

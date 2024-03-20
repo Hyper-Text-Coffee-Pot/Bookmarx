@@ -27,6 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatRippleModule } from '@angular/material/core';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
 	declarations: [
@@ -56,7 +57,8 @@ import { MatRippleModule } from '@angular/material/core';
 		MatIconModule,
 		MatButtonModule,
 		MatSnackBarModule,
-		MatRippleModule
+		MatRippleModule,
+		MatCardModule
 	],
 	providers: [
 		AuthService,
