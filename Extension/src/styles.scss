@@ -5,7 +5,6 @@
 // https://v13.material.angular.io/guide/theming#create-your-own-palette
 
 @use '@angular/material' as mat;
-@import "~bootstrap/scss/bootstrap";
 @include mat.core();
 
 body
@@ -49,9 +48,8 @@ $mint-palette: (
 	A200: var(--clr-primary-200),
 	A400: var(--clr-primary-400),
 	A700: var(--clr-primary-700),
-	contrast: (
-	  light: #000000,
-	  dark: #ffffff,
+	contrast: (light: #000000,
+		dark: #ffffff,
 	),
 );
 
@@ -70,9 +68,8 @@ $pink-palette: (
 	A200: var(--clr-secondary-200),
 	A400: var(--clr-secondary-400),
 	A700: var(--clr-secondary-700),
-	contrast: (
-	  light: #000000,
-	  dark: #ffffff,
+	contrast: (light: #000000,
+		dark: #ffffff,
 	),
 );
 
@@ -82,12 +79,6 @@ $my-accent: mat.define-palette($pink-palette, A200, A100, A400);
 $my-theme: mat.define-light-theme((color: (primary: $my-primary, accent: $my-accent )));
 
 @include mat.all-component-themes($my-theme);
-
-/* Bootstrap theme overrides */
-$theme-colors: (
-	"primary": #36baa2,
-	"secondary": #ba364e,
-);
 
 /* cyrillic-ext */
 @font-face
@@ -128,9 +119,6 @@ $theme-colors: (
 
 // regular style toast
 //@import '~ngx-toastr/toastr';
-
-// bootstrap style toast
-//@import '~ngx-toastr/toastr-bs4-alert';
 
 .lock-scroll
 {
