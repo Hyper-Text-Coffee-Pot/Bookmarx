@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, SecurityContext } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, SecurityContext } from '@angular/core';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BasePageDirective } from '../shared/base-page.directive';
@@ -11,8 +11,6 @@ import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
 import { BlockUIService } from 'ng-block-ui';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatCardModule } from '@angular/material/card';
-
 
 @Component({
 	selector: 'app-home',
@@ -21,10 +19,11 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class HomeComponent extends BasePageDirective
 {
-	/**
-	 * Not a huge fan of maintaining state here, but it's the best we got.
-	 */
 	private singleClickTimer: any;
+
+	private pointerXCoord: number = 0;
+
+	private isDraggingSide: boolean = false;
 
 	constructor(
 		private _route: ActivatedRoute,
@@ -47,8 +46,39 @@ export class HomeComponent extends BasePageDirective
 
 	public BodyElement: HTMLElement = document.body;
 
+	public FileExplorerWidthPX: number = 225;
+
 	public override ngOnInit(): void
 	{
+	}
+
+	public OnResizableClick(event: MouseEvent): void
+	{
+		this.isDraggingSide = true;
+		this.pointerXCoord = event.clientX;
+		event.preventDefault();
+		event.stopPropagation();
+	}
+
+	@HostListener('document:mousemove', ['$event'])
+	onCornerMove(event: MouseEvent)
+	{
+		if (!this.isDraggingSide)
+		{
+			return;
+		}
+
+		let offsetX = event.clientX - this.pointerXCoord;
+
+		this.FileExplorerWidthPX += offsetX;
+
+		this.pointerXCoord = event.clientX;
+	}
+
+	@HostListener('document:mouseup', ['$event'])
+	onCornerRelease(event: MouseEvent)
+	{
+		this.isDraggingSide = false;
 	}
 
 	public ClearBookmarks(): void

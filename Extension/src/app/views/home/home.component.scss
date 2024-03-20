@@ -1,3 +1,20 @@
+#draggableResize
+{
+	background: blue;
+	width: 5px;
+	height: calc(100vh - 64px);
+	cursor: col-resize;
+}
+
+.file-explorer
+{
+	&__wrapper
+	{
+		min-width: 25%;
+		max-width: 75%;
+	}
+}
+
 .example-list
 {
 	width: 500px;
