@@ -95,20 +95,24 @@
 		<button type="button"
 				(click)="ClearBookmarks()">Clear all</button>
 		<hr />
-		<mat-card color="primary">
-			<mat-card-title>{{ActiveCollection?.Title}}</mat-card-title>
-			<mat-card-subtitle>{{ActiveCollection?.Bookmarks?.length}}</mat-card-subtitle>
-		</mat-card>
 		<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
 			<p>No saved bookmarks.</p>
 		</ng-container>
 		<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
-			<mat-card *ngFor="let bookmark of ActiveCollection?.Bookmarks">
-				<a [href]="SanitizeUrl(bookmark.Url)"
-				   target="_blank">
-					{{bookmark.Title}}
-				</a>
-			</mat-card>
+			<div>
+				<div class="bookmarks__header">
+					<p>{{ActiveCollection?.Title}}</p>
+					<span>{{ActiveCollection?.Bookmarks?.length}}</span>
+				</div>
+				<hr />
+				<div *ngFor="let bookmark of ActiveCollection?.Bookmarks">
+					<a [href]="SanitizeUrl(bookmark.Url)"
+					   target="_blank">
+						{{bookmark.Title}}
+					</a>
+					<mat-divider></mat-divider>
+				</div>
+			</div>
 		</ng-container>
 	</div>
 </div>

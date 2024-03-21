@@ -45,21 +45,21 @@
 	overflow-x: hidden;
 	overflow-y: auto;
 	display: block;
-	background: linear-gradient(270deg, #1a1a1a 20%, #333333 80%);
+	background: linear-gradient(270deg, var(--clr-dark-smoke) 20%, var(--clr-light-smoke) 80%);
 }
 
 .example-box
 {
 	padding: 5px;
 	border-bottom: solid 1px #ccc;
-	color: rgba(0, 0, 0, 0.87);
+	color: whitesmoke;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 	box-sizing: border-box;
 	cursor: pointer;
-	background: white;
+	background: var(--clr-dark-smoke);
 	font-size: 14px;
 }
 
@@ -104,10 +104,24 @@
 {
 	&__output
 	{
+		color: whitesmoke;
 		height: calc(100vh - 64px);
 		flex-grow: 1;
 		overflow-y: auto;
 		overflow-x: hidden;
-		background: linear-gradient(90deg, #333333 20%, #1a1a1a 80%);
+		background: linear-gradient(90deg, var(--clr-dark-smoke) 20%, var(--clr-light-smoke) 80%);
 	}
+
+	&__header
+	{
+		font-size: 1.6em;
+		padding: 10px;
+	}
+}
+
+a
+{
+	color: whitesmoke;
+	text-decoration: none;
+	font-size: 1.2em;
 }
