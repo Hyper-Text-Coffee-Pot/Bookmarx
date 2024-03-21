@@ -5,7 +5,9 @@
 			aria-label="Example icon-button with menu icon">
 		<mat-icon>menu</mat-icon>
 	</button>
-	<p class="toolbar__title">Bookmarx</p>
+	<img src="./assets/images/logo161x20.png"
+		 alt="The official bookmarks logo featuring a teal bookmark icon to the left of the stylized lowercase text bookmarx in teal color, set against a clean background."
+		 aria-label="Bookmarks Logo">
 	<span class="example-spacer"></span>
 	<button mat-icon-button
 			color="accent"
@@ -15,10 +17,17 @@
 	</button>
 	<button mat-icon-button
 			color="accent"
-			class="example-icon"
-			aria-label="Example icon-button with share icon">
-		<mat-icon>share</mat-icon>
+			[matMenuTriggerFor]="menu"
+			aria-label="Example icon-button with a menu">
+		<mat-icon>more_vert</mat-icon>
 	</button>
+	<mat-menu #menu="matMenu">
+		<button mat-menu-item
+				(click)="SignOut()">
+			<mat-icon>exit_to_app</mat-icon>
+			<span>Log Out</span>
+		</button>
+	</mat-menu>
 </mat-toolbar>
 <div class="mat-flex">
 	<div class="file-explorer__wrapper"
@@ -31,7 +40,7 @@
 			<mat-list-item cdkDrag
 						   *ngFor="let collection of BookmarkCollections"
 						   matRipple
-						   class="example-box d-flex w-100 align-items-end justify-content-between"
+						   class="example-box"
 						   [cdkDragData]="collection"
 						   (cdkDragStarted)="HandleDragStart($event, collection)"
 						   (click)="OpenBookmarkCollection($event, collection)"
@@ -44,28 +53,30 @@
 						'padding-bottom': collection.IsCollapsed ? '0' : '5px',
 						'border-bottom': collection.IsCollapsed ? 'none' : 'solid 1px #ccc'
 						}">
-				<div>
-					<button mat-icon-button
-							aria-label="Example icon button with a vertical three dot icon"
-							(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
-							[style.margin-left.px]="-20"
-							*ngIf="collection.HasChildren">
-						<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
-							<mat-icon aria-hidden="false"
-									  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
-						</ng-container>
-						<ng-container *ngIf="collection.ChildCollectionsCollapsed">
-							<mat-icon aria-hidden="false"
-									  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
-						</ng-container>
-					</button>
-					<p class="mat-text-nowrap">
-						<span [innerHTML]="collection.Icon"></span>&nbsp;
-						<span>{{collection.Title}}</span>&nbsp;
-					</p>
-				</div>
-				<div>
-					<span class="collections__bookmark-count">{{collection.Bookmarks?.length}}</span>
+				<div class="file-explorer__item">
+					<div>
+						<button mat-icon-button
+								aria-label="Example icon button with a vertical three dot icon"
+								(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
+								[style.margin-left.px]="-20"
+								*ngIf="collection.HasChildren">
+							<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
+								<mat-icon aria-hidden="false"
+										  aria-label="Example home icon">keyboard_arrow_down</mat-icon>
+							</ng-container>
+							<ng-container *ngIf="collection.ChildCollectionsCollapsed">
+								<mat-icon aria-hidden="false"
+										  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
+							</ng-container>
+						</button>
+						<p class="mat-text-nowrap">
+							<span [innerHTML]="collection.Icon"></span>&nbsp;
+							<span>{{collection.Title}}</span>&nbsp;
+						</p>
+					</div>
+					<div>
+						<span class="collections__bookmark-count">{{collection.Bookmarks?.length}}</span>
+					</div>
 				</div>
 			</mat-list-item>
 			<mat-divider></mat-divider>
@@ -80,13 +91,11 @@
 	</div>
 	<div class="bookmarks__output">
 		<button type="button"
-				(click)="SignOut()">Sign Out</button>
-		<button type="button"
 				(click)="ImportExistingBookmarks()">Import existing bookmarks</button>
 		<button type="button"
 				(click)="ClearBookmarks()">Clear all</button>
 		<hr />
-		<mat-card>
+		<mat-card color="primary">
 			<mat-card-title>{{ActiveCollection?.Title}}</mat-card-title>
 			<mat-card-subtitle>{{ActiveCollection?.Bookmarks?.length}}</mat-card-subtitle>
 		</mat-card>

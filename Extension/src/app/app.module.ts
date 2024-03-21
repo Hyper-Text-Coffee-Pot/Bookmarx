@@ -30,6 +30,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
 	declarations: [
@@ -62,7 +63,8 @@ import { MatDividerModule } from '@angular/material/divider';
 		MatRippleModule,
 		MatCardModule,
 		MatGridListModule,
-		MatDividerModule
+		MatDividerModule,
+		MatMenuModule
 	],
 	providers: [
 		AuthService,

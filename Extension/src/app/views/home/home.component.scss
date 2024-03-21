@@ -14,6 +14,7 @@
 	{
 		min-width: 25%;
 		max-width: 50%;
+		background-color: var(--clr-primary-800);
 	}
 
 	&__handle
@@ -40,12 +41,11 @@
 .example-list
 {
 	width: 100%;
-	border: solid 1px #ccc;
 	height: calc(100vh - 64px);
 	overflow-x: hidden;
 	overflow-y: auto;
 	display: block;
-	background: var(--clr-secondary-900);
+	background: linear-gradient(270deg, #1a1a1a 20%, #333333 80%);
 }
 
 .example-box
@@ -108,5 +108,6 @@
 		flex-grow: 1;
 		overflow-y: auto;
 		overflow-x: hidden;
+		background: linear-gradient(90deg, #333333 20%, #1a1a1a 80%);
 	}
 }
