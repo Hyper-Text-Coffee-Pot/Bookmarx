@@ -29,7 +29,7 @@
 		</button>
 	</mat-menu>
 </mat-toolbar>
-<div class="mat-flex">
+<div class="bx-d-flex">
 	<div class="file-explorer__wrapper"
 		 [style.width.px]="FileExplorerWidthPX">
 		<mat-list cdkDropList
@@ -53,12 +53,11 @@
 						'padding-bottom': collection.IsCollapsed ? '0' : '5px',
 						'border-bottom': collection.IsCollapsed ? 'none' : 'solid 1px #ccc'
 						}">
-				<div class="file-explorer__item">
-					<div>
+				<div class="file-explorer__item bx-w-100 bx-d-flex bx-justify-content-between bx-align-items-center">
+					<div class="file-explorer__folder">
 						<button mat-icon-button
 								aria-label="Example icon button with a vertical three dot icon"
 								(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
-								[style.margin-left.px]="-20"
 								*ngIf="collection.HasChildren">
 							<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
 								<mat-icon aria-hidden="false"
@@ -69,7 +68,7 @@
 										  aria-label="Example home icon">keyboard_arrow_right</mat-icon>
 							</ng-container>
 						</button>
-						<p class="mat-text-nowrap">
+						<p class="bx-m-0 bx-text-nowrap">
 							<span [innerHTML]="collection.Icon"></span>&nbsp;
 							<span>{{collection.Title}}</span>&nbsp;
 						</p>
