@@ -103,17 +103,20 @@
 									   [formControl]="emailFormControl"
 									   [errorStateMatcher]="matcher"
 									   placeholder="Ex. pat@example.com">
-								<mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
-									Please enter a valid email address
+								<mat-error *ngIf="emailFormControl.hasError('minlength') && !emailFormControl.hasError('required')">
+									Name must be at least 3 characters long
 								</mat-error>
 								<mat-error *ngIf="emailFormControl.hasError('required')">
 									Email is <strong>required</strong>
 								</mat-error>
 							</mat-form-field>
+							<button type="submit"
+									mat-raised-button
+									color="accent"
+									(click)="ImportExistingBookmarks()"
+									[disabled]="emailFormControl.invalid"
+									aria-label="Import Bookmarks">Import Bookmarks</button>
 						</form>
-						<button mat-raised-button
-								color="accent"
-								(click)="ImportExistingBookmarks()">Import Bookmarks</button>
 					</ng-container>
 					<ng-container *ngIf="IsImportingBookmarks">
 						<button mat-raised-button
