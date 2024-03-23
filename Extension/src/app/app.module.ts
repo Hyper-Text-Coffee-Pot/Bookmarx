@@ -33,6 +33,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { DirectoryMenuComponent } from './views/partials/directory-menu/directory-menu.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogDeleteCollectionComponent } from './views/dialogs/dialog-delete-collection/dialog-delete-collection.component';
 
 @NgModule({
 	declarations: [
@@ -44,7 +48,9 @@ import { MatListModule } from '@angular/material/list';
 		SignupComponent,
 		ForgotPasswordComponent,
 		ActionComponent,
-		BookmarkTreeComponent
+		BookmarkTreeComponent,
+		DirectoryMenuComponent,
+		DialogDeleteCollectionComponent
 	],
 	imports: [
 		BrowserModule,
@@ -54,7 +60,6 @@ import { MatListModule } from '@angular/material/list';
 		HttpClientModule,
 		provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 		provideAuth(() => getAuth()),
-		// RecaptchaV3Module,
 		BlockUIModule.forRoot(),
 		BrowserAnimationsModule,
 		DragDropModule,
@@ -68,7 +73,9 @@ import { MatListModule } from '@angular/material/list';
 		MatDividerModule,
 		MatMenuModule,
 		MatInputModule,
-		MatListModule
+		MatListModule,
+		MatBottomSheetModule,
+		MatDialogModule
 	],
 	providers: [
 		AuthService,

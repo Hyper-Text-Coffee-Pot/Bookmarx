@@ -44,6 +44,9 @@ public class BookmarkCollection : IFirebaseEntity
 	[FirestoreProperty]
 	public bool IsLastChild { get; set; }
 
+	[FirestoreProperty]
+	public bool IsSoftDeleted { get; set; } = false;
+
 	/// <summary>
 	/// The parent collection Id of the bookmark collection.
 	/// If this is null, then it's a root collection.

@@ -57,6 +57,12 @@ export class BookmarkCollection
 	public IsLastChild: boolean = false;
 
 	/**
+	 * Soft deletes will keep collections and their child collections
+	 * in a trash folder so that they can be restored, or permanently deleted.
+	 */
+	public IsSoftDeleted: boolean = false;
+
+	/**
 	 * The parent collection Id of the bookmark collection.
 	 * If this is null, then it's a root collection.
 	 */

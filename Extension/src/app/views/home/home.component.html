@@ -69,7 +69,7 @@
 				  (cdkDropListDropped)="HandleDrop($event)">
 			<mat-list-item role="list-item"
 						   cdkDrag
-						   *ngFor="let collection of BookmarkCollections"
+						   *ngFor="let collection of BookmarkCollections; let i = index;"
 						   matRipple
 						   class="example-box"
 						   [cdkDragData]="collection"
@@ -107,6 +107,7 @@
 					</div>
 					<div>
 						<span class="collections__bookmark-count">{{collection.Bookmarks?.length}}</span>
+						<app-directory-menu [RespectiveBookmarkCollection]="collection"></app-directory-menu>
 					</div>
 				</div>
 			</mat-list-item>

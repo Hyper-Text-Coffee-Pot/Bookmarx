@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, SecurityContext } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, SecurityContext, ViewChild } from '@angular/core';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BasePageDirective } from '../shared/base-page.directive';
@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { BookmarkImportStateType } from 'src/app/domain/bookmarks/enums/bookmark-import-state-type';
+import { MatMenu } from '@angular/material/menu';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher
@@ -73,6 +74,9 @@ export class HomeComponent extends BasePageDirective
 	}
 
 	public matcher = new MyErrorStateMatcher();
+
+	@ViewChild('navmenu', { static: true })
+	navMenu: MatMenu;
 
 	public override ngOnInit(): void
 	{
@@ -237,6 +241,11 @@ export class HomeComponent extends BasePageDirective
 
 		// Run a save on the new state.
 		this.UpsertBookmarks();
+	}
+
+	public GenerateMatMenuTriggerName(index: number): MatMenu
+	{
+		return this.navMenu;
 	}
 
 	/**

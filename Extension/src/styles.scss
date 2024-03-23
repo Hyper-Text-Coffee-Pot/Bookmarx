@@ -201,6 +201,26 @@ body
 		{
 			justify-content: center;
 		}
+
+		&-end
+		{
+			justify-content: flex-end;
+		}
+
+		&-start
+		{
+			justify-content: flex-start;
+		}
+
+		&-around
+		{
+			justify-content: space-around;
+		}
+
+		&-evenly
+		{
+			justify-content: space-evenly;
+		}
 	}
 
 	&-align-items
