@@ -25,4 +25,12 @@ export class BookmarksService
 				retry(3)
 			);
 	}
+
+	public GetAll(): Observable<any>
+	{
+		return this._httpClient.get(`${ environment.apiUrlV1 }/bookmarks/get-all`)
+			.pipe(
+				retry(3)
+			);
+	}
 }

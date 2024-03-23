@@ -14,6 +14,24 @@ public class BookmarksController : ControllerBase
 		this._bookmarkService = bookmarkService ?? throw new ArgumentNullException(nameof(bookmarkService));
 	}
 
+	[HttpGet]
+	[Route("get-all")]
+	public async Task<IActionResult> GetAll()
+	{
+		var bookmarkCollections = new List<BookmarkCollection>();
+
+		try
+		{
+			bookmarkCollections = await this._bookmarkService.GetBookmarks();
+		}
+		catch (Exception ex)
+		{
+			return BadRequest(ex.Message);
+		}
+
+		return Ok(bookmarkCollections);
+	}
+
 	[HttpPost]
 	[Route("sync-bookmarks")]
 	[Consumes("application/json")]

@@ -73,6 +73,19 @@ export class HomeComponent extends BasePageDirective
 
 	public override ngOnInit(): void
 	{
+		super.ngOnInit();
+		this._bookmarksService.GetAll()
+			.subscribe({
+				next: (result: BookmarkCollection[]) =>
+				{
+					this.BookmarkCollections = result;
+					this.ActiveCollection = this.BookmarkCollections[0];
+				},
+				error: (error) =>
+				{
+					console.log(error);
+				}
+			});
 	}
 
 	public SaveImportedBookmarks(): void

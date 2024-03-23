@@ -14,4 +14,6 @@ public interface ICurrentMemberService
 	/// </summary>
 	/// <returns>A member account or null.</returns>
 	Task<MemberAccount?> GetCachedMember();
+
+	Task<MemberAccount?> GetFreshMember();
 }
