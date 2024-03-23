@@ -97,13 +97,12 @@
 						<form class="example-form">
 							<mat-form-field class="example-full-width"
 											appearance="fill">
-								<mat-label>Email</mat-label>
+								<mat-label>Collection Name: ex. My Computer</mat-label>
 								<input type="email"
 									   matInput
 									   [formControl]="emailFormControl"
 									   [errorStateMatcher]="matcher"
 									   placeholder="Ex. pat@example.com">
-								<mat-hint>Errors appear instantly!</mat-hint>
 								<mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
 									Please enter a valid email address
 								</mat-error>
