@@ -38,7 +38,7 @@ public class CurrentMemberService : ICurrentMemberService
 		}
 	}
 
-	public async Task<MemberAccount?> GetMember()
+	public async Task<MemberAccount?> GetCachedMember()
 	{
 		var cacheKey = $"MemberAccount_{AccountId}";
 
@@ -47,16 +47,37 @@ public class CurrentMemberService : ICurrentMemberService
 			return currentMemberAccount;
 		}
 
-		var accountId = this._httpContextAccessor.HttpContext.User.FindFirst("AccountId");
-		if (!string.IsNullOrEmpty(accountId?.Value))
+		if (!string.IsNullOrEmpty(this.AccountId))
 		{
 			var members = await this._firestoreProvider
-				.WhereEqualTo<MemberAccount>(nameof(MemberAccount.Id), accountId, CancellationToken.None);
+				.WhereEqualTo<MemberAccount>(nameof(MemberAccount.Id), this.AccountId, CancellationToken.None);
 
 			if (members != null)
 			{
 				currentMemberAccount = members.FirstOrDefault();
 				this._cache.Set(cacheKey, currentMemberAccount, TimeSpan.FromMinutes(10));
+			}
+		}
+		else
+		{
+			throw new Exception("Request failed.");
+		}
+
+		return currentMemberAccount;
+	}
+
+	public async Task<MemberAccount?> GetFreshMember()
+	{
+		var currentMemberAccount = new MemberAccount();
+
+		if (!string.IsNullOrEmpty(this.AccountId))
+		{
+			var members = await this._firestoreProvider
+				.WhereEqualTo<MemberAccount>(nameof(MemberAccount.Id), this.AccountId, CancellationToken.None);
+
+			if (members != null)
+			{
+				currentMemberAccount = members.FirstOrDefault();
 			}
 		}
 		else

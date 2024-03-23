@@ -1,6 +1,4 @@
-﻿using Bookmarx.Data.v1.Providers;
-
-namespace Bookmarx.Shared.v1.Identity.Services;
+﻿namespace Bookmarx.Shared.v1.Identity.Services;
 
 public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 {
@@ -154,9 +152,14 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 					// If all the junk above has issues it's fine, we just need to know that the token was valid.
 					isValid = true;
 				}
+				else
+				{
+					throw new UnauthorizedAccessException();
+				}
 			}
 			catch (Exception ex)
 			{
+				
 			}
 		}
 

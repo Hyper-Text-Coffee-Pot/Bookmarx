@@ -19,7 +19,14 @@ public class BookmarksController : ControllerBase
 	[Consumes("application/json")]
 	public async Task<IActionResult> SyncBookmarks([FromBody] List<BookmarkCollection> bookmarkCollection)
 	{
-		await this._bookmarkService.ImportBookmarks(bookmarkCollection);
+		try
+		{
+			await this._bookmarkService.ImportBookmarks(bookmarkCollection);
+		}
+		catch (Exception ex)
+		{
+			return BadRequest(ex.Message);
+		}
 
 		return Ok(bookmarkCollection);
 	}

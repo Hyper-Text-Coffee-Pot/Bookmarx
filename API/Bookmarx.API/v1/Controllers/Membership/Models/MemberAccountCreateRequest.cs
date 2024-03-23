@@ -21,6 +21,4 @@ public class MemberAccountCreateRequest
 	public string? IG { get; set; }
 
 	public string? LastName { get; set; }
-
-	public string ReCAPTCHAToken { get; set; }
 }

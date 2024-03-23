@@ -12,6 +12,8 @@ export class BookmarkCollection
 	 */
 	public ChildCollectionsCollapsed: boolean = false;
 
+	public DateTimeAddedUTC: string;
+
 	/**
 	 * Represents the depth of the collection in the folder tree.
 	 * Helps simplify the UI by indenting the collections.

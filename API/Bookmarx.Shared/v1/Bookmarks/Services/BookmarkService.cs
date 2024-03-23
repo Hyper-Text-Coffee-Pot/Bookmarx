@@ -20,10 +20,21 @@ public class BookmarkService : IBookmarkService
 
 	public async Task ImportBookmarks(List<BookmarkCollection> bookmarkCollections)
 	{
-		var currentMemberAccount = await this._currentMemberService.GetMember();
+		var currentMemberAccount = await this._currentMemberService.GetCachedMember();
 
 		if (currentMemberAccount != null)
 		{
+			// Quick modification to imported date times for all items.
+			foreach (var bookmarkCollection in bookmarkCollections)
+			{
+				bookmarkCollection.DateTimeAddedUTC = DateTime.UtcNow;
+
+				foreach (var bookmark in bookmarkCollection.Bookmarks)
+				{
+					bookmark.DateTimeAddedUTC = DateTime.UtcNow;
+				}
+			}
+
 			currentMemberAccount.BookmarkCollections = bookmarkCollections;
 
 			await this._firestoreProvider.AddOrUpdateById(currentMemberAccount, CancellationToken.None);

@@ -13,5 +13,5 @@ public interface ICurrentMemberService
 	/// NOTE: This returns a non-tracked member account. E.g. it's a read-only return value.
 	/// </summary>
 	/// <returns>A member account or null.</returns>
-	Task<MemberAccount?> GetMember();
+	Task<MemberAccount?> GetCachedMember();
 }

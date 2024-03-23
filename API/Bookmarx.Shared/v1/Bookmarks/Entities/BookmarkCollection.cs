@@ -18,6 +18,9 @@ public class BookmarkCollection : IFirebaseEntity
 	public bool ChildCollectionsCollapsed { get; set; }
 
 	[FirestoreProperty]
+	public DateTime DateTimeAddedUTC { get; set; }
+
+	[FirestoreProperty]
 	public int Depth { get; set; }
 
 	[FirestoreProperty]
@@ -40,7 +43,6 @@ public class BookmarkCollection : IFirebaseEntity
 
 	[FirestoreProperty]
 	public bool IsLastChild { get; set; }
-
 
 	/// <summary>
 	/// The parent collection Id of the bookmark collection.
