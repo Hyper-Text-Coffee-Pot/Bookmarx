@@ -64,6 +64,11 @@ export class HomeComponent extends BasePageDirective
 
 	public emailFormControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
 
+	public getEmailFormControlValue(): string
+	{
+		return this.emailFormControl.value;
+	}
+
 	public matcher = new MyErrorStateMatcher();
 
 	public override ngOnInit(): void
@@ -72,7 +77,20 @@ export class HomeComponent extends BasePageDirective
 
 	public SaveImportedBookmarks(): void
 	{
-		alert("HI");
+		this._bookmarksService.SyncBookmarks(this.BookmarkCollections)
+			.subscribe({
+				next: (result: BookmarkCollection[]) =>
+				{
+					this._snackBar.open("Bookmarks have been successfully saved.", "Ok", {
+						politeness: 'polite',
+						duration: 5000
+					});
+				},
+				error: (error) =>
+				{
+					console.log(error);
+				}
+			});
 	}
 
 	public OnResizableClick(event: MouseEvent): void
@@ -113,17 +131,32 @@ export class HomeComponent extends BasePageDirective
 	public OpenBookmarkCollection($event: Event, collection: BookmarkCollection): void
 	{
 		$event.preventDefault();
-		this.singleClickTimer = setTimeout(() =>
+		if (!this.IsImportingBookmarks)
 		{
-			if (this.IsDragging)
+			this.singleClickTimer = setTimeout(() =>
 			{
-				this.IsDragging = false;
-				return;
-			}
+				if (this.IsDragging)
+				{
+					this.IsDragging = false;
+					return;
+				}
 
-			this.ActiveCollection = collection;
-			this._cdr.detectChanges();
-		}, 250);
+				this.ActiveCollection = collection;
+				this._cdr.detectChanges();
+			}, 250);
+		}
+		else
+		{
+			this.ShowFinishImportingBookmarksWarning();
+		}
+	}
+
+	private ShowFinishImportingBookmarksWarning(): void
+	{
+		this._snackBar.open("You must save the imported bookmarks before making changes.", "Ok", {
+			politeness: 'assertive',
+			duration: 5000
+		});
 	}
 
 	public HandleDoubleClick($event: Event, collection: BookmarkCollection): void
@@ -143,83 +176,90 @@ export class HomeComponent extends BasePageDirective
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
 
-		// Move the item in the array right away so all subsequent logic is being performed on the new state.
-		moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
-
-		let oldCollectionDepth = viewModelCollection.item.data.Depth;
-		let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
-		let movedCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
-		let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
-
-		// Gross hack to get around some quirks with drag and drop
-		// Check if the item was just dropped into a child collection
-		// that is currently collapsed. If it was then we need to move
-		// it down to the first instance of an array location where the
-		// collection is not collapsed.
-		// This needs to take place for both up and down movements.
-		if (leadingCollection.IsCollapsed)
+		if (!this.IsImportingBookmarks)
 		{
-			let leadingCollectionIndex = this.BookmarkCollections.indexOf(leadingCollection);
+			// Move the item in the array right away so all subsequent logic is being performed on the new state.
+			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
 
-			for (let i = leadingCollectionIndex; i < this.BookmarkCollections.length; i++)
+			let oldCollectionDepth = viewModelCollection.item.data.Depth;
+			let laggingCollection = this.BookmarkCollections[viewModelCollection.currentIndex - 1];
+			let movedCollection = this.BookmarkCollections[viewModelCollection.currentIndex];
+			let leadingCollection = this.BookmarkCollections[viewModelCollection.currentIndex + 1];
+
+			// Gross hack to get around some quirks with drag and drop
+			// Check if the item was just dropped into a child collection
+			// that is currently collapsed. If it was then we need to move
+			// it down to the first instance of an array location where the
+			// collection is not collapsed.
+			// This needs to take place for both up and down movements.
+			if (leadingCollection.IsCollapsed)
 			{
-				// Loop through until we find the first collection that isn't collapsed and then move
-				// the collection to the position just before it. This is a gross hack, but because 
-				// of how drag and drop works and how nested collections function we have to do it.
-				// Also update the leading collection as it's now different.
-				leadingCollection = this.BookmarkCollections[i];
-				if (!leadingCollection.IsCollapsed)
+				let leadingCollectionIndex = this.BookmarkCollections.indexOf(leadingCollection);
+
+				for (let i = leadingCollectionIndex; i < this.BookmarkCollections.length; i++)
 				{
-					moveItemInArray(this.BookmarkCollections, viewModelCollection.currentIndex, i - 1);
-					break;
+					// Loop through until we find the first collection that isn't collapsed and then move
+					// the collection to the position just before it. This is a gross hack, but because 
+					// of how drag and drop works and how nested collections function we have to do it.
+					// Also update the leading collection as it's now different.
+					leadingCollection = this.BookmarkCollections[i];
+					if (!leadingCollection.IsCollapsed)
+					{
+						moveItemInArray(this.BookmarkCollections, viewModelCollection.currentIndex, i - 1);
+						break;
+					}
 				}
 			}
-		}
 
-		// The way in which the user is dragging the item and how Angular Material
-		// handles moving the target element changes depending on drag direction.
-		// In order to correctly handle move locations we need to factor this in.
-		if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
-		{
-			// When you drag DOWN the target slides up so we need to use the leading collection.
-			let isChild = this.IsChildCollection(leadingCollection, movedCollection);
-			if (isChild)
+			// The way in which the user is dragging the item and how Angular Material
+			// handles moving the target element changes depending on drag direction.
+			// In order to correctly handle move locations we need to factor this in.
+			if (viewModelCollection.currentIndex > viewModelCollection.previousIndex)
 			{
-				// Move the item back to where it was originally.
-				moveItemInArray(this.BookmarkCollections, viewModelCollection.currentIndex, viewModelCollection.previousIndex);
+				// When you drag DOWN the target slides up so we need to use the leading collection.
+				let isChild = this.IsChildCollection(leadingCollection, movedCollection);
+				if (isChild)
+				{
+					// Move the item back to where it was originally.
+					moveItemInArray(this.BookmarkCollections, viewModelCollection.currentIndex, viewModelCollection.previousIndex);
 
-				this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
-					politeness: 'assertive',
-					duration: 5000
-				});
+					this._snackBar.open("Cannot move a collection into itself or its child collection.", "Ok", {
+						politeness: 'assertive',
+						duration: 5000
+					});
 
-				// Kick out as we don't need to perform any logic.
+					// Kick out as we don't need to perform any logic.
+					return;
+				}
+				else
+				{
+					// Simply move the folder to the same level as the leading collection.
+					movedCollection.Depth = leadingCollection.Depth;
+					movedCollection.ParentId = leadingCollection.ParentId;
+				}
+			}
+			else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
+			{
+				// Nothing happened so we don't do anything.
 				return;
 			}
 			else
 			{
-				// Simply move the folder to the same level as the leading collection.
-				movedCollection.Depth = leadingCollection.Depth;
-				movedCollection.ParentId = leadingCollection.ParentId;
+				// When you drag UP the target slides down so we need to use the lagging collection.
+				movedCollection.Depth = laggingCollection.HasChildren ? laggingCollection.Depth + 1 : leadingCollection.Depth;
+				movedCollection.ParentId = laggingCollection.HasChildren ? laggingCollection.Id : leadingCollection.ParentId;
 			}
-		}
-		else if (viewModelCollection.currentIndex == viewModelCollection.previousIndex)
-		{
-			// Nothing happened so we don't do anything.
-			return;
+
+			// To figure out the depth change, take the new value minus the old.
+			let depthAdjustment: number = movedCollection.Depth - oldCollectionDepth;
+
+			// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
+			this.ReparentChildItemsOfMovedCollection(movedCollection, depthAdjustment);
 		}
 		else
 		{
-			// When you drag UP the target slides down so we need to use the lagging collection.
-			movedCollection.Depth = laggingCollection.HasChildren ? laggingCollection.Depth + 1 : leadingCollection.Depth;
-			movedCollection.ParentId = laggingCollection.HasChildren ? laggingCollection.Id : leadingCollection.ParentId;
+			this.ShowFinishImportingBookmarksWarning();
 		}
-
-		// To figure out the depth change, take the new value minus the old.
-		let depthAdjustment: number = movedCollection.Depth - oldCollectionDepth;
-
-		// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
-		this.ReparentChildItemsOfMovedCollection(movedCollection, depthAdjustment);
 	}
 
 	private ReparentChildItemsOfMovedCollection(movedCollection: BookmarkCollection, depthAdjustment: number): void
@@ -344,7 +384,7 @@ export class HomeComponent extends BasePageDirective
 				let deviceBookmarkCollection = new BookmarkCollection();
 				deviceBookmarkCollection.Id = uuid.v4();
 				deviceBookmarkCollection.ParentId = null;
-				deviceBookmarkCollection.Title = "Device Bookmarks";
+				deviceBookmarkCollection.Title = this.getEmailFormControlValue();
 				deviceBookmarkCollection.HasChildren = true;
 				collections.push(deviceBookmarkCollection);
 
@@ -372,14 +412,6 @@ export class HomeComponent extends BasePageDirective
 
 				this.BookmarkCollections = [...collections];
 				this._cdr.detectChanges();
-
-				// this._bookmarksService.SyncBookmarks(this.BookmarkTreeNodes)
-				// 	.subscribe({
-				// 		next: (result: BookmarkTreeNode) =>
-				// 		{
-				// 			console.log(result);
-				// 		}
-				// 	});
 			}
 		});
 	}

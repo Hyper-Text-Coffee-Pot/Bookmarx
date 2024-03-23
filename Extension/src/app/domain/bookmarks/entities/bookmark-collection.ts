@@ -2,33 +2,6 @@ import { Bookmark } from "./bookmark";
 
 export class BookmarkCollection
 {
-	/**
-	 * A UUID that's generated for each bookmark collection.
-	 */
-	public Id: string;
-
-	/**
-	 * The parent collection Id of the bookmark collection.
-	 * If this is null, then it's a root collection.
-	 * Root collections cannot be dragged and moved.
-	 */
-	public ParentId: string;
-
-	/**
-	 * Represents the depth of the collection in the folder tree.
-	 * Helps simplify the UI by indenting the collections.
-	 */
-	public Depth: number = 0;
-
-	/**
-	 * The index of the bookmark collection.
-	 * Used to order the collections.
-	 * Upon flattening the tree, this value is just 0, then it gets reassigned.
-	 */
-	public Index: number = 0;
-
-	public Title: string = "N/A";
-
 	public Bookmarks: Bookmark[] = [];
 
 	/**
@@ -40,11 +13,10 @@ export class BookmarkCollection
 	public ChildCollectionsCollapsed: boolean = false;
 
 	/**
-	 * Just some UI magic to toggle the visibility of the collection.
-	 * This is used to determine if the collection should be shown or not
-	 * when it is a nested collection.
+	 * Represents the depth of the collection in the folder tree.
+	 * Helps simplify the UI by indenting the collections.
 	 */
-	public IsCollapsed: boolean = false;
+	public Depth: number = 0;
 
 	/**
 	 * A flattened way of knowing if the collection has child collections.
@@ -53,13 +25,40 @@ export class BookmarkCollection
 	public HasChildren: boolean = false;
 
 	/**
+	 * Defaults to the unicode character for a file folder.
+	 */
+	public Icon: string = "&#x1F4C1;";
+
+	/**
+	 * A UUID that's generated for each bookmark collection.
+	 */
+	public Id: string;
+
+	/**
+	 * The index of the bookmark collection.
+	 * Used to order the collections.
+	 * Upon flattening the tree, this value is just 0, then it gets reassigned.
+	 */
+	public Index: number = 0;
+
+	/**
+	 * Just some UI magic to toggle the visibility of the collection.
+	 * This is used to determine if the collection should be shown or not
+	 * when it is a nested collection.
+	 */
+	public IsCollapsed: boolean = false;
+
+	/**
 	 * I hate this but it's the easiest way to indicate if the collection is the last child
 	 * without having to iterate through the entire collection to find out, every single time.
 	 */
 	public IsLastChild: boolean = false;
 
 	/**
-	 * Defaults to the unicode character for a file folder.
+	 * The parent collection Id of the bookmark collection.
+	 * If this is null, then it's a root collection.
 	 */
-	public Icon: string = "&#x1F4C1;";
+	public ParentId: string;
+
+	public Title: string = "N/A";
 }

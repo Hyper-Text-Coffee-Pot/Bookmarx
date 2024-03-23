@@ -62,3 +62,6 @@ root of the `Extension` project that contains more information and the configura
 
 ### UUIDJS
 - https://github.com/uuidjs/uuid
+
+### ParticlesJS
+- https://vincentgarreau.com/particles.js/#default

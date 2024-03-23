@@ -97,12 +97,12 @@
 						<form class="example-form">
 							<mat-form-field class="example-full-width"
 											appearance="fill">
-								<mat-label>Collection Name: ex. My Computer</mat-label>
+								<mat-label>Collection Name</mat-label>
 								<input type="email"
 									   matInput
 									   [formControl]="emailFormControl"
 									   [errorStateMatcher]="matcher"
-									   placeholder="Ex. pat@example.com">
+									   placeholder="Ex. DESKTOP-123456 Chrome">
 								<mat-error *ngIf="emailFormControl.hasError('minlength') && !emailFormControl.hasError('required')">
 									Name must be at least 3 characters long
 								</mat-error>
@@ -119,15 +119,18 @@
 						</form>
 					</ng-container>
 					<ng-container *ngIf="IsImportingBookmarks">
-						<button mat-raised-button
-								color="accent"
-								(click)="SaveImportedBookmarks()">
-							<mat-icon>save</mat-icon> Save
-						</button>
+						<p class="bookmarks__save-message">Feel free to save your changes once you're happy with them, or simply cancel and give it another go if needed! 😊</p>
 						<button mat-raised-button
 								color="warn"
-								(click)="CancelImportingBookmarks()">
+								(click)="CancelImportingBookmarks()"
+								class="bookmarks__import-btn">
 							<mat-icon>delete</mat-icon> Cancel
+						</button>
+						<button mat-raised-button
+								color="accent"
+								(click)="SaveImportedBookmarks()"
+								class="bookmarks__import-btn">
+							<mat-icon>save</mat-icon> Save
 						</button>
 					</ng-container>
 				</div>
@@ -135,7 +138,13 @@
 		</ng-container>
 		<ng-container *ngIf="ActiveCollection != null">
 			<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
-				<p>No saved bookmarks.</p>
+				<div class="bookmarks__empty-collection">
+					<p class="bookmarks__empty-title">{{ActiveCollection?.Title}}</p>
+					<hr />
+					<div class="bx-w-100 bx-h-100 bx-d-flex bx-align-items-center bx-justify-content-center">
+						<p>0 saved bookmarks.</p>
+					</div>
+				</div>
 			</ng-container>
 			<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
 				<div>

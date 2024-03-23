@@ -4,6 +4,8 @@ global using AutoMapper;
 global using Bookmarx.API.v1.Controllers.Membership.Models;
 global using Bookmarx.API.v1.Extensions;
 global using Bookmarx.API.v1.Filters;
+global using Bookmarx.Shared.v1.Bookmarks.Interfaces;
+global using Bookmarx.Shared.v1.Bookmarks.Services;
 global using Bookmarx.Shared.v1.Configuration.Models;
 global using Bookmarx.Shared.v1.Identity.Handlers;
 global using Bookmarx.Shared.v1.Identity.Interfaces;

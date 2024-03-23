@@ -12,10 +12,16 @@ public class BookmarkCollection : IFirebaseEntity
 	}
 
 	[FirestoreProperty]
-	public List<BookmarkCollection> BookmarkCollections { get; set; } = new List<BookmarkCollection>();
+	public List<Bookmark> Bookmarks { get; set; } = new List<Bookmark>();
 
 	[FirestoreProperty]
-	public List<Bookmark> Bookmarks { get; set; } = new List<Bookmark>();
+	public bool ChildCollectionsCollapsed { get; set; }
+
+	[FirestoreProperty]
+	public int Depth { get; set; }
+
+	[FirestoreProperty]
+	public bool HasChildren { get; set; }
 
 	/// <summary>
 	/// Defaults to the html character code for a file folder.
@@ -27,12 +33,22 @@ public class BookmarkCollection : IFirebaseEntity
 	public string Id { get; set; }
 
 	[FirestoreProperty]
-	public string Name { get; set; }
+	public int Index { get; set; }
+
+	[FirestoreProperty]
+	public bool IsCollapsed { get; set; }
+
+	[FirestoreProperty]
+	public bool IsLastChild { get; set; }
+
 
 	/// <summary>
-	/// The order, or priority, of the item in the collection.
-	/// This value should be between 0 and 1 to keep it light.
+	/// The parent collection Id of the bookmark collection.
+	/// If this is null, then it's a root collection.
 	/// </summary>
 	[FirestoreProperty]
-	public decimal Priority { get; set; }
+	public string? ParentId { get; set; }
+
+	[FirestoreProperty]
+	public string Title { get; set; }
 }

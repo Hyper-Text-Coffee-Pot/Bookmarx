@@ -31,7 +31,7 @@ public abstract class BaseMembershipService
 			{
 				// If the current member wasn't already retrieved let's go get it.
 				// This helps to reduce db hits.
-				this.currentMemberAccount = this._currentMemberService.GetMember();
+				this.currentMemberAccount = this._currentMemberService.GetMember().Result;
 				return this.currentMemberAccount;
 			}
 			else

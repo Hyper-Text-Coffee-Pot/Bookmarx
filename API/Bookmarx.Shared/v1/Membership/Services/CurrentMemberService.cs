@@ -2,34 +2,62 @@
 
 public class CurrentMemberService : ICurrentMemberService
 {
+	private readonly IMemoryCache _cache;
+
+	private readonly FirestoreProvider _firestoreProvider;
+
 	private readonly IHttpContextAccessor _httpContextAccessor;
 
-	//private readonly IPictyrsDbContext _pictyrsDbContext;
+	private readonly ILogger<CurrentMemberService> _logger;
 
 	public CurrentMemberService(
-		IHttpContextAccessor httpContextAccessor
-
-		//IPictyrsDbContext pictyrsDbContext)
-		)
+		ILogger<CurrentMemberService> logger,
+		FirestoreProvider firestoreProvider,
+		IHttpContextAccessor httpContextAccessor,
+		IMemoryCache cache)
 	{
-		this._httpContextAccessor = httpContextAccessor;
-
-		//this._pictyrsDbContext = pictyrsDbContext;
+		this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+		this._firestoreProvider = firestoreProvider ?? throw new ArgumentNullException(nameof(firestoreProvider));
+		this._httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+		this._cache = cache ?? throw new ArgumentNullException(nameof(cache));
 	}
 
-	public MemberAccount? GetMember()
+	public string? AccountId
 	{
-		MemberAccount? currentMemberAccount = null;
-
-		var authProviderUID = this._httpContextAccessor.HttpContext.User.FindFirst("AuthProviderUID");
-		if (!string.IsNullOrEmpty(authProviderUID?.Value))
+		get
 		{
-			// TODO: Implement this
-			//currentMemberAccount = this._pictyrsDbContext.MemberAccounts
-			//	.Where(ma => ma.AuthProviderUID == authProviderUID.Value)
-			//	.Include(ma => ma.Subscriptions)
-			//	.AsNoTracking()
-			//	.FirstOrDefault();
+			var accountId = this._httpContextAccessor.HttpContext.User.FindFirst("AccountId");
+			if (accountId != null)
+			{
+				return accountId.Value;
+			}
+			else
+			{
+				throw new Exception("Request failed.");
+			}
+		}
+	}
+
+	public async Task<MemberAccount?> GetMember()
+	{
+		var cacheKey = $"MemberAccount_{AccountId}";
+
+		if (this._cache.TryGetValue(cacheKey, out MemberAccount? currentMemberAccount))
+		{
+			return currentMemberAccount;
+		}
+
+		var accountId = this._httpContextAccessor.HttpContext.User.FindFirst("AccountId");
+		if (!string.IsNullOrEmpty(accountId?.Value))
+		{
+			var members = await this._firestoreProvider
+				.WhereEqualTo<MemberAccount>(nameof(MemberAccount.Id), accountId, CancellationToken.None);
+
+			if (members != null)
+			{
+				currentMemberAccount = members.FirstOrDefault();
+				this._cache.Set(cacheKey, currentMemberAccount, TimeSpan.FromMinutes(10));
+			}
 		}
 		else
 		{

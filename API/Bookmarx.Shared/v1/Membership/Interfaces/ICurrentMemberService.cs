@@ -2,6 +2,8 @@
 
 public interface ICurrentMemberService
 {
+	string? AccountId { get; }
+
 	/// <summary>
 	/// Gets the currently signed in member account based on the values passed in the headers.
 	/// It's safer to do it this way rather than passing parameters as we've already used
@@ -11,5 +13,5 @@ public interface ICurrentMemberService
 	/// NOTE: This returns a non-tracked member account. E.g. it's a read-only return value.
 	/// </summary>
 	/// <returns>A member account or null.</returns>
-	MemberAccount? GetMember();
+	Task<MemberAccount?> GetMember();
 }

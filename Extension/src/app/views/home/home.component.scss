@@ -143,6 +143,28 @@
 		font-size: 1.6em;
 		padding: 10px;
 	}
+
+	&__empty-collection
+	{
+		height: 100%;
+	}
+
+	&__empty-title
+	{
+		padding: 10px;
+		font-size: 1.6em;
+	}
+
+	&__save-message
+	{
+		padding: 0 15%;
+	}
+
+	&__import-btn
+	{
+		width: 150px;
+		margin: 0 5px;
+	}
 }
 
 a
@@ -151,3 +173,105 @@ a
 	text-decoration: none;
 	font-size: 1.2em;
 }
+
+$accent-color: var(--clr-accent);
+
+::ng-deep .mat-form-field
+{
+	.mat-input-element
+	{
+		color: $accent-color;
+	}
+
+	.mat-form-field-label
+	{
+		color: $accent-color;
+	}
+
+	.mat-form-field-underline
+	{
+		background-color: $accent-color;
+	}
+
+	.mat-form-field-ripple
+	{
+		background-color: $accent-color;
+	}
+
+	.mat-form-field-required-marker
+	{
+		color: $accent-color;
+	}
+}
+
+::ng-deep .mat-form-field.mat-focused
+{
+	.mat-form-field-label
+	{
+		color: $accent-color;
+	}
+
+	.mat-form-field-ripple
+	{
+		background-color: $accent-color;
+	}
+
+	.mat-form-field-required-marker
+	{
+		color: $accent-color;
+	}
+
+	.mat-input-element
+	{
+		color: whitesmoke;
+		caret-color: $accent-color;
+	}
+
+	.mat-input-element::-webkit-input-placeholder
+	{
+		/* Chrome/Opera/Safari */
+		color: $accent-color;
+	}
+
+	.mat-input-element::-moz-placeholder
+	{
+		/* Firefox 19+ */
+		color: $accent-color;
+	}
+
+	.mat-input-element:-ms-input-placeholder
+	{
+		/* IE 10+ */
+		color: $accent-color;
+	}
+
+	.mat-input-element:-moz-placeholder
+	{
+		/* Firefox 18- */
+		color: $accent-color;
+	}
+}
+
+/* Leave out for now, but if needed modify alert style here */
+// ::ng-deep .mat-form-field.mat-form-field-invalid
+// {
+// 	.mat-input-element
+// 	{
+// 		color: #ff33cc;
+// 	}
+
+// 	.mat-form-field-label
+// 	{
+// 		color: #ff33cc;
+
+// 		.mat-form-field-required-marker
+// 		{
+// 			color: #ff33cc;
+// 		}
+// 	}
+
+// 	.mat-form-field-ripple
+// 	{
+// 		background-color: #ff33cc;
+// 	}
+// }

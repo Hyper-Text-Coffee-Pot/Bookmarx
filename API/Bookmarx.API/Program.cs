@@ -1,6 +1,5 @@
 using Bookmarx.Data.v1.Providers;
 using Google.Cloud.Firestore;
-using Google.Protobuf;
 
 internal class Program
 {
@@ -80,6 +79,8 @@ internal class Program
 			builder.Services.AddEndpointsApiExplorer();
 
 			builder.Services.AddSwaggerGen();
+
+			builder.Services.AddMemoryCache();
 
 			// Map the appsettings.json file to the AppSettings class.
 			builder.Services.Configure<AppSettings>(builder.Configuration);

@@ -1,27 +1,29 @@
-﻿namespace Bookmarx.Shared.v1.Identity.Services;
+﻿using Bookmarx.Data.v1.Providers;
+
+namespace Bookmarx.Shared.v1.Identity.Services;
 
 public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 {
+	private const string ISSUER = "https://api.bookmarx.dev";
+
 	private readonly AppSettings _appSettings;
 
-	private readonly IHttpContextAccessor _httpContextAccessor;
+	private readonly FirestoreProvider _firestoreProvider;
 
-	//private readonly PictyrsDbContext _pictyrsDbContext;
+	private readonly IHttpContextAccessor _httpContextAccessor;
 
 	private readonly ISubscriptionValidationService _subscriptionValidationService;
 
 	public GoogleFirebaseTokenValidatorService(
 		IOptions<AppSettings> appSettings,
-
-		//PictyrsDbContext pictyrsDbContext,
+			FirestoreProvider firestoreProvider,
 		IHttpContextAccessor httpContextAccessor,
 		ISubscriptionValidationService subscriptionValidationService)
 	{
 		this._appSettings = appSettings.Value;
-
-		//this._pictyrsDbContext = pictyrsDbContext;
-		this._httpContextAccessor = httpContextAccessor;
-		this._subscriptionValidationService = subscriptionValidationService;
+		this._firestoreProvider = firestoreProvider ?? throw new ArgumentNullException(nameof(firestoreProvider));
+		this._httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+		this._subscriptionValidationService = subscriptionValidationService ?? throw new ArgumentNullException(nameof(subscriptionValidationService));
 	}
 
 	public async Task<bool> CheckTokenIsValidAndMemberExists(string accessToken, string authProviderUID, Guid accountGuid)
@@ -42,11 +44,10 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 					// If the AuthProviderUID doesn't match then there's no sense running the second check, so it's nested
 					if (decodedToken?.Uid != null && decodedToken?.Uid == authProviderUID)
 					{
-						// TODO: Wire this up
-						//var memberExists = this._pictyrsDbContext.MemberAccounts.Any(m => m.AuthProviderUID == authProviderUID && m.AccountGuid == accountGuid);
-						var memberExists = false;
+						var member = await this._firestoreProvider
+							.WhereEqualTo<MemberAccount>(nameof(MemberAccount.AuthProviderUID), authProviderUID, CancellationToken.None);
 
-						if (memberExists)
+						if (member != null)
 						{
 							isValid = true;
 						}
@@ -82,12 +83,13 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 					// Then use these values later on to check against, like in the Tus API endpoints.
 					string uid = decodedToken.Uid;
 
-					MemberAccount? member = null;
-
 					// TODO: Wire this up
 					//var member = this._pictyrsDbContext.MemberAccounts
 					//	.AsNoTracking()
 					//	.FirstOrDefault(m => m.AuthProviderUID == authProviderUID);
+					var members = await this._firestoreProvider
+							.WhereEqualTo<MemberAccount>(nameof(MemberAccount.AuthProviderUID), authProviderUID, CancellationToken.None);
+					var member = members.FirstOrDefault();
 
 					if (member != null)
 					{
@@ -112,12 +114,6 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 								claims.Add(new Claim(ClaimTypes.Email, Convert.ToString(email), ClaimValueTypes.String, decodedToken.Issuer));
 							}
 
-							// Email Verified
-							if (decodedToken.Claims.TryGetValue("email_verified", out object emailVerified))
-							{
-								claims.Add(new Claim("EmailVerified", Convert.ToString(emailVerified), ClaimValueTypes.Boolean, decodedToken.Issuer));
-							}
-
 							// Google User ID - AKA AuthProviderUID
 							if (decodedToken.Claims.TryGetValue("user_id", out object userId))
 							{
@@ -131,11 +127,11 @@ public class GoogleFirebaseTokenValidatorService : ITokenValidatorService
 							}
 
 							// Pictyrs AccountGuid
-							claims.Add(new Claim("AccountGuid", member.MemberAccountID.ToString(), ClaimValueTypes.String, "https://pictyrs.app"));
+							claims.Add(new Claim("AccountId", member.Id.ToString(), ClaimValueTypes.String, ISSUER));
 
 							// Pictyrs Has Valid Subscription
 							var hasActiveSubscription = this._subscriptionValidationService.ValidateSubscription(member);
-							claims.Add(new Claim("SubscriptionIsActive", hasActiveSubscription.ToString(), ClaimValueTypes.Boolean, "https://pictyrs.app"));
+							claims.Add(new Claim("SubscriptionIsActive", hasActiveSubscription.ToString(), ClaimValueTypes.Boolean, ISSUER));
 
 							// Set up the newly minted identity for the HttpContext identity user.
 							// https://learn.microsoft.com/en-us/dotnet/api/system.security.claims.claimsidentity?view=net-6.0

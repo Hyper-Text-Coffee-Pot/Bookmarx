@@ -17,6 +17,7 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<IMembershipAuthAppService, MembershipAuthAppService>();
 		services.AddScoped<IOrderService, OrderService>();
 		services.AddScoped<ISubscriptionService, Shared.v1.Sales.Services.SubscriptionService>();
+		services.AddScoped<IBookmarkService, BookmarkService>();
 
 		return services;
 	}

@@ -17,11 +17,20 @@ public class Bookmark
 	public string Description { get; set; } = string.Empty;
 
 	[FirestoreProperty]
+	public string Id { get; set; }
+
+	[FirestoreProperty]
+	public int Index { get; set; }
+
+	[FirestoreProperty]
 	public string Note { get; set; } = string.Empty;
+
+	[FirestoreProperty]
+	public string ParentId { get; set; }
 
 	[FirestoreProperty]
 	public string Title { get; set; }
 
 	[FirestoreProperty]
-	public string URL { get; set; }
+	public string Url { get; set; }
 }
