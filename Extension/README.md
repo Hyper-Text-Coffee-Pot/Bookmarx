@@ -55,6 +55,7 @@ root of the `Extension` project that contains more information and the configura
 
 ### Angular Material
 - https://v13.material.angular.io/
+- https://jossef.github.io/material-design-icons-iconfont/
 
 ### Lifesaver for Material Drag and Drop Nested
 - https://v13.material.angular.io/cdk/drag-drop/overview

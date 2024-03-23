@@ -27,16 +27,48 @@
 			<mat-icon>exit_to_app</mat-icon>
 			<span>Log Out</span>
 		</button>
+		<button mat-menu-item
+				(click)="ShowImportForm()">
+			<mat-icon>import_export</mat-icon>
+			<span>Import</span>
+		</button>
 	</mat-menu>
 </mat-toolbar>
 <div class="bx-d-flex">
 	<div class="file-explorer__wrapper"
 		 [style.width.px]="FileExplorerWidthPX">
-		<mat-list cdkDropList
+		<div>
+			<div class="example-button-row">
+				<div class="bx-d-flex">
+					<div class="example-button-container">
+						<button mat-mini-fab
+								color="accent"
+								aria-label="Collapse all folders"
+								title="Collapse all folders"
+								(click)="CollapseAllFolders()">
+							<mat-icon>compress</mat-icon>
+						</button>
+					</div>
+					<div class="example-button-container">
+						<button mat-mini-fab
+								color="accent"
+								aria-label="Open all folders"
+								title="Open all folders"
+								(click)="OpenAllFolders()">
+							<mat-icon>arrow_drop_down</mat-icon>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- All Saved Bookmarks -->
+		<!-- <mat-list role="list"
+				  cdkDropList
 				  class="example-list"
 				  [cdkDropListData]="BookmarkCollections"
 				  (cdkDropListDropped)="HandleDrop($event)">
-			<mat-list-item cdkDrag
+			<mat-list-item role="list-item"
+						   cdkDrag
 						   *ngFor="let collection of BookmarkCollections"
 						   matRipple
 						   class="example-box"
@@ -79,7 +111,36 @@
 				</div>
 			</mat-list-item>
 			<mat-divider></mat-divider>
+		</mat-list> -->
+		<!-- All Saved Bookmarks End -->
+		<!-- All Pending Import Bookmarks -->
+		<mat-list role="list">
+			<mat-list-item role="listitem">Item 1</mat-list-item>
+			<mat-list-item role="listitem">Item 2</mat-list-item>
+			<mat-list-item role="listitem">Item 3</mat-list-item>
 		</mat-list>
+		<mat-list role="list"
+				  class="example-list">
+			<mat-list-item role="list-item"
+						   *ngFor="let pendingCollection of BookmarkCollectionsPendingImport"
+						   matRipple
+						   class="example-box">
+				<div class="file-explorer__item bx-w-100 bx-d-flex bx-justify-content-between bx-align-items-center">
+					<div class="file-explorer__folder"
+						 [ngClass]="{'bx-ml-2': !pendingCollection.HasChildren}">
+						<p class="bx-m-0 bx-text-nowrap">
+							<span [innerHTML]="pendingCollection.Icon"></span>&nbsp;
+							<span>{{pendingCollection.Title}}</span>&nbsp;
+						</p>
+					</div>
+					<div>
+						<span class="collections__bookmark-count">{{pendingCollection.Bookmarks?.length}}</span>
+					</div>
+				</div>
+			</mat-list-item>
+			<mat-divider></mat-divider>
+		</mat-list>
+		<!-- All Pending Import Bookmarks End -->
 	</div>
 	<div class="file-explorer__handle"
 		 (mousedown)='OnResizableClick($event)'
@@ -89,10 +150,10 @@
 		 aria-grabbed="false">
 	</div>
 	<div class="bookmarks__output">
-		<ng-container *ngIf="ActiveCollection == null">
+		<ng-container *ngIf="BookmarkImportState != 0">
 			<div class="bx-h-100 bx-d-flex bx-align-items-center bx-justify-content-center bx-text-center">
 				<div>
-					<ng-container *ngIf="ActiveCollection == null && !IsImportingBookmarks">
+					<ng-container *ngIf="BookmarkImportState == 1 || BookmarkImportState == 2">
 						<p>Try importing your bookmarks to get started.</p>
 						<form class="example-form">
 							<mat-form-field class="example-full-width"
@@ -118,7 +179,7 @@
 									aria-label="Import Bookmarks">Import Bookmarks</button>
 						</form>
 					</ng-container>
-					<ng-container *ngIf="IsImportingBookmarks">
+					<ng-container *ngIf="BookmarkImportState == 3">
 						<p class="bookmarks__save-message">Feel free to save your changes once you're happy with them, or simply cancel and give it another go if needed! 😊</p>
 						<button mat-raised-button
 								color="warn"
@@ -128,7 +189,7 @@
 						</button>
 						<button mat-raised-button
 								color="accent"
-								(click)="SaveImportedBookmarks()"
+								(click)="UpsertBookmarks(true)"
 								class="bookmarks__import-btn">
 							<mat-icon>save</mat-icon> Save
 						</button>
@@ -136,7 +197,7 @@
 				</div>
 			</div>
 		</ng-container>
-		<ng-container *ngIf="ActiveCollection != null">
+		<ng-container *ngIf="ActiveCollection != null && BookmarkImportState == 0">
 			<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
 				<div class="bookmarks__empty-collection">
 					<p class="bookmarks__empty-title">{{ActiveCollection?.Title}}</p>
@@ -148,7 +209,7 @@
 			</ng-container>
 			<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
 				<div>
-					<div class="bookmarks__header">
+					<div class="bookmarks__header bx-d-flex bx-justify-content-between">
 						<p>{{ActiveCollection?.Title}}</p>
 						<span>{{ActiveCollection?.Bookmarks?.length}}</span>
 					</div>

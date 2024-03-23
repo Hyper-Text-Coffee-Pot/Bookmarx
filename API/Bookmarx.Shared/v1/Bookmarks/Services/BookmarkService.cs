@@ -22,17 +22,11 @@ public class BookmarkService : IBookmarkService
 	{
 		var collections = new List<BookmarkCollection>();
 
-		var members = await this._firestoreProvider
-			.WhereEqualTo<MemberAccount>(nameof(MemberAccount.Id), this._currentMemberService.AccountId, CancellationToken.None);
+		var currentMemberAccount = await this._currentMemberService.GetFreshMember();
 
-		if (members != null)
+		if (currentMemberAccount != null)
 		{
-			var member = members.FirstOrDefault();
-
-			if (member != null)
-			{
-				collections = member.BookmarkCollections;
-			}
+			collections = currentMemberAccount.BookmarkCollections;
 		}
 
 		return collections;

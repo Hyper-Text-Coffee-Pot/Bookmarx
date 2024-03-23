@@ -13,6 +13,7 @@ import { BlockUIService } from 'ng-block-ui';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { BookmarkImportStateType } from 'src/app/domain/bookmarks/enums/bookmark-import-state-type';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher
@@ -52,6 +53,8 @@ export class HomeComponent extends BasePageDirective
 
 	public BookmarkCollections: BookmarkCollection[] = [];
 
+	public BookmarkCollectionsPendingImport: BookmarkCollection[] = [];
+
 	public ActiveCollection: BookmarkCollection = null;
 
 	public IsDragging: boolean;
@@ -60,7 +63,7 @@ export class HomeComponent extends BasePageDirective
 
 	public FileExplorerWidthPX: number = 225;
 
-	public IsImportingBookmarks: boolean = false;
+	public BookmarkImportState: BookmarkImportStateType = BookmarkImportStateType.None;
 
 	public emailFormControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
 
@@ -88,22 +91,57 @@ export class HomeComponent extends BasePageDirective
 			});
 	}
 
-	public SaveImportedBookmarks(): void
+	public UpsertBookmarks(showSnackBar: boolean = false): void
 	{
 		this._bookmarksService.SyncBookmarks(this.BookmarkCollections)
 			.subscribe({
 				next: (result: BookmarkCollection[]) =>
 				{
-					this._snackBar.open("Bookmarks have been successfully saved.", "Ok", {
-						politeness: 'polite',
-						duration: 5000
-					});
+					if (showSnackBar)
+					{
+						this._snackBar.open("Bookmarks have been successfully saved.", "Ok", {
+							politeness: 'polite',
+							duration: 5000
+						});
+					}
 				},
 				error: (error) =>
 				{
 					console.log(error);
 				}
 			});
+	}
+
+	public CollapseAllFolders(): void
+	{
+		this.BookmarkCollections.forEach((collection) =>
+		{
+			collection.ChildCollectionsCollapsed = true;
+
+			// Do not collapse root folders. We still need to see those.
+			if (collection.ParentId != null)
+			{
+				collection.IsCollapsed = true;
+			}
+		});
+
+		this.UpsertBookmarks(true);
+	}
+
+	public OpenAllFolders(): void
+	{
+		this.BookmarkCollections.forEach((collection) =>
+		{
+			collection.ChildCollectionsCollapsed = false;
+			collection.IsCollapsed = false;
+		});
+
+		this.UpsertBookmarks(true);
+	}
+
+	public ShowImportForm(): void
+	{
+		this.BookmarkImportState = BookmarkImportStateType.UserEnabledImport;
 	}
 
 	public OnResizableClick(event: MouseEvent): void
@@ -137,14 +175,14 @@ export class HomeComponent extends BasePageDirective
 
 	public CancelImportingBookmarks(): void
 	{
-		this.IsImportingBookmarks = false;
+		this.BookmarkImportState = BookmarkImportStateType.NoExistingBookmarks;
 		this.BookmarkCollections = [];
 	}
 
 	public OpenBookmarkCollection($event: Event, collection: BookmarkCollection): void
 	{
 		$event.preventDefault();
-		if (!this.IsImportingBookmarks)
+		if (this.BookmarkImportState == BookmarkImportStateType.None)
 		{
 			this.singleClickTimer = setTimeout(() =>
 			{
@@ -175,8 +213,13 @@ export class HomeComponent extends BasePageDirective
 	public HandleDoubleClick($event: Event, collection: BookmarkCollection): void
 	{
 		$event.preventDefault();
+
 		clearTimeout(this.singleClickTimer);
+
 		this.ToggleTree(collection, !collection.ChildCollectionsCollapsed);
+
+		// Run a save on the new state.
+		this.UpsertBookmarks();
 	}
 
 	/**
@@ -189,7 +232,7 @@ export class HomeComponent extends BasePageDirective
 		this.BodyElement.classList.remove('inheritCursors');
 		this.BodyElement.style.cursor = 'unset';
 
-		if (!this.IsImportingBookmarks)
+		if (this.BookmarkImportState == BookmarkImportStateType.None)
 		{
 			// Move the item in the array right away so all subsequent logic is being performed on the new state.
 			moveItemInArray(this.BookmarkCollections, viewModelCollection.previousIndex, viewModelCollection.currentIndex);
@@ -268,6 +311,8 @@ export class HomeComponent extends BasePageDirective
 
 			// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
 			this.ReparentChildItemsOfMovedCollection(movedCollection, depthAdjustment);
+
+			this.UpsertBookmarks(true);
 		}
 		else
 		{
@@ -379,8 +424,7 @@ export class HomeComponent extends BasePageDirective
 
 	public ImportExistingBookmarks(): void
 	{
-		this.IsImportingBookmarks = true;
-		this.BookmarkCollections = [];
+		this.BookmarkImportState = BookmarkImportStateType.ImportPending;
 
 		//@ts-expect-error - This is a chrome extension property.
 		chrome.bookmarks.getTree((bookmarks) =>
@@ -423,7 +467,12 @@ export class HomeComponent extends BasePageDirective
 					collections[i].Index = i;
 				}
 
-				this.BookmarkCollections = [...collections];
+				// this.BookmarkCollections = [...collections];
+				collections.forEach((c) =>
+				{
+					this.BookmarkCollections.push(c);
+				});
+
 				this._cdr.detectChanges();
 			}
 		});
