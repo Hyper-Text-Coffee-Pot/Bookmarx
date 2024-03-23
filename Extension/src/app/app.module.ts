@@ -32,6 +32,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
 	declarations: [
@@ -66,7 +67,8 @@ import { MatInputModule } from '@angular/material/input';
 		MatGridListModule,
 		MatDividerModule,
 		MatMenuModule,
-		MatInputModule
+		MatInputModule,
+		MatListModule
 	],
 	providers: [
 		AuthService,

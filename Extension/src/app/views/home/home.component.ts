@@ -93,6 +93,23 @@ export class HomeComponent extends BasePageDirective
 
 	public UpsertBookmarks(showSnackBar: boolean = false): void
 	{
+		try
+		{
+			// Add the pending import collections to the main collections.
+			this.BookmarkCollectionsPendingImport.forEach((collection) =>
+			{
+				this.BookmarkCollections.push(collection);
+			});
+
+			// Clear out the pending import collections.
+			this.BookmarkCollectionsPendingImport = [];
+			this._cdr.detectChanges();
+		}
+		catch (error)
+		{
+			return;
+		}
+
 		this._bookmarksService.SyncBookmarks(this.BookmarkCollections)
 			.subscribe({
 				next: (result: BookmarkCollection[]) =>
@@ -176,7 +193,7 @@ export class HomeComponent extends BasePageDirective
 	public CancelImportingBookmarks(): void
 	{
 		this.BookmarkImportState = BookmarkImportStateType.NoExistingBookmarks;
-		this.BookmarkCollections = [];
+		this.BookmarkCollectionsPendingImport = [];
 	}
 
 	public OpenBookmarkCollection($event: Event, collection: BookmarkCollection): void
@@ -467,12 +484,8 @@ export class HomeComponent extends BasePageDirective
 					collections[i].Index = i;
 				}
 
-				// this.BookmarkCollections = [...collections];
-				collections.forEach((c) =>
-				{
-					this.BookmarkCollections.push(c);
-				});
-
+				this.BookmarkCollectionsPendingImport = [...collections];
+				console.log(this.BookmarkCollectionsPendingImport);
 				this._cdr.detectChanges();
 			}
 		});

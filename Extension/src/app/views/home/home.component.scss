@@ -12,9 +12,12 @@
 {
 	&__wrapper
 	{
+		height: calc(100vh - 64px);
 		min-width: 25%;
 		max-width: 50%;
 		background-color: var(--clr-primary-800);
+		overflow-y: scroll;
+		overflow-x: hidden;
 	}
 
 	&__handle
@@ -55,11 +58,11 @@
 .example-list
 {
 	width: 100%;
-	height: calc(100vh - 64px);
 	overflow-x: hidden;
 	overflow-y: auto;
 	display: block;
 	background: linear-gradient(270deg, var(--clr-dark-smoke) 20%, var(--clr-light-smoke) 80%);
+	padding: 0;
 }
 
 .example-box
@@ -142,17 +145,6 @@
 	{
 		font-size: 1.6em;
 		padding: 10px;
-	}
-
-	&__empty-collection
-	{
-		height: 100%;
-	}
-
-	&__empty-title
-	{
-		padding: 10px;
-		font-size: 1.6em;
 	}
 
 	&__save-message

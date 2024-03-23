@@ -62,7 +62,7 @@
 			</div>
 		</div>
 		<!-- All Saved Bookmarks -->
-		<!-- <mat-list role="list"
+		<mat-list role="list"
 				  cdkDropList
 				  class="example-list"
 				  [cdkDropListData]="BookmarkCollections"
@@ -89,7 +89,7 @@
 						 [ngClass]="{'bx-ml-2': !collection.HasChildren}">
 						<button mat-icon-button
 								aria-label="Example icon button with a vertical three dot icon"
-								(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
+								(click)="HandleDoubleClick($event, collection)"
 								*ngIf="collection.HasChildren">
 							<ng-container *ngIf="!collection.ChildCollectionsCollapsed">
 								<mat-icon aria-hidden="false"
@@ -111,14 +111,9 @@
 				</div>
 			</mat-list-item>
 			<mat-divider></mat-divider>
-		</mat-list> -->
+		</mat-list>
 		<!-- All Saved Bookmarks End -->
 		<!-- All Pending Import Bookmarks -->
-		<mat-list role="list">
-			<mat-list-item role="listitem">Item 1</mat-list-item>
-			<mat-list-item role="listitem">Item 2</mat-list-item>
-			<mat-list-item role="listitem">Item 3</mat-list-item>
-		</mat-list>
 		<mat-list role="list"
 				  class="example-list">
 			<mat-list-item role="list-item"
@@ -198,31 +193,25 @@
 			</div>
 		</ng-container>
 		<ng-container *ngIf="ActiveCollection != null && BookmarkImportState == 0">
-			<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
-				<div class="bookmarks__empty-collection">
-					<p class="bookmarks__empty-title">{{ActiveCollection?.Title}}</p>
-					<hr />
+			<div class="bx-h-100">
+				<div class="bookmarks__header bx-d-flex bx-justify-content-between">
+					<p>{{ActiveCollection?.Title}}</p>
+					<span>{{ActiveCollection?.Bookmarks?.length}}</span>
+				</div>
+				<hr />
+				<div *ngFor="let bookmark of ActiveCollection?.Bookmarks">
+					<a [href]="SanitizeUrl(bookmark.Url)"
+					   target="_blank">
+						{{bookmark.Title}}
+					</a>
+					<mat-divider></mat-divider>
+				</div>
+				<ng-container *ngIf="ActiveCollection?.Bookmarks?.length == 0">
 					<div class="bx-w-100 bx-h-100 bx-d-flex bx-align-items-center bx-justify-content-center">
 						<p>0 saved bookmarks.</p>
 					</div>
-				</div>
-			</ng-container>
-			<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
-				<div>
-					<div class="bookmarks__header bx-d-flex bx-justify-content-between">
-						<p>{{ActiveCollection?.Title}}</p>
-						<span>{{ActiveCollection?.Bookmarks?.length}}</span>
-					</div>
-					<hr />
-					<div *ngFor="let bookmark of ActiveCollection?.Bookmarks">
-						<a [href]="SanitizeUrl(bookmark.Url)"
-						   target="_blank">
-							{{bookmark.Title}}
-						</a>
-						<mat-divider></mat-divider>
-					</div>
-				</div>
-			</ng-container>
+				</ng-container>
+			</div>
 		</ng-container>
 	</div>
 </div>
