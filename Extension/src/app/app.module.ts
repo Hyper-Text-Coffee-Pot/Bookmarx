@@ -26,11 +26,12 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatRippleModule } from '@angular/material/core';
+import { ErrorStateMatcher, MatRippleModule, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
 	declarations: [
@@ -64,19 +65,17 @@ import { MatMenuModule } from '@angular/material/menu';
 		MatCardModule,
 		MatGridListModule,
 		MatDividerModule,
-		MatMenuModule
+		MatMenuModule,
+		MatInputModule
 	],
 	providers: [
 		AuthService,
 		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: AuthInterceptor,
-			multi: true
+			provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true
 		},
-		// {
-		// 	provide: RECAPTCHA_V3_SITE_KEY,
-		// 	useValue: environment.reCAPTCHASiteKey
-		// }
+		{
+			provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher
+		}
 	],
 	bootstrap: [AppComponent]
 })

@@ -196,6 +196,11 @@ body
 		{
 			justify-content: space-between;
 		}
+
+		&-center
+		{
+			justify-content: center;
+		}
 	}
 
 	&-align-items
@@ -213,6 +218,11 @@ body
 			overflow: hidden;
 			text-wrap: nowrap;
 		}
+
+		&-center
+		{
+			text-align: center;
+		}
 	}
 
 	&-m
@@ -221,6 +231,21 @@ body
 		{
 			margin: 0 !important;
 		}
+
+		&l-1
+		{
+			margin-left: 1.1em !important;
+		}
+
+		&l-2
+		{
+			margin-left: 1.2em !important;
+		}
+
+		&l-3
+		{
+			margin-left: 1.3em !important;
+		}
 	}
 
 	@for $i from 1 through 100
@@ -228,6 +253,14 @@ body
 		&-w-#{$i}
 		{
 			width: $i * 1%;
+		}
+	}
+
+	@for $i from 1 through 100
+	{
+		&-h-#{$i}
+		{
+			height: $i * 1%;
 		}
 	}
 }

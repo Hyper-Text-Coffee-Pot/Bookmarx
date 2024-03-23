@@ -36,7 +36,6 @@
 				  class="example-list"
 				  [cdkDropListData]="BookmarkCollections"
 				  (cdkDropListDropped)="HandleDrop($event)">
-			<!-- <ng-container *ngFor="let collection of BookmarkCollections"> -->
 			<mat-list-item cdkDrag
 						   *ngFor="let collection of BookmarkCollections"
 						   matRipple
@@ -54,7 +53,8 @@
 						'border-bottom': collection.IsCollapsed ? 'none' : 'solid 1px #ccc'
 						}">
 				<div class="file-explorer__item bx-w-100 bx-d-flex bx-justify-content-between bx-align-items-center">
-					<div class="file-explorer__folder">
+					<div class="file-explorer__folder"
+						 [ngClass]="{'bx-ml-2': !collection.HasChildren}">
 						<button mat-icon-button
 								aria-label="Example icon button with a vertical three dot icon"
 								(click)="ToggleTree(collection, !collection.ChildCollectionsCollapsed)"
@@ -89,29 +89,68 @@
 		 aria-grabbed="false">
 	</div>
 	<div class="bookmarks__output">
-		<button type="button"
-				(click)="ImportExistingBookmarks()">Import existing bookmarks</button>
-		<button type="button"
-				(click)="ClearBookmarks()">Clear all</button>
-		<hr />
-		<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
-			<p>No saved bookmarks.</p>
-		</ng-container>
-		<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
-			<div>
-				<div class="bookmarks__header">
-					<p>{{ActiveCollection?.Title}}</p>
-					<span>{{ActiveCollection?.Bookmarks?.length}}</span>
-				</div>
-				<hr />
-				<div *ngFor="let bookmark of ActiveCollection?.Bookmarks">
-					<a [href]="SanitizeUrl(bookmark.Url)"
-					   target="_blank">
-						{{bookmark.Title}}
-					</a>
-					<mat-divider></mat-divider>
+		<ng-container *ngIf="ActiveCollection == null">
+			<div class="bx-h-100 bx-d-flex bx-align-items-center bx-justify-content-center bx-text-center">
+				<div>
+					<ng-container *ngIf="ActiveCollection == null && !IsImportingBookmarks">
+						<p>Try importing your bookmarks to get started.</p>
+						<form class="example-form">
+							<mat-form-field class="example-full-width"
+											appearance="fill">
+								<mat-label>Email</mat-label>
+								<input type="email"
+									   matInput
+									   [formControl]="emailFormControl"
+									   [errorStateMatcher]="matcher"
+									   placeholder="Ex. pat@example.com">
+								<mat-hint>Errors appear instantly!</mat-hint>
+								<mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+									Please enter a valid email address
+								</mat-error>
+								<mat-error *ngIf="emailFormControl.hasError('required')">
+									Email is <strong>required</strong>
+								</mat-error>
+							</mat-form-field>
+						</form>
+						<button mat-raised-button
+								color="accent"
+								(click)="ImportExistingBookmarks()">Import Bookmarks</button>
+					</ng-container>
+					<ng-container *ngIf="IsImportingBookmarks">
+						<button mat-raised-button
+								color="accent"
+								(click)="SaveImportedBookmarks()">
+							<mat-icon>save</mat-icon> Save
+						</button>
+						<button mat-raised-button
+								color="warn"
+								(click)="CancelImportingBookmarks()">
+							<mat-icon>delete</mat-icon> Cancel
+						</button>
+					</ng-container>
 				</div>
 			</div>
+		</ng-container>
+		<ng-container *ngIf="ActiveCollection != null">
+			<ng-container *ngIf="!ActiveCollection?.Bookmarks?.length">
+				<p>No saved bookmarks.</p>
+			</ng-container>
+			<ng-container *ngIf="ActiveCollection?.Bookmarks?.length">
+				<div>
+					<div class="bookmarks__header">
+						<p>{{ActiveCollection?.Title}}</p>
+						<span>{{ActiveCollection?.Bookmarks?.length}}</span>
+					</div>
+					<hr />
+					<div *ngFor="let bookmark of ActiveCollection?.Bookmarks">
+						<a [href]="SanitizeUrl(bookmark.Url)"
+						   target="_blank">
+							{{bookmark.Title}}
+						</a>
+						<mat-divider></mat-divider>
+					</div>
+				</div>
+			</ng-container>
 		</ng-container>
 	</div>
 </div>

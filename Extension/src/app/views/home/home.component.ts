@@ -11,6 +11,18 @@ import * as uuid from 'uuid';
 import { Bookmark } from 'src/app/domain/bookmarks/entities/bookmark';
 import { BlockUIService } from 'ng-block-ui';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AbstractControl, FormControl, FormGroup, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher
+{
+	isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean
+	{
+		const isSubmitted = form && form.submitted;
+		return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+	}
+}
 
 @Component({
 	selector: 'app-home',
@@ -48,8 +60,19 @@ export class HomeComponent extends BasePageDirective
 
 	public FileExplorerWidthPX: number = 225;
 
+	public IsImportingBookmarks: boolean = false;
+
+	public emailFormControl = new FormControl('', [Validators.required, Validators.minLength(3)]);
+
+	public matcher = new MyErrorStateMatcher();
+
 	public override ngOnInit(): void
 	{
+	}
+
+	public SaveImportedBookmarks(): void
+	{
+		alert("HI");
 	}
 
 	public OnResizableClick(event: MouseEvent): void
@@ -81,8 +104,9 @@ export class HomeComponent extends BasePageDirective
 		this.isDraggingSide = false;
 	}
 
-	public ClearBookmarks(): void
+	public CancelImportingBookmarks(): void
 	{
+		this.IsImportingBookmarks = false;
 		this.BookmarkCollections = [];
 	}
 
@@ -302,6 +326,7 @@ export class HomeComponent extends BasePageDirective
 
 	public ImportExistingBookmarks(): void
 	{
+		this.IsImportingBookmarks = true;
 		this.BookmarkCollections = [];
 
 		//@ts-expect-error - This is a chrome extension property.
