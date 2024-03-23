@@ -237,6 +237,7 @@ body
 		{
 			overflow: hidden;
 			text-wrap: nowrap;
+			text-overflow: ellipsis;
 		}
 
 		&-center

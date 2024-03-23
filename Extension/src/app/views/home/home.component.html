@@ -105,8 +105,10 @@
 							<span>{{collection.Title}}</span>&nbsp;
 						</p>
 					</div>
-					<div>
-						<span class="collections__bookmark-count">{{collection.Bookmarks?.length}}</span>
+					<div class="bx-d-flex bx-justify-content-evenly bx-align-items-center">
+						<div>
+							<span class="collections__bookmark-count">{{collection.Bookmarks?.length}}</span>
+						</div>
 						<app-directory-menu [RespectiveBookmarkCollection]="collection"></app-directory-menu>
 					</div>
 				</div>
