@@ -56,7 +56,7 @@ export class HomeComponent extends BasePageDirective
 
 	public BookmarkCollectionsPendingImport: BookmarkCollection[] = [];
 
-	public DeletedBookmarkCollections: BookmarkCollection[] = [];
+	public BookmarkCollectionsDeleted: BookmarkCollection[] = [];
 
 	public ActiveCollection: BookmarkCollection = null;
 
@@ -137,6 +137,28 @@ export class HomeComponent extends BasePageDirective
 				}
 			});
 	}
+
+	// TODO: Circle back to this.
+	// public UpsertDeletedBookmarks(showSnackBar: boolean = false): void
+	// {
+	// 	this._bookmarksService.SaveDeletedBookmarks(this.BookmarkCollectionsDeleted)
+	// 		.subscribe({
+	// 			next: (result: BookmarkCollection[]) =>
+	// 			{
+	// 				if (showSnackBar)
+	// 				{
+	// 					this._snackBar.open("Bookmarks have been successfully saved.", "Ok", {
+	// 						politeness: 'polite',
+	// 						duration: 5000
+	// 					});
+	// 				}
+	// 			},
+	// 			error: (error) =>
+	// 			{
+	// 				console.log(error);
+	// 			}
+	// 		});
+	// }
 
 	public CollapseAllFolders(): void
 	{
@@ -566,11 +588,15 @@ export class HomeComponent extends BasePageDirective
 			this.BookmarkCollections = [...collectionsToKeep];
 			collectionsToDelete.forEach((deletedCollection) =>
 			{
-				this.DeletedBookmarkCollections.push(deletedCollection);
+				this.BookmarkCollectionsDeleted.push(deletedCollection);
 			});
 
 			this._cdr.detectChanges();
-			this.UpsertMainBookmarks(true);
+
+			this.UpsertMainBookmarks();
+
+			// TODO: Circle back.
+			//this.UpsertDeletedBookmarks(true);
 		}
 	}
 

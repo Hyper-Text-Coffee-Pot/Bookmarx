@@ -13,8 +13,10 @@
 	<button mat-icon-button
 			color="accent"
 			class="example-icon favorite-icon"
-			aria-label="Example icon-button with heart icon">
-		<mat-icon>favorite</mat-icon>
+			aria-label="Add a new bookmark to the current folder"
+			title="Add a new bookmark to the current folder"
+			(click)="drawer.toggle()">
+		<mat-icon>bookmark_add</mat-icon>
 	</button>
 	<button mat-icon-button
 			color="accent"
@@ -230,3 +232,22 @@
 		</div>
 	</mat-sidenav-content>
 </mat-sidenav-container>
+<!-- Add Bookmark Drawer -->
+<mat-drawer-container class="add-bookmark__container"
+					  autosize>
+	<mat-drawer #drawer
+				class="add-bookmark__drawer"
+				mode="side"
+				position="end">
+		<p>Auto-resizing sidenav</p>
+		<p>Lorem, ipsum dolor sit amet consectetur.</p>
+		<div class="example-sidenav-content">
+			<button type="button"
+					mat-button
+					(click)="drawer.toggle()">
+				Toggle sidenav
+			</button>
+		</div>
+	</mat-drawer>
+</mat-drawer-container>
+<!-- Add Bookmark Drawer End -->

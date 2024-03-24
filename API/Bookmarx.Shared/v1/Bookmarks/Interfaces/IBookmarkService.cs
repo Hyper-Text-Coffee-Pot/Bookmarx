@@ -5,4 +5,6 @@ public interface IBookmarkService
 	Task<List<BookmarkCollection>> GetBookmarks();
 
 	Task ImportBookmarks(List<BookmarkCollection> bookmarkCollections);
+
+	//Task SaveDeleted(List<BookmarkCollection> bookmarkCollections);
 }

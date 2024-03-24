@@ -48,4 +48,21 @@ public class BookmarksController : ControllerBase
 
 		return Ok(bookmarkCollection);
 	}
+
+	//[HttpPost]
+	//[Route("save-deleted")]
+	//[Consumes("application/json")]
+	//public async Task<IActionResult> SaveDeleted([FromBody] List<BookmarkCollection> bookmarkCollection)
+	//{
+	//	try
+	//	{
+	//		await this._bookmarkService.SaveDeleted(bookmarkCollection);
+	//	}
+	//	catch (Exception ex)
+	//	{
+	//		return BadRequest(ex.Message);
+	//	}
+
+	//	return Ok(bookmarkCollection);
+	//}
 }

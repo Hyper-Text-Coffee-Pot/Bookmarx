@@ -12,6 +12,29 @@ export class BookmarksService
 {
 	constructor(private _httpClient: HttpClient) { }
 
+	public GetAll(): Observable<any>
+	{
+		return this._httpClient.get(`${ environment.apiUrlV1 }/bookmarks/get-all`)
+			.pipe(
+				retry(3)
+			);
+	}
+
+	// TODO: Circle back to this.
+	// public SaveDeletedBookmarks(bookmarkCollections: BookmarkCollection[]): Observable<any>
+	// {
+	// 	const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+	// 	return this._httpClient
+	// 		.post(
+	// 			`${ environment.apiUrlV1 }/bookmarks/save-deleted`,
+	// 			bookmarkCollections,
+	// 			{ headers })
+	// 		.pipe(
+	// 			retry(3)
+	// 		);
+	// }
+
 	public SyncBookmarks(bookmarkCollections: BookmarkCollection[]): Observable<any>
 	{
 		const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -21,14 +44,6 @@ export class BookmarksService
 				`${ environment.apiUrlV1 }/bookmarks/sync-bookmarks`,
 				bookmarkCollections,
 				{ headers })
-			.pipe(
-				retry(3)
-			);
-	}
-
-	public GetAll(): Observable<any>
-	{
-		return this._httpClient.get(`${ environment.apiUrlV1 }/bookmarks/get-all`)
 			.pipe(
 				retry(3)
 			);

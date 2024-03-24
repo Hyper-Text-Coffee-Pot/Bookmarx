@@ -35,6 +35,9 @@ public class MemberAccount : IFirebaseEntity
 	[FirestoreProperty]
 	public List<BookmarkCollection> BookmarkCollections { get; set; } = new List<BookmarkCollection>();
 
+	[FirestoreProperty]
+	public List<BookmarkCollection> BookmarkCollectionsDeleted { get; set; } = new List<BookmarkCollection>();
+
 	/// <summary>
 	/// Convert using the {DateTime:O} when setting to append timezone info for UTC and ISO-8601.
 	/// </summary>

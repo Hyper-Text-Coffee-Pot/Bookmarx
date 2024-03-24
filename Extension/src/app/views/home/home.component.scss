@@ -310,3 +310,19 @@ section
 	width: 300px;
 	border: 1px solid rgba(0, 0, 0, 0.5);
 }
+
+.add-bookmark
+{
+	&__container
+	{
+		position: fixed;
+		top: 64px;
+		height: calc(100vh - 64px);
+		right: 0px;
+	}
+
+	&__drawer
+	{
+		width: 300px;
+	}
+}

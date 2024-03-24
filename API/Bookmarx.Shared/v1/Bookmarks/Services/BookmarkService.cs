@@ -54,4 +54,28 @@ public class BookmarkService : IBookmarkService
 			await this._firestoreProvider.AddOrUpdateById(currentMemberAccount, CancellationToken.None);
 		}
 	}
+
+	// TODO: Circle back to this.
+	//public async Task SaveDeleted(List<BookmarkCollection> bookmarkCollections)
+	//{
+	//	var currentMemberAccount = await this._currentMemberService.GetFreshMember();
+
+	//	if (currentMemberAccount != null)
+	//	{
+	//		// Quick modification to imported date times for all items.
+	//		foreach (var bookmarkCollection in bookmarkCollections)
+	//		{
+	//			bookmarkCollection.DateTimeAddedUTC = DateTime.UtcNow;
+
+	//			foreach (var bookmark in bookmarkCollection.Bookmarks)
+	//			{
+	//				bookmark.DateTimeAddedUTC = DateTime.UtcNow;
+	//			}
+	//		}
+
+	//		currentMemberAccount.BookmarkCollectionsDeleted = bookmarkCollections;
+
+	//		await this._firestoreProvider.AddOrUpdateById(currentMemberAccount, CancellationToken.None);
+	//	}
+	//}
 }
