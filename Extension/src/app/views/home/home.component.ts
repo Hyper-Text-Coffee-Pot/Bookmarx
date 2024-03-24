@@ -98,7 +98,7 @@ export class HomeComponent extends BasePageDirective
 
 		this.AddBookmarkFormGroup = new FormGroup({
 			bookmarkTitle: new FormControl('', [Validators.required]),
-			bookmarkUrl: new FormControl('', [Validators.required, Validators.pattern('^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$')])
+			bookmarkUrl: new FormControl('', [Validators.required])
 		});
 
 		this._bookmarksService.GetAll()

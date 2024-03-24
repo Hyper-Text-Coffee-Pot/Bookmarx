@@ -271,10 +271,6 @@
 								&& AddBookmarkFormGroup.hasError('required', 'bookmarkUrl')">
 					URL is <strong>required</strong>
 				</mat-error>
-				<mat-error *ngIf="(AddBookmarkFormGroup.touched || AddBookmarkFormGroup.dirty)
-								&& AddBookmarkFormGroup.hasError('pattern', 'bookmarkUrl')">
-					Must be a valid URL
-				</mat-error>
 				<button type="submit"
 						mat-raised-button
 						color="accent"
