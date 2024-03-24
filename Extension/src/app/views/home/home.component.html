@@ -256,7 +256,7 @@
 						   placeholder="Title"
 						   formControlName="bookmarkTitle">
 				</mat-form-field>
-				<mat-error *ngIf="AddBookmarkFormGroup.get('bookmarkTitle').touched 
+				<mat-error *ngIf="(AddBookmarkFormGroup.touched || AddBookmarkFormGroup.dirty)
 								&& AddBookmarkFormGroup.hasError('required', 'bookmarkTitle')">
 					Title is <strong>required</strong>
 				</mat-error>
@@ -267,11 +267,11 @@
 						   placeholder="URL"
 						   formControlName="bookmarkUrl">
 				</mat-form-field>
-				<mat-error *ngIf="AddBookmarkFormGroup.get('bookmarkUrl').touched 
+				<mat-error *ngIf="(AddBookmarkFormGroup.touched || AddBookmarkFormGroup.dirty)
 								&& AddBookmarkFormGroup.hasError('required', 'bookmarkUrl')">
 					URL is <strong>required</strong>
 				</mat-error>
-				<mat-error *ngIf="AddBookmarkFormGroup.get('bookmarkUrl').touched 
+				<mat-error *ngIf="(AddBookmarkFormGroup.touched || AddBookmarkFormGroup.dirty)
 								&& AddBookmarkFormGroup.hasError('pattern', 'bookmarkUrl')">
 					Must be a valid URL
 				</mat-error>
