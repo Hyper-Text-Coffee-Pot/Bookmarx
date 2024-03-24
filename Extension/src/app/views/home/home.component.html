@@ -46,27 +46,27 @@
 		<div class="bx-d-flex">
 			<div class="file-explorer__wrapper"
 				 [style.width.px]="FileExplorerWidthPX">
-				<div>
-					<div class="example-button-row">
-						<div class="bx-d-flex">
-							<div class="example-button-container">
-								<button mat-mini-fab
-										color="accent"
-										aria-label="Collapse all folders"
-										title="Collapse all folders"
-										(click)="CollapseAllFolders()">
-									<mat-icon>compress</mat-icon>
-								</button>
-							</div>
-							<div class="example-button-container">
-								<button mat-mini-fab
-										color="accent"
-										aria-label="Open all folders"
-										title="Open all folders"
-										(click)="OpenAllFolders()">
-									<mat-icon>arrow_drop_down</mat-icon>
-								</button>
-							</div>
+				<div class="example-button-row">
+					<div class="bx-d-flex bx-justify-content-evenly">
+						<div class="example-button-container">
+							<button mat-icon-button
+									color="accent"
+									aria-label="Open all folders"
+									title="Open all folders"
+									class="bx-m-0"
+									(click)="OpenAllFolders()">
+								<mat-icon>arrow_drop_down</mat-icon>
+							</button>
+						</div>
+						<div class="example-button-container">
+							<button mat-icon-button
+									color="accent"
+									aria-label="Collapse all folders"
+									title="Collapse all folders"
+									class="bx-m-0"
+									(click)="CollapseAllFolders()">
+								<mat-icon>compress</mat-icon>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -132,10 +132,10 @@
 					<mat-list-item role="list-item"
 								   *ngFor="let pendingCollection of BookmarkCollectionsPendingImport"
 								   matRipple
-								   class="example-box">
+								   class="example-box"
+								   [style.padding-left.px]="pendingCollection.Depth * 20">
 						<div class="file-explorer__item bx-w-100 bx-d-flex bx-justify-content-between bx-align-items-center">
-							<div class="file-explorer__folder"
-								 [ngClass]="{'bx-ml-2': !pendingCollection.HasChildren}">
+							<div class="file-explorer__folder">
 								<p class="bx-m-0 bx-text-nowrap">
 									<span [innerHTML]="pendingCollection.Icon"></span>&nbsp;
 									<span>{{pendingCollection.Title}}</span>&nbsp;
@@ -197,7 +197,7 @@
 								</button>
 								<button mat-raised-button
 										color="accent"
-										(click)="UpsertBookmarks(true)"
+										(click)="UpsertMainBookmarks(true)"
 										class="bookmarks__import-btn">
 									<mat-icon>save</mat-icon> Save
 								</button>

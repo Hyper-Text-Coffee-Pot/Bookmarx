@@ -288,6 +288,10 @@ section
 {
 	display: table-cell;
 	width: 490px;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background-color: var(--clr-primary-800);
 }
 
 .example-button-row .mat-button-base

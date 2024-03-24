@@ -56,6 +56,8 @@ export class HomeComponent extends BasePageDirective
 
 	public BookmarkCollectionsPendingImport: BookmarkCollection[] = [];
 
+	public DeletedBookmarkCollections: BookmarkCollection[] = [];
+
 	public ActiveCollection: BookmarkCollection = null;
 
 	public IsDragging: boolean;
@@ -97,7 +99,7 @@ export class HomeComponent extends BasePageDirective
 			});
 	}
 
-	public UpsertBookmarks(showSnackBar: boolean = false): void
+	public UpsertMainBookmarks(showSnackBar: boolean = false): void
 	{
 		try
 		{
@@ -149,7 +151,7 @@ export class HomeComponent extends BasePageDirective
 			}
 		});
 
-		this.UpsertBookmarks(true);
+		this.UpsertMainBookmarks();
 	}
 
 	public OpenAllFolders(): void
@@ -160,7 +162,7 @@ export class HomeComponent extends BasePageDirective
 			collection.IsCollapsed = false;
 		});
 
-		this.UpsertBookmarks(true);
+		this.UpsertMainBookmarks();
 	}
 
 	public ShowImportForm(): void
@@ -243,7 +245,7 @@ export class HomeComponent extends BasePageDirective
 		this.ToggleTree(collection, !collection.ChildCollectionsCollapsed);
 
 		// Run a save on the new state.
-		this.UpsertBookmarks();
+		this.UpsertMainBookmarks();
 	}
 
 	public GenerateMatMenuTriggerName(index: number): MatMenu
@@ -341,7 +343,7 @@ export class HomeComponent extends BasePageDirective
 			// NOTE: DO NOT CHANGE THIS LOGIC THIS WORKS GREAT
 			this.ReparentChildItemsOfMovedCollection(movedCollection, depthAdjustment);
 
-			this.UpsertBookmarks(true);
+			this.UpsertMainBookmarks(true);
 		}
 		else
 		{
@@ -413,8 +415,13 @@ export class HomeComponent extends BasePageDirective
 			{
 				this.BookmarkCollections[i].IsCollapsed = isCollapsed;
 
-				// recursively call the function for child collections
-				this.ToggleTree(this.BookmarkCollections[i], isCollapsed);
+				// We only want to modify nested folders if we're closing them.
+				// If we open all of them every time we toggle it's annoying.
+				if (isCollapsed)
+				{
+					// recursively call the function for child collections
+					this.ToggleTree(this.BookmarkCollections[i], isCollapsed);
+				}
 			}
 		}
 	}
@@ -557,8 +564,13 @@ export class HomeComponent extends BasePageDirective
 
 			// Overwrite the existing bookmark collections.
 			this.BookmarkCollections = [...collectionsToKeep];
+			collectionsToDelete.forEach((deletedCollection) =>
+			{
+				this.DeletedBookmarkCollections.push(deletedCollection);
+			});
 
 			this._cdr.detectChanges();
+			this.UpsertMainBookmarks(true);
 		}
 	}
 
