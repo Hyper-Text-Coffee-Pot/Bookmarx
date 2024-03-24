@@ -245,6 +245,7 @@
 					(click)="drawer.toggle()">
 				Toggle sidenav
 			</button>
+			<p>Add new bookmark to {{ActiveCollection?.Title}}</p>
 			<form class="example-form"
 				  [formGroup]="AddBookmarkFormGroup"
 				  (ngSubmit)="AddNewBookmark()">
@@ -255,7 +256,8 @@
 						   placeholder="Title"
 						   formControlName="bookmarkTitle">
 				</mat-form-field>
-				<mat-error *ngIf="AddBookmarkFormGroup.hasError('required', 'bookmarkTitle')">
+				<mat-error *ngIf="AddBookmarkFormGroup.get('bookmarkTitle').touched 
+								&& AddBookmarkFormGroup.hasError('required', 'bookmarkTitle')">
 					Title is <strong>required</strong>
 				</mat-error>
 				<mat-form-field class="example-full-width"
@@ -265,10 +267,12 @@
 						   placeholder="URL"
 						   formControlName="bookmarkUrl">
 				</mat-form-field>
-				<mat-error *ngIf="AddBookmarkFormGroup.hasError('required', 'bookmarkUrl')">
+				<mat-error *ngIf="AddBookmarkFormGroup.get('bookmarkUrl').touched 
+								&& AddBookmarkFormGroup.hasError('required', 'bookmarkUrl')">
 					URL is <strong>required</strong>
 				</mat-error>
-				<mat-error *ngIf="AddBookmarkFormGroup.hasError('pattern', 'bookmarkUrl')">
+				<mat-error *ngIf="AddBookmarkFormGroup.get('bookmarkUrl').touched 
+								&& AddBookmarkFormGroup.hasError('pattern', 'bookmarkUrl')">
 					Must be a valid URL
 				</mat-error>
 				<button type="submit"
