@@ -239,14 +239,26 @@
 				class="add-bookmark__drawer"
 				mode="side"
 				position="end">
-		<p>Auto-resizing sidenav</p>
-		<p>Lorem, ipsum dolor sit amet consectetur.</p>
 		<div class="example-sidenav-content">
 			<button type="button"
 					mat-button
 					(click)="drawer.toggle()">
 				Toggle sidenav
 			</button>
+			<form class="example-form">
+				<mat-form-field class="example-full-width"
+								appearance="fill">
+					<mat-label>Bookmark Title</mat-label>
+					<input matInput
+						   placeholder="Title">
+				</mat-form-field>
+				<mat-form-field class="example-full-width"
+								appearance="fill">
+					<mat-label>URL</mat-label>
+					<input matInput
+						   placeholder="URL">
+				</mat-form-field>
+			</form>
 		</div>
 	</mat-drawer>
 </mat-drawer-container>
