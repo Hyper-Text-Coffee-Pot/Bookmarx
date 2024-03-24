@@ -188,6 +188,11 @@ body
 		{
 			display: flex;
 		}
+
+		&-absolute
+		{
+			position: absolute;
+		}
 	}
 
 	&-justify-content

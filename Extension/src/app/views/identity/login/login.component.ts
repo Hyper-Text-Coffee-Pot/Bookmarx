@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BasePageDirective } from '../../shared/base-page.directive';
@@ -6,12 +6,13 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Subscription } from 'rxjs';
 import { UserCredential, sendEmailVerification } from '@angular/fire/auth';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-// import { ReCaptchaV3Service } from 'ng-recaptcha';
 import { AuthService } from 'src/app/domain/auth/services/auth.service';
 import { GoogleAuthService } from 'src/app/domain/auth/services/google-auth.service';
 import { ActiveUserDetail } from 'src/app/domain/auth/models/active-user-detail';
 import { IdentityActionResponseDto } from 'src/app/domain/membership/models/identity-action-response-dto';
 import { MembershipAuthService } from 'src/app/domain/membership/services/membership-auth.service';
+import { ParticlesConfig } from '../../shared/config/particles-config';
+declare let particlesJS: any;
 
 @Component({
 	selector: 'app-login',
@@ -32,7 +33,7 @@ export class LoginComponent extends BasePageDirective
 		private _metaService: Meta,
 		private _membershipAuthService: MembershipAuthService,
 		private _googleAuthService: GoogleAuthService)
-		// private _recaptchaV3Service: ReCaptchaV3Service)
+	// private _recaptchaV3Service: ReCaptchaV3Service)
 	{
 		super(_route, _titleService);
 	}
@@ -57,6 +58,8 @@ export class LoginComponent extends BasePageDirective
 
 	public override ngOnInit(): void
 	{
+		particlesJS('particles-js', ParticlesConfig, function () { });
+		
 		let currentDate = new Date();
 		this.CurrentYear = currentDate.getFullYear().toString();
 
