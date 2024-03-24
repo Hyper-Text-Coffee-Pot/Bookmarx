@@ -85,8 +85,10 @@ export class HomeComponent extends BasePageDirective
 			.subscribe({
 				next: (result: BookmarkCollection[]) =>
 				{
-					this.BookmarkCollections = result;
+					this.BookmarkCollections = [...result];
 					this.ActiveCollection = this.BookmarkCollections[0];
+					this._cdr.detectChanges();
+					console.log(this.BookmarkCollections);
 				},
 				error: (error) =>
 				{
@@ -107,6 +109,7 @@ export class HomeComponent extends BasePageDirective
 
 			// Clear out the pending import collections.
 			this.BookmarkCollectionsPendingImport = [];
+			this.BookmarkImportState = BookmarkImportStateType.None;
 			this._cdr.detectChanges();
 		}
 		catch (error)
@@ -353,7 +356,7 @@ export class HomeComponent extends BasePageDirective
 		{
 			// Now, reorder everything correctly.
 			let reorderedCollections: BookmarkCollection[] = [];
-			let childCollections: BookmarkCollection[] = this.FindChildCollections(movedCollection.Id);
+			let childCollections: BookmarkCollection[] = this.GetChildCollections(movedCollection.Id);
 
 			// Remove child collections from BookmarkCollections array
 			reorderedCollections = this.BookmarkCollections.filter(collection => !childCollections.includes(collection));
@@ -384,23 +387,6 @@ export class HomeComponent extends BasePageDirective
 			this.BookmarkCollections = [...reorderedCollections];
 			this._cdr.detectChanges();
 		}
-	}
-
-	private FindChildCollections(parentId: string): BookmarkCollection[]
-	{
-		let childCollections: BookmarkCollection[] = [];
-
-		for (let i = 0; i < this.BookmarkCollections.length; i++)
-		{
-			if (this.BookmarkCollections[i].ParentId === parentId)
-			{
-				childCollections.push(this.BookmarkCollections[i]);
-				let grandchildren = this.FindChildCollections(this.BookmarkCollections[i].Id);
-				childCollections = childCollections.concat(grandchildren);
-			}
-		}
-
-		return childCollections;
 	}
 
 	public HandleDragStart(event: CdkDragStart, collection: BookmarkCollection): void
@@ -500,6 +486,108 @@ export class HomeComponent extends BasePageDirective
 		});
 	}
 
+	/**
+	 * Mark the current collection and all nested collections as soft deleted.
+	 * This is also a very expensive method. The bookmarks array(s) get iterated 
+	 * repeatedly as we need to traverse both the delete collections and then the 
+	 * parent collections and remove as we go along. Attempts are made to reduce
+	 * iterations by continuing out of the loop as soon as an item is found.
+	 * But still...yuck.
+	 * @param deletedCollection 
+	 */
+	public MarkCollectionsForDeletion(deletedCollection: BookmarkCollection): void
+	{
+		if (deletedCollection != null && deletedCollection.IsSoftDeleted)
+		{
+			let deletedCollections = [];
+
+			let childCollections = this.GetChildCollections(deletedCollection.Id);
+
+			childCollections.forEach((collection) =>
+			{
+				collection.IsSoftDeleted = true;
+			});
+
+			deletedCollections = [deletedCollection, ...childCollections];
+
+			// We'll loop over the deleted collections, first.
+			for (let i = 0; i < deletedCollections.length; i++)
+			{
+				let currentDeletedCollection: BookmarkCollection = deletedCollections[i];
+
+				// Next, find the corresponding item in the main collections list.
+				for (let mi = 0; mi < this.BookmarkCollections.length; mi++)
+				{
+					let currentMainCollection = this.BookmarkCollections[mi];
+					if (currentDeletedCollection.Id === currentMainCollection.Id)
+					{
+						// Update it to show deleted then immediately bail to go on to the next and reduce iterations.
+						currentMainCollection.IsSoftDeleted = true;
+					}
+				}
+			}
+
+			// Finally, we're going to completely reconstruct the existing collections
+			// and also build up a new deleted collections list. Then, when we get those
+			// created we'll rewrite both the BookmarkCollections and DeletedBookmarkCollections
+			// arrays with the new arrays. This is better than actively deleting elements
+			// at specified array positions, since we'll be modifying the array we're working on.
+			let collectionsToKeep = [];
+			let collectionsToDelete = [];
+			for (let index = 0; index < this.BookmarkCollections.length; index++)
+			{
+				let currentCollection = this.BookmarkCollections[index];
+
+				if (currentCollection.IsSoftDeleted)
+				{
+					// The root folder which was just deleted should be reparented to root.
+					if (currentCollection.Id == deletedCollection.Id)
+					{
+						currentCollection.ParentId = null;
+						currentCollection.Depth = 0;
+					}
+
+					collectionsToDelete.push(currentCollection);
+				}
+				else
+				{
+					collectionsToKeep.push(currentCollection);
+				}
+			}
+
+			// Overwrite the existing bookmark collections.
+			this.BookmarkCollections = [...collectionsToKeep];
+
+			this._cdr.detectChanges();
+		}
+	}
+
+	//#region Private Methods
+
+	/**
+	 * One method to rule them all, and in the recursion, bind them.
+	 * This method gets all the child collections of a given parent Id.
+	 * Reuse this to help keep your sanity and to not reinvent the wheel.
+	 * @param parentId 
+	 * @returns 
+	 */
+	private GetChildCollections(parentId: string): BookmarkCollection[]
+	{
+		let childCollections: BookmarkCollection[] = [];
+
+		for (let i = 0; i < this.BookmarkCollections.length; i++)
+		{
+			if (this.BookmarkCollections[i].ParentId === parentId)
+			{
+				childCollections.push(this.BookmarkCollections[i]);
+				let grandchildren = this.GetChildCollections(this.BookmarkCollections[i].Id);
+				childCollections = childCollections.concat(grandchildren);
+			}
+		}
+
+		return childCollections;
+	}
+
 	private FlattenBookmarkTreeNodesIntoCollections(
 		bookmarkTreeNode: IBookmarkTreeNode,
 		bookmarkCollection: BookmarkCollection): BookmarkCollection[]
@@ -572,4 +660,6 @@ export class HomeComponent extends BasePageDirective
 
 		return false;
 	}
+
+	//#endregion Private Methods
 }

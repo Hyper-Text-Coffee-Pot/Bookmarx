@@ -34,7 +34,6 @@ export class DirectoryMenuComponent implements OnInit
 			if (result)
 			{
 				this.RespectiveBookmarkCollection = result;
-				console.log(this.RespectiveBookmarkCollection);
 				this.CollectionUpdated.emit(this.RespectiveBookmarkCollection);
 			}
 		});
