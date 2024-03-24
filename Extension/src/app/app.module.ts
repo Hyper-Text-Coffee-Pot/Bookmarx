@@ -37,6 +37,7 @@ import { DirectoryMenuComponent } from './views/partials/directory-menu/director
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogDeleteCollectionComponent } from './views/dialogs/dialog-delete-collection/dialog-delete-collection.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
 	declarations: [
@@ -75,7 +76,8 @@ import { DialogDeleteCollectionComponent } from './views/dialogs/dialog-delete-c
 		MatInputModule,
 		MatListModule,
 		MatBottomSheetModule,
-		MatDialogModule
+		MatDialogModule,
+		MatSidenavModule
 	],
 	providers: [
 		AuthService,
