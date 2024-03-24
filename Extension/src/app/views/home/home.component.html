@@ -245,19 +245,37 @@
 					(click)="drawer.toggle()">
 				Toggle sidenav
 			</button>
-			<form class="example-form">
+			<form class="example-form"
+				  [formGroup]="AddBookmarkFormGroup"
+				  (ngSubmit)="AddNewBookmark()">
 				<mat-form-field class="example-full-width"
 								appearance="fill">
 					<mat-label>Bookmark Title</mat-label>
 					<input matInput
-						   placeholder="Title">
+						   placeholder="Title"
+						   formControlName="bookmarkTitle">
 				</mat-form-field>
+				<mat-error *ngIf="AddBookmarkFormGroup.hasError('required', 'bookmarkTitle')">
+					Title is <strong>required</strong>
+				</mat-error>
 				<mat-form-field class="example-full-width"
 								appearance="fill">
 					<mat-label>URL</mat-label>
 					<input matInput
-						   placeholder="URL">
+						   placeholder="URL"
+						   formControlName="bookmarkUrl">
 				</mat-form-field>
+				<mat-error *ngIf="AddBookmarkFormGroup.hasError('required', 'bookmarkUrl')">
+					URL is <strong>required</strong>
+				</mat-error>
+				<mat-error *ngIf="AddBookmarkFormGroup.hasError('pattern', 'bookmarkUrl')">
+					Must be a valid URL
+				</mat-error>
+				<button type="submit"
+						mat-raised-button
+						color="accent"
+						[disabled]="AddBookmarkFormGroup.invalid"
+						aria-label="Import Bookmarks">Save</button>
 			</form>
 		</div>
 	</mat-drawer>

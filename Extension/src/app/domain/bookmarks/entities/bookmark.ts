@@ -1,5 +1,15 @@
+import * as uuid from 'uuid';
+
 export class Bookmark
 {
+	constructor(title: string, url: string, parentId: string)
+	{
+		this.Id = uuid.v4();
+		this.Title = title;
+		this.Url = url;
+		this.ParentId = parentId;
+	}
+
 	public DateTimeAddedUTC: string;
 
 	public Description: string;

@@ -80,9 +80,27 @@ export class HomeComponent extends BasePageDirective
 	@ViewChild('navmenu', { static: true })
 	navMenu: MatMenu;
 
+	public AddBookmarkFormGroup: FormGroup;
+
+	public get bookmarkTitleControl(): AbstractControl
+	{
+		return this.AddBookmarkFormGroup.get('bookmarkTitle');
+	}
+
+	public get bookmarkUrlControl(): AbstractControl
+	{
+		return this.AddBookmarkFormGroup.get('bookmarkUrl');
+	}
+
 	public override ngOnInit(): void
 	{
 		super.ngOnInit();
+
+		this.AddBookmarkFormGroup = new FormGroup({
+			bookmarkTitle: new FormControl('', [Validators.required]),
+			bookmarkUrl: new FormControl('', [Validators.required, Validators.pattern('^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$')])
+		});
+
 		this._bookmarksService.GetAll()
 			.subscribe({
 				next: (result: BookmarkCollection[]) =>
@@ -97,6 +115,24 @@ export class HomeComponent extends BasePageDirective
 					console.log(error);
 				}
 			});
+	}
+
+	public AddNewBookmark(): void
+	{
+		let newBookmark = new Bookmark(
+			this.bookmarkTitleControl.value,
+			this.bookmarkUrlControl.value,
+			this.ActiveCollection.Id);
+
+		// Because this is a reference type, any changes made to the reference
+		// have an effect on the original instance, so this update also modifies
+		// the main bookmark collection value. Neat.
+		this.ActiveCollection.Bookmarks.push(newBookmark);
+
+		this.UpsertMainBookmarks(true);
+
+		this.AddBookmarkFormGroup.reset();
+		this.AddBookmarkFormGroup.markAsPristine();
 	}
 
 	public UpsertMainBookmarks(showSnackBar: boolean = false): void
@@ -639,11 +675,7 @@ export class HomeComponent extends BasePageDirective
 				if (child.url != null && child.url != undefined && child.url != "")
 				{
 					// If the URL has a value it's a bookmark so add it.
-					let bookmark = new Bookmark();
-					bookmark.Id = uuid.v4();
-					bookmark.ParentId = bookmarkCollection.Id;
-					bookmark.Title = child.title;
-					bookmark.Url = child.url;
+					let bookmark = new Bookmark(child.title, child.url, bookmarkCollection.Id);
 					bookmarkCollection.Bookmarks.push(bookmark);
 					return;
 				}
