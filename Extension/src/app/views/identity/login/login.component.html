@@ -1,7 +1,7 @@
 <div id="particles-js"
-	 class="bx-d-flex bx-align-items-center bx-justify-content-center identity-form">
+	 class="bx-d-flex bx-text-center bx-align-items-center bx-justify-content-center identity-form">
 	<div class="bx-d-absolute">
-		<div class="col">
+		<div class="form-identity__container">
 			<form class="form-identity"
 				  [formGroup]="SignInForm"
 				  (ngSubmit)="ProcessSignIn()">
@@ -9,18 +9,18 @@
 				   routerLink="/"
 				   aria-label="Click to go to the home page">
 					<img class="mb-4 main-logo"
-						 src="/assets/images/logos/main-logo-for-accounts.jpg"
-						 alt="Logo with two polaroids"
-						 width="250"
-						 height="83">
+						 src="/assets/images/logo355x44.png"
+						 alt=""
+						 width="285"
+						 height="35">
 				</a>
-				<h1 class="h3 mb-3 font-weight-normal">Log in to your account</h1>
+				<h1 class="form-identity__header">Log in to your account</h1>
 				<div *ngIf="FormError != ''"
 					 class="alert alert-danger">
 					<span>{{FormError}}</span>
 				</div>
 				<label for="signInEmail"
-					   class="visually-hidden">Email address</label>
+					   class="bx-sr-only">Email address</label>
 				<input type="email"
 					   class="form-control"
 					   name="signInEmail"
@@ -40,7 +40,7 @@
 					</div>
 				</div>
 				<label for="signInPassword"
-					   class="visually-hidden">Password</label>
+					   class="bx-sr-only">Password</label>
 				<input type="password"
 					   class="form-control"
 					   name="signInPassword"
@@ -66,26 +66,11 @@
 				<br />
 				<button class="btn btn-lg btn-primary w-100"
 						type="submit"
+						mat-button
+						color="accent"
 						[disabled]="!SignInForm.valid">
 					Log in
 				</button>
-				<p class="text-muted social-login-break">OR</p>
-				<div>
-					<button class="btn btn-light w-100 d-flex align-items-center justify-content-center login-btn__google"
-							type="button"
-							(click)="ProcessSignInWithGoogle()">
-						<img src="/assets/images/social/google.svg"
-							 alt="Google logo icon"
-							 width="20"
-							 height="20"
-							 class="me-2" />
-						Log in with Google
-					</button>
-					<!--<button class="btn btn-light w-100 d-flex align-items-center justify-content-center login-btn__facebook" type="button" (click)="ProcessSignInWithFacebook()">
-						<img src="/assets/images/social/facebook.png" alt="Facebook logo icon" width="20" height="20" class="me-2"/>
-						Log in with Facebook
-					</button>-->
-				</div>
 				<hr />
 				<div>
 					<a class="btn btn-link"

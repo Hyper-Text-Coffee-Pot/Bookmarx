@@ -62,27 +62,6 @@ export class LoginComponent extends BasePageDirective
 		
 		let currentDate = new Date();
 		this.CurrentYear = currentDate.getFullYear().toString();
-
-		// If this request comes in from a google login then handle the final processing
-		this._googleAuthService.ProcessRedirectResultFromGoogle(this._recaptchaSubscription)
-			.then((activeUserDetail: ActiveUserDetail) =>
-			{
-				if (activeUserDetail)
-				{
-					this.SetUserDataAndRedirect(activeUserDetail);
-				}
-			}).catch((err: any) =>
-			{
-				// Handle all form errors here
-				// https://firebase.google.com/docs/reference/js/firebase.auth.Auth?authuser=1#error-codes_12
-				// auth/invalid-email
-				// auth/user-disabled
-				// auth/user-not-found
-				// auth/wrong-password
-				let errorCode = err.code; // A code
-				let errorMessage = err.message; // And a message for the code
-				this.FormError = err.message;
-			});
 	}
 
 	/**
@@ -157,14 +136,6 @@ export class LoginComponent extends BasePageDirective
 		// 				this._blockUI.stop();
 		// 			}
 		// 		});
-	}
-
-	public ProcessSignInWithGoogle(): void
-	{
-		// Reset any error messages
-		this.FormError = "";
-
-		this._authService.InitiateSignInWithGoogle();
 	}
 
 	public ngOnDestroy()

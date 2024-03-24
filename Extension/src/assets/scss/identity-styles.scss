@@ -9,6 +9,17 @@
 	max-width: 350px;
 	width: 100%;
 	margin: 0 auto;
+
+	&__container
+	{
+		background: rgba(12, 12, 13, .5);
+		border-radius: 25px;
+	}
+
+	&__header
+	{
+		color: whitesmoke;
+	}
 }
 
 .form-identity .form-control
@@ -41,27 +52,4 @@
 }
 
 .main-logo
-{
-	max-width: 250px;
-}
-
-.social-login-break
-{
-	padding: 0;
-	margin: 15px 0;
-	font-weight: bold;
-}
-
-.login-btn
-{
-	&__google
-	{
-		background-color: #e6e6e6;
-	}
-
-	&__facebook
-	{
-		background-color: #4267B2;
-		color: white;
-	}
-}
+{}
