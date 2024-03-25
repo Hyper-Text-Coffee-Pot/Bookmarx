@@ -38,6 +38,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogDeleteCollectionComponent } from './views/dialogs/dialog-delete-collection/dialog-delete-collection.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
 	declarations: [
@@ -77,7 +78,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 		MatListModule,
 		MatBottomSheetModule,
 		MatDialogModule,
-		MatSidenavModule
+		MatSidenavModule,
+		MarkdownModule.forRoot()
 	],
 	providers: [
 		AuthService,

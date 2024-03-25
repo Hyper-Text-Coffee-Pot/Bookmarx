@@ -34,7 +34,10 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": ["node_modules/particles.js/particles.js"]
+            "scripts": [
+              "node_modules/particles.js/particles.js",
+              "node_modules/marked/marked.min.js"
+            ]
           },
           "configurations": {
             "production": {

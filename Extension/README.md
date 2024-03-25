@@ -66,3 +66,6 @@ root of the `Extension` project that contains more information and the configura
 
 ### ParticlesJS
 - https://vincentgarreau.com/particles.js/#default
+
+### ngx-markdown
+- https://www.npmjs.com/package/ngx-markdown/v/13.1.0

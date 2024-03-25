@@ -23,6 +23,7 @@
     "@angular/router": "~13.3.0",
     "firebase-tools": "^12.9.1",
     "ng-block-ui": "^3.0.2",
+    "ngx-markdown": "^13.1.0",
     "particles.js": "^2.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
